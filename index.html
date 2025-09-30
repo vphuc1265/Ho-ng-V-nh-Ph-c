@@ -193,13 +193,6 @@
                     return;
                 }
             }, 1000);
-            
-            // Chặn console
-            if(typeof console !== "undefined"){
-                console.log = function(){};
-                console.warn = function(){};
-                console.error = function(){};
-            }
         })();
 
         // === OBFUSCATED DECRYPTION FUNCTION ===
@@ -286,13 +279,11 @@
                 getDailyKey();
                 
                 // Xóa parameter khỏi URL
-                window.history.replaceState({}, '', window.location.pathname);
-            } else if (keyParam) {
-                // Key không hợp lệ
-                showAccessError();
-                window.history.replaceState({}, '', window.location.pathname);
+                setTimeout(() => {
+                    window.history.replaceState({}, '', window.location.pathname);
+                }, 100);
             } else {
-                // Không có key - truy cập trực tiếp
+                // Không có key hoặc key không hợp lệ
                 showAccessError();
             }
         }
