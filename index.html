@@ -2,51 +2,101 @@
 <html>
 <head>
     <title>Key Access</title>
-    <script>
-        // Redirect nếu truy cập trực tiếp không có key parameter
-        if (!window.location.search.includes('key=')) {
-            window.location.href = 'https://link4m.co/invalid-access';
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
-    </script>
-    <style>/* CSS giữ nguyên */</style>
+        .container {
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            max-width: 400px;
+            width: 100%;
+            text-align: center;
+        }
+        .key-display {
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+            margin: 20px 0;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 5px;
+            border: 2px dashed #667eea;
+        }
+    </style>
 </head>
 <body>
     <div class="container">
-        <h1>🔑 Daily Key</h1>
+        <h1>🔑 Daily Key System</h1>
         <div id="content">
-            <div>🚫 ACCESS DENIED - Use Link4M Link</div>
+            <div>🔄 Đang xác thực...</div>
         </div>
     </div>
 
     <script>
-        // CHỈ chạy verify nếu có key parameter
-        const urlParams = new URLSearchParams(window.location.search);
-        const urlKey = urlParams.get('key');
-        
-        if (!urlKey) {
-            document.getElementById('content').innerHTML = '<div style="color:red;">🚫 ACCESS DENIED - Use Link4M Link</div>';
-        } else {
-            // Verify key với key hiện tại từ GitHub
-            fetch('./daily-key.txt')
-                .then(response => response.text())
-                .then(validKey => {
-                    if (urlKey === validKey.trim()) {
-                        document.getElementById('content').innerHTML = `
-                            <div class="key-display">🔑 Key: <br>${validKey}</div>
-                            <button onclick="copyKey('${validKey}')">Copy</button>
-                        `;
-                    } else {
-                        document.getElementById('content').innerHTML = '<div style="color:red;">🚫 KEY EXPIRED - Get new link</div>';
-                    }
-                })
-                .catch(error => {
-                    document.getElementById('content').innerHTML = '<div style="color:red;">❌ Connection error</div>';
-                });
+        async function verifyAndDisplay() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const urlKey = urlParams.get('key');
+            
+            if (!urlKey) {
+                redirectToTodayLink();
+                return;
+            }
+            
+            try {
+                // Lấy key HIỆN TẠI từ server
+                const keyResponse = await fetch('./daily-key.txt');
+                const currentKey = (await keyResponse.text()).trim();
+                
+                // Lấy Link4M link HIỆN TẠI  
+                const linkResponse = await fetch('./daily-link.txt');
+                const todayLink = (await linkResponse.text()).trim();
+                
+                if (urlKey === currentKey) {
+                    // Key hợp lệ - hiển thị key
+                    document.getElementById('content').innerHTML = `
+                        <div class="key-display">
+                            🔑 Today Key: <br>
+                            <span style="color: #667eea; font-size: 20px;">${currentKey}</span>
+                        </div>
+                        <p>Copy key này và nhập vào tool</p>
+                        <button onclick="copyKey('${currentKey}')" 
+                                style="padding: 10px 20px; background: #667eea; color: white; border: none; border-radius: 5px; cursor: pointer;">
+                            Copy Key
+                        </button>
+                    `;
+                } else {
+                    // Key sai hoặc hết hạn - redirect về link hôm nay
+                    window.location.href = todayLink;
+                }
+                
+            } catch (error) {
+                redirectToTodayLink();
+            }
+        }
+
+        function redirectToTodayLink() {
+            // Fallback: redirect về Link4M mặc định
+            window.location.href = 'https://link4m.co/daily-key-today';
         }
 
         function copyKey(key) {
-            navigator.clipboard.writeText(key).then(() => alert('✅ Copied!'));
+            navigator.clipboard.writeText(key).then(() => {
+                alert('✅ Đã copy key!');
+            });
         }
+
+        // Tự động chạy khi trang load
+        document.addEventListener('DOMContentLoaded', verifyAndDisplay);
     </script>
 </body>
 </html>
