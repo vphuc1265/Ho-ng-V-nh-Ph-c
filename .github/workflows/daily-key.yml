@@ -1,4 +1,4 @@
-name: 🔑 Generate Daily Key
+name: 🔑 Generate Daily Key & Link
 
 on:
   schedule:
@@ -11,54 +11,31 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     
-    - name: Generate Daily Key
+    - name: Generate Daily Data
       run: |
         # Tạo key random
         KEY="vphuc_$(date +%Y%m%d)_$(openssl rand -hex 6 | tr '[:lower:]' '[:upper:]')"
         
-        # Lưu key
+        # Tạo URL với key
+        ORIGINAL_URL="https://vphuc1265.github.io/vphuc.luv/?key=$KEY"
+        
+        # Rút gọn qua Link4M API và lấy short URL
+        API_RESPONSE=$(curl -s "https://link4m.co/api-shorten/v2?api=68db842cd32fc747763d594d&url=$ORIGINAL_URL")
+        SHORT_URL=$(echo $API_RESPONSE | python3 -c "import sys, json; print(json.load(sys.stdin)['shortenedUrl'])")
+        
+        # Nếu lỗi API, dùng fallback URL
+        if [ $? -ne 0 ]; then
+          SHORT_URL="https://link4m.co/vphuc-$(date +%Y%m%d)"
+        fi
+        
+        # Lưu files
         echo "$KEY" > daily-key.txt
-        echo "{\"key\":\"$KEY\",\"date\":\"$(date +%Y%m%d)\"}" > daily-key.json
+        echo "$SHORT_URL" > daily-link.txt
+        echo "{\"key\":\"$KEY\",\"link\":\"$SHORT_URL\",\"date\":\"$(date +%Y%m%d)\"}" > daily-data.json
         
-        # Tạo HTML với key verification
-        cat > index.html << EOF
-        <!DOCTYPE html>
-        <html>
-        <head>
-            <title>Key Access</title>
-            <style>body{font-family:Arial; background:#f0f0f0; display:flex; justify-content:center; align-items:center; height:100vh; margin:0;} .container{background:white; padding:30px; border-radius:10px; box-shadow:0 0 10px rgba(0,0,0,0.1); text-align:center;}</style>
-        </head>
-        <body>
-            <div class="container">
-                <h1>🔑 Daily Key</h1>
-                <div id="content">Verifying...</div>
-            </div>
-            <script>
-                const urlParams = new URLSearchParams(window.location.search);
-                const urlKey = urlParams.get('key');
-                const validKey = "$KEY";
-                
-                if(urlKey === validKey) {
-                    document.getElementById('content').innerHTML = \`
-                        <div style="font-size:18px; font-weight:bold; color:#333; margin:20px 0; padding:15px; background:#f8f9fa; border-radius:5px; border:2px dashed #667eea;">
-                            🔑 Today Key : <br>
-                            <span style="color:#667eea; font-size:20px;">\${validKey}</span>
-                        </div>
-                        <button onclick="navigator.clipboard.writeText('\${validKey}').then(() => alert('Đã Copy Key !'))" 
-                                style="padding:10px 20px; background:#667eea; color:white; border:none; border-radius:5px; cursor:pointer;">
-                            Copy Key
-                        </button>
-                    \`;
-                } else {
-                    document.getElementById('content').innerHTML = '<div style="color:red; font-weight:bold;">Error - Key Không Hợp Lệ !</div>';
-                }
-            </script>
-        </body>
-        </html>
-        EOF
-        
+        # Commit
         git config user.name "github-actions"
         git config user.email "actions@github.com"
         git add .
-        git commit -m "Update daily key" || exit 0
+        git commit -m "Update daily key & link - $(date +%Y%m%d)" || exit 0
         git push
