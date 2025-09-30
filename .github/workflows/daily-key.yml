@@ -22,25 +22,23 @@ jobs:
           KEY="vphuc_$(date +%Y%m%d)_$(openssl rand -hex 6 | tr '[:lower:]' '[:upper:]')"
           ORIGINAL_URL="https://vphuc1265.github.io/vphuc.luv/?key=$KEY"
           
-          # Gọi Link4M API để lấy short URL THẬT
-          API_URL="https://link4m.co/api-shorten/v2?api=68db842cd32fc747763d594d&url=$ORIGINAL_URL"
-          echo "Calling Link4M API: $API_URL"
-          
-          # Dùng Python để gọi API đơn giản
-          SHORT_URL=$(python3 -c "
+          # Gọi Link4M API - DÙNG HEREDOC để tránh lỗi quotes
+          SHORT_URL=$(python3 << EOF
 import requests, json
 try:
-    response = requests.get('$API_URL', timeout=10)
+    api_url = "https://link4m.co/api-shorten/v2?api=68db842cd32fc747763d594d&url=$ORIGINAL_URL"
+    response = requests.get(api_url, timeout=10)
     data = response.json()
     if data.get('status') == 'success':
         print(data['shortenedUrl'])
     else:
-        print('https://link4m.co/error')
-except Exception as e:
-    print('https://link4m.co/fallback')
-")
+        print('https://link4m.co/error-api')
+except:
+    print('https://link4m.co/error-connection')
+EOF
+)
           
-          echo "Generated Key: $KEY"
+          echo "Key: $KEY"
           echo "Short URL: $SHORT_URL"
           
           # Lưu files
