@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nhận Key Tool - Miễn Phí</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-align: center;
+        }
+        .container {
+            background: rgba(255,255,255,0.1);
+            padding: 30px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+        }
+        button {
+            background: #4CAF50;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px;
+        }
+        button:hover {
+            background: #45a049;
+        }
+        .key-display {
+            font-size: 18px;
+            font-weight: bold;
+            background: rgba(0,0,0,0.3);
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+            word-break: break-all;
+        }
+        .step {
+            margin: 20px 0;
+            padding: 15px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔧 NHẬN KEY TOOL MIỄN PHÍ</h1>
+        <p>Hoàn thành các bước sau để nhận key sử dụng 12 giờ</p>
+        
+        <!-- BƯỚC 1: Vượt link -->
+        <div class="step" id="step1">
+            <h3>📺 BƯỚC 1: XEM QUẢNG CÁO</h3>
+            <p>Nhấn vào link bên dưới và chờ 5 giây</p>
+            <a href="https://adf.ly/your-link-here" target="_blank">
+                <button>🔗 CLICK VÀO ĐÂY</button>
+            </a>
+            <br>
+            <button onclick="completeStep(1)">✅ Tôi đã hoàn thành</button>
+        </div>
+
+        <!-- BƯỚC 2: Subscribe -->
+        <div class="step" id="step2" style="display:none;">
+            <h3>📱 BƯỚC 2: THEO DÕI KÊNH</h3>
+            <p>Theo dõi kênh TikTok/YouTube của chúng tôi</p>
+            <a href="https://www.tiktok.com/@your-channel" target="_blank">
+                <button>🎵 THEO DÕI TIKTOK</button>
+            </a>
+            <br>
+            <button onclick="completeStep(2)">✅ Tôi đã theo dõi</button>
+        </div>
+
+        <!-- BƯỚC 3: Nhận key -->
+        <div class="step" id="step3" style="display:none;">
+            <h3>🎁 BƯỚC 3: NHẬN KEY</h3>
+            <p>Nhấn nút bên dưới để nhận key của bạn</p>
+            <button onclick="generateKey()">🚀 LẤY KEY NGAY</button>
+            
+            <div id="keyResult" style="display:none;">
+                <div class="key-display" id="keyDisplay"></div>
+                <p>⏰ Key có hiệu lực trong 12 giờ</p>
+                <button onclick="copyKey()">📋 Copy Key</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentStep = 1;
+        const steps = 3;
+
+        function completeStep(stepNumber) {
+            // Ẩn bước hiện tại
+            document.getElementById(`step${stepNumber}`).style.display = 'none';
+            
+            // Hiện bước tiếp theo
+            if (stepNumber < steps) {
+                document.getElementById(`step${stepNumber + 1}`).style.display = 'block';
+                currentStep = stepNumber + 1;
+            }
+        }
+
+        function generateKey() {
+            // Tạo key ngẫu nhiên theo format TTP_XXXXX
+            const timestamp = Date.now().toString().slice(-9);
+            const randomPart = Math.random().toString(36).substring(2, 7).toUpperCase();
+            const newKey = `TTP_${timestamp}${randomPart}`;
+            
+            // Hiển thị key
+            document.getElementById('keyDisplay').textContent = newKey;
+            document.getElementById('keyResult').style.display = 'block';
+            
+            // Lưu key vào localStorage (tùy chọn)
+            localStorage.setItem('lastGeneratedKey', newKey);
+            
+            // Có thể gửi key về server của bạn ở đây
+            // saveKeyToServer(newKey);
+        }
+
+        function copyKey() {
+            const keyText = document.getElementById('keyDisplay').textContent;
+            navigator.clipboard.writeText(keyText).then(() => {
+                alert('✅ Đã copy key vào clipboard!');
+            });
+        }
+
+        // Kiểm tra nếu có key trong URL parameter
+        const urlParams = new URLSearchParams(window.location.search);
+        const keyFromUrl = urlParams.get('key');
+        if (keyFromUrl) {
+            document.getElementById('keyDisplay').textContent = keyFromUrl;
+            document.getElementById('keyResult').style.display = 'block';
+            // Hiển thị trực tiếp bước 3
+            document.getElementById('step1').style.display = 'none';
+            document.getElementById('step2').style.display = 'none';
+            document.getElementById('step3').style.display = 'block';
+        }
+    </script>
+</body>
+</html>
