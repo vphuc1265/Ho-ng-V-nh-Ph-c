@@ -26,19 +26,4 @@ jobs:
           git config user.email "actions@github.com"
           git add .
           git commit -m "Update daily files - $(date)" || exit 0
-          git push          fi
-          
-          # Lưu files - CHẮC CHẮN có content
-          echo "$KEY" > daily-key.txt
-          echo "$SHORT_URL" > daily-link.txt
-          
-          echo "=== FINAL FILES ==="
-          echo "daily-key.txt: $(cat daily-key.txt)"
-          echo "daily-link.txt: $(cat daily-link.txt)"
-          
-          # Commit
-          git config user.name "github-actions"
-          git config user.email "actions@github.com"
-          git add .
-          git commit -m "Update daily key & link - $(date +%Y%m%d)" || exit 0
           git push
