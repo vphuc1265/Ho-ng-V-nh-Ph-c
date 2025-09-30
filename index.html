@@ -1,136 +1,48 @@
-<!DOCTYPE html>
-<html lang="vi">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Secure Key Access</title>
-    <style>/* Giữ nguyên CSS cũ */</style>
-</head>
-<body>
-    <div class="container">
-        <div class="profile-card">
-            <!-- Giữ nguyên giao diện cũ -->
-            <div id="content">
-                <div class="loading">🔄 Đang xác thực...</div>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        // === ANTI-HOOK PROTECTION ===
-        (function() {
-            // Phát hiện proxy/debugger
-            if (window.Proxy && Proxy.toString().includes('native')) {
-                const startTime = Date.now();
-                debugger;
-                if (Date.now() - startTime > 100) {
-                    document.body.innerHTML = '<h1 style="color:red;text-align:center;">Security Violation Detected</h1>';
-                    return;
-                }
-            }
-            
-            // Override fetch để chặn inspection
-            const originalFetch = window.fetch;
-            window.fetch = function(...args) {
-                const stack = new Error().stack;
-                if (stack.includes('debugger') || stack.includes('console')) {
-                    return Promise.reject(new Error('Security violation'));
-                }
-                return originalFetch.apply(this, args);
-            };
-        })();
-
-        // === MAIN LOGIC ===
-        async function secureInit() {
-            try {
-                const urlParams = new URLSearchParams(window.location.search);
-                const sessionToken = urlParams.get('session');
-                
-                if (!sessionToken) {
-                    showError('Invalid access');
-                    return;
-                }
-                
-                // Gọi API với session token
-                const response = await fetch(`https://your-worker.workers.dev?session=${sessionToken}`, {
-                    method: 'GET',
-                    headers: {
-                        'User-Agent': navigator.userAgent,
-                        'X-Client-Fingerprint': await generateFingerprint()
-                    }
-                });
-                
-                const result = await response.json();
-                
-                if (result.status === 'success') {
-                    const decrypted = await decryptData(result.data, sessionToken);
-                    showKey(decrypted);
-                } else {
-                    showError('Access denied');
-                }
-                
-            } catch (error) {
-                showError('Security error');
-            }
+<script>
+// === ANTI-CRACK NÂNG CAO ===
+(function(){
+    // Chống debugger
+    setInterval(function(){
+        if(typeof window.Proxy !== 'undefined' && 
+           window.Proxy.toString().indexOf('native') === -1) {
+            window.location.href = 'about:blank';
         }
-
-        async function generateFingerprint() {
-            // Tạo fingerprint phức tạp
-            const canvas = document.createElement('canvas');
-            const ctx = canvas.getContext('2d');
-            ctx.textBaseline = 'top';
-            ctx.font = '14px Arial';
-            ctx.fillText('security-fingerprint', 2, 2);
-            return btoa(canvas.toDataURL());
+    }, 1000);
+    
+    // Chống HTTP Canary/Fiddler
+    if(window.performance && window.performance.timing){
+        const loadTime = window.performance.timing.loadEventEnd - window.performance.timing.navigationStart;
+        if(loadTime > 10000) {
+            document.body.innerHTML = '<h1>Security Violation</h1>';
+            return;
         }
+    }
+    
+    // Override console methods
+    ['log','info','warn','error'].forEach(method => {
+        const original = console[method];
+        console[method] = function(...args) {
+            if(new Error().stack.includes('debugger')) return;
+            original.apply(this, args);
+        };
+    });
+})();
 
-        async function decryptData(encryptedData, key) {
-            try {
-                const combined = Uint8Array.from(atob(encryptedData), c => c.charCodeAt(0));
-                const iv = combined.slice(0, 12);
-                const encrypted = combined.slice(12);
-                
-                const cryptoKey = await crypto.subtle.importKey(
-                    'raw',
-                    new TextEncoder().encode(key.slice(0, 32)),
-                    { name: 'AES-GCM' },
-                    false,
-                    ['decrypt']
-                );
-                
-                const decrypted = await crypto.subtle.decrypt(
-                    { name: 'AES-GCM', iv },
-                    cryptoKey,
-                    encrypted
-                );
-                
-                return new TextDecoder().decode(decrypted);
-            } catch (e) {
-                throw new Error('Decryption failed');
-            }
-        }
+// === VERIFY LINK4M REDIRECT ===
+function verifyLink4mReferrer() {
+    const referrer = document.referrer;
+    if(!referrer.includes('link4m.co') && !referrer.includes('link4m.com')) {
+        document.body.innerHTML = '<h1>Access Denied - Use Link4M</h1>';
+        return false;
+    }
+    return true;
+}
 
-        function showKey(key) {
-            document.getElementById('content').innerHTML = `
-                <div class="key-section">
-                    <div class="key-label">🔑 Key:</div>
-                    <div class="key-value">${key}</div>
-                    <button onclick="copyKey('${key}')">Copy</button>
-                </div>
-            `;
-        }
-
-        function showError(message) {
-            document.getElementById('content').innerHTML = `
-                <div class="no-key">
-                    <h3>${message}</h3>
-                    <p>Vui lòng truy cập từ tool chính thức</p>
-                </div>
-            `;
-        }
-
-        // Tự động chạy
-        secureInit();
-    </script>
-</body>
-</html>
+// Chỉ hiển thị key nếu qua Link4M
+if(verifyLink4mReferrer()) {
+    // Load key từ daily-key.txt
+    fetch('./daily-key.txt').then(r => r.text()).then(key => {
+        document.getElementById('key-display').innerText = key;
+    });
+}
+</script>
