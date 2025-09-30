@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Daily Key System</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -12,128 +13,187 @@
         }
         
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
-            background-size: 400% 400%;
-            animation: gradient 15s ease infinite;
+            font-family: 'Rajdhani', sans-serif;
+            background: linear-gradient(135deg, #0c0c2b 0%, #1a1a3e 50%, #2d1b69 100%);
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
             padding: 20px;
+            overflow: hidden;
+            position: relative;
         }
         
-        @keyframes gradient {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
+        /* Background tuyết rơi */
+        .snow-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+        
+        .snow {
+            position: absolute;
+            top: -10px;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 24px;
+            animation: snowFall 10s linear infinite;
+        }
+        
+        @keyframes snowFall {
+            0% {
+                transform: translateY(-10px) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100vh) rotate(360deg);
+                opacity: 0;
+            }
         }
         
         .container {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(20px);
-            border-radius: 24px;
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(25px);
+            border-radius: 20px;
             padding: 50px 40px;
             box-shadow: 
-                0 25px 50px rgba(0, 0, 0, 0.25),
-                0 0 0 1px rgba(255, 255, 255, 0.1);
-            max-width: 600px;
+                0 25px 50px rgba(0, 0, 0, 0.3),
+                0 0 0 1px rgba(255, 255, 255, 0.1),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+            max-width: 700px;
             width: 100%;
             text-align: center;
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.15);
             position: relative;
-            overflow: hidden;
-        }
-        
-        .container::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.1), transparent);
-            transform: rotate(45deg);
-            animation: shine 3s infinite;
-        }
-        
-        @keyframes shine {
-            0% { transform: rotate(45deg) translateX(-100%); }
-            100% { transform: rotate(45deg) translateX(100%); }
+            z-index: 2;
         }
         
         h1 {
-            color: #2d3748;
-            font-size: 2.5rem;
-            font-weight: 700;
-            margin-bottom: 10px;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            font-family: 'Orbitron', monospace;
+            color: #fff;
+            font-size: 3rem;
+            font-weight: 900;
+            margin-bottom: 15px;
+            text-shadow: 
+                0 0 20px rgba(102, 126, 234, 0.8),
+                0 0 40px rgba(102, 126, 234, 0.4);
+            letter-spacing: 2px;
         }
         
         .subtitle {
-            color: #718096;
-            font-size: 1.1rem;
+            color: #a0aec0;
+            font-size: 1.3rem;
             margin-bottom: 40px;
             font-weight: 500;
+            letter-spacing: 1px;
         }
         
         .key-display {
-            background: linear-gradient(135deg, #f7fafc, #edf2f7);
-            border: 2px solid #e2e8f0;
-            border-radius: 16px;
-            padding: 30px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(102, 126, 234, 0.3);
+            border-radius: 15px;
+            padding: 25px;
             margin: 30px 0;
             position: relative;
             transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+        
+        .key-display::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #667eea, transparent);
+            animation: scanLine 2s linear infinite;
+        }
+        
+        @keyframes scanLine {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
         }
         
         .key-display:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
-            border-color: #667eea;
+            transform: translateY(-3px);
+            border-color: rgba(102, 126, 234, 0.6);
+            box-shadow: 
+                0 15px 30px rgba(0, 0, 0, 0.4),
+                0 0 30px rgba(102, 126, 234, 0.2);
         }
         
         .key-label {
-            color: #4a5568;
-            font-size: 1.2rem;
+            color: #cbd5e0;
+            font-size: 1.1rem;
             font-weight: 600;
             margin-bottom: 15px;
             display: block;
+            letter-spacing: 1px;
         }
         
         .key-value {
-            color: #2d3748;
-            font-size: 2rem;
+            color: #fff;
+            font-size: 2.2rem;
             font-weight: 700;
-            font-family: 'Courier New', monospace;
-            background: linear-gradient(135deg, #667eea, #764ba2);
+            font-family: 'Orbitron', monospace;
+            background: linear-gradient(135deg, #667eea, #764ba2, #f093fb);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            word-break: break-all;
-            line-height: 1.3;
+            letter-spacing: 1px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            padding: 0 10px;
         }
         
         .copy-btn {
             background: linear-gradient(135deg, #667eea, #764ba2);
             color: white;
             border: none;
-            padding: 16px 32px;
-            font-size: 1.1rem;
+            padding: 18px 40px;
+            font-size: 1.2rem;
             font-weight: 600;
             border-radius: 12px;
             cursor: pointer;
             transition: all 0.3s ease;
-            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
             margin-top: 20px;
+            font-family: 'Rajdhani', sans-serif;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .copy-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: 0.5s;
+        }
+        
+        .copy-btn:hover::before {
+            left: 100%;
         }
         
         .copy-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 12px 25px rgba(102, 126, 234, 0.4);
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(102, 126, 234, 0.6);
         }
         
         .copy-btn:active {
@@ -142,18 +202,21 @@
         
         .loading {
             color: #667eea;
-            font-size: 1.3rem;
+            font-size: 1.4rem;
             font-weight: 600;
+            font-family: 'Orbitron', monospace;
+            text-shadow: 0 0 10px rgba(102, 126, 234, 0.5);
         }
         
         .error {
-            background: linear-gradient(135deg, #fed7d7, #feb2b2);
-            color: #c53030;
+            background: rgba(254, 215, 215, 0.1);
+            color: #fc8181;
             padding: 25px;
-            border-radius: 16px;
-            border: 2px solid #feb2b2;
+            border-radius: 15px;
+            border: 2px solid rgba(252, 129, 129, 0.3);
             font-weight: 600;
-            font-size: 1.1rem;
+            font-size: 1.2rem;
+            backdrop-filter: blur(10px);
         }
         
         .success-animation {
@@ -162,8 +225,17 @@
         
         @keyframes successPulse {
             0% { transform: scale(1); }
-            50% { transform: scale(1.05); }
+            50% { transform: scale(1.02); }
             100% { transform: scale(1); }
+        }
+        
+        /* Tạo hiệu ứng hạt tuyết */
+        .snowflake {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 50%;
+            filter: blur(1px);
+            animation: snowFall linear infinite;
         }
         
         @media (max-width: 768px) {
@@ -173,29 +245,68 @@
             }
             
             h1 {
-                font-size: 2rem;
+                font-size: 2.2rem;
             }
             
             .key-value {
-                font-size: 1.5rem;
+                font-size: 1.6rem;
             }
             
             .key-display {
-                padding: 20px;
+                padding: 20px 15px;
+            }
+            
+            .copy-btn {
+                padding: 15px 30px;
+                font-size: 1.1rem;
             }
         }
     </style>
 </head>
 <body>
+    <!-- Background tuyết rơi -->
+    <div class="snow-background" id="snowContainer"></div>
+    
     <div class="container">
-        <h1>🔑 Daily Key System</h1>
-        <div class="subtitle">Key bảo mật được cập nhật hàng ngày</div>
+        <h1>🚀 DAILY KEY</h1>
+        <div class="subtitle">SECURE ACCESS SYSTEM</div>
         <div id="content">
-            <div class="loading">🔄 Đang xác thực và tải key...</div>
+            <div class="loading">🔄 VERIFYING ACCESS...</div>
         </div>
     </div>
 
     <script>
+        // Tạo hiệu ứng tuyết rơi
+        function createSnow() {
+            const snowContainer = document.getElementById('snowContainer');
+            const snowflakes = 80;
+            
+            for (let i = 0; i < snowflakes; i++) {
+                const snowflake = document.createElement('div');
+                snowflake.className = 'snowflake';
+                
+                // Random kích thước
+                const size = Math.random() * 5 + 2;
+                snowflake.style.width = size + 'px';
+                snowflake.style.height = size + 'px';
+                
+                // Random vị trí bắt đầu
+                snowflake.style.left = Math.random() * 100 + 'vw';
+                
+                // Random thời gian rơi
+                const duration = Math.random() * 10 + 5;
+                snowflake.style.animationDuration = duration + 's';
+                
+                // Random delay
+                snowflake.style.animationDelay = Math.random() * 10 + 's';
+                
+                // Random opacity
+                snowflake.style.opacity = Math.random() * 0.7 + 0.3;
+                
+                snowContainer.appendChild(snowflake);
+            }
+        }
+        
         async function verifyAndDisplay() {
             const urlParams = new URLSearchParams(window.location.search);
             const urlKey = urlParams.get('key');
@@ -215,14 +326,14 @@
                     return;
                 }
                 
-                // Key hợp lệ - hiển thị với animation
+                // Key hợp lệ - hiển thị trên 1 dòng
                 document.getElementById('content').innerHTML = `
                     <div class="key-display success-animation">
-                        <span class="key-label">🗝️ KEY NGÀY HÔM NAY</span>
-                        <div class="key-value">${currentKey}</div>
+                        <span class="key-label">🔑 TODAY'S ACCESS KEY</span>
+                        <div class="key-value" title="${currentKey}">${currentKey}</div>
                     </div>
-                    <p style="color: #718096; margin-bottom: 25px; font-size: 1.1rem;">
-                        Copy key này và nhập vào tool để sử dụng
+                    <p style="color: #a0aec0; margin-bottom: 25px; font-size: 1.1rem; letter-spacing: 0.5px;">
+                        Copy this key and paste it into the tool
                     </p>
                     <button class="copy-btn" onclick="copyKey('${currentKey}')">
                         📋 COPY KEY
@@ -231,7 +342,7 @@
                 
             } catch (error) {
                 document.getElementById('content').innerHTML = 
-                    '<div class="error">❌ Lỗi kết nối. Vui lòng thử lại sau.</div>';
+                    '<div class="error">❌ CONNECTION ERROR - PLEASE TRY AGAIN</div>';
             }
         }
 
@@ -239,7 +350,7 @@
             navigator.clipboard.writeText(key).then(() => {
                 const btn = document.querySelector('.copy-btn');
                 const originalText = btn.innerHTML;
-                btn.innerHTML = '✅ ĐÃ COPY!';
+                btn.innerHTML = '✅ COPIED!';
                 btn.style.background = 'linear-gradient(135deg, #48bb78, #38a169)';
                 
                 setTimeout(() => {
@@ -247,12 +358,15 @@
                     btn.style.background = 'linear-gradient(135deg, #667eea, #764ba2)';
                 }, 2000);
             }).catch(() => {
-                alert('❌ Lỗi copy! Vui lòng copy thủ công.');
+                alert('❌ COPY FAILED! PLEASE COPY MANUALLY.');
             });
         }
 
-        // Tự động chạy khi trang load
-        document.addEventListener('DOMContentLoaded', verifyAndDisplay);
+        // Khởi tạo
+        document.addEventListener('DOMContentLoaded', () => {
+            createSnow();
+            verifyAndDisplay();
+        });
     </script>
 </body>
 </html>
