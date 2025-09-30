@@ -1,16 +1,34 @@
-      - name: Generate Daily Data
-        run: |
-          KEY="vphuc_$(date +%Y%m%d)_$(openssl rand -hex 6 | tr '[:lower:]' '[:upper:]')"
-          ORIGINAL_URL="https://vphuc1265.github.io/vphuc.luv/?key=$KEY"
-          
-          # Gọi Link4M API bằng curl + jq
-          SHORT_URL=$(curl -s "https://link4m.co/api-shorten/v2?api=68db842cd32fc747763d594d&url=$ORIGINAL_URL" | jq -r '.shortenedUrl // "https://link4m.co/error"')
-          
-          echo "$KEY" > daily-key.txt
-          echo "$SHORT_URL" > daily-link.txt
-          
-          git config user.name "github-actions"
-          git config user.email "actions@github.com"
-          git add .
-          git commit -m "Update daily key & link - $(date +%Y%m%d)" || exit 0
-          git push
+name: 🔑 Generate Daily Key & Link
+
+on:
+  schedule:
+    - cron: '0 17 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  generate-key:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        
+    - name: Generate Daily Data
+      run: |
+        KEY="vphuc_$(date +%Y%m%d)_$(openssl rand -hex 6 | tr '[:lower:]' '[:upper:]')"
+        ORIGINAL_URL="https://vphuc1265.github.io/vphuc.luv/?key=$KEY"
+        
+        # Gọi Link4M API
+        SHORT_URL=$(curl -s "https://link4m.co/api-shorten/v2?api=68db842cd32fc747763d594d&url=$ORIGINAL_URL" | jq -r '.shortenedUrl // "https://link4m.co/error"')
+        
+        echo "$KEY" > daily-key.txt
+        echo "$SHORT_URL" > daily-link.txt
+        
+        git config user.name "github-actions"
+        git config user.email "actions@github.com"
+        git add .
+        git commit -m "Update daily files" || exit 0
+        git push
