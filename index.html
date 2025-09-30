@@ -138,13 +138,12 @@
 <body>
     <div class="container">
         <div class="profile-card">
-            <!-- Avatar từ ảnh đã upload -->
+            <!-- Avatar -->
             <div class="avatar">
                 <img src="./quality_restoration_20250218143353710.jpg" alt="vphuc avatar" 
                      onerror="this.style.display='none'; this.parentNode.innerHTML='V'; this.parentNode.style.background='linear-gradient(45deg, #ff6b6b, #feca57)'; this.parentNode.style.color='white'; this.parentNode.style.display='flex'; this.parentNode.style.alignItems='center'; this.parentNode.style.justifyContent='center'; this.parentNode.style.fontSize='48px';">
             </div>
             
-            <!-- Thông tin cá nhân -->
             <div class="name">Hoàng Vĩnh Phúc</div>
             <div class="bio">
                 <strong>kẻ không tiền nói gì cũng dở, người có tiền có thở cũng thành thơ...</strong>
@@ -152,16 +151,14 @@
             
             <div class="location">Bà Rịa - Vũng Tàu</div>
             
-            <!-- Key Section -->
             <div class="key-section">
                 <div class="key-label">Key Tool Ngày Hôm Nay :</div>
-                <div class="key-value" id="keyDisplay">vphuc_xxxxxxxxxx</div>
+                <div class="key-value" id="keyDisplay">Đang tạo key...</div>
                 <button class="copy-btn" onclick="copyKey()">📋 Copy Key</button>
             </div>
             
-            <!-- Thông báo hết hạn -->
             <div class="expiry">
-                ⏰ key có hiệu lực đến hết ngày hôm nay
+                ⏰ Key có hiệu lực đến: <span id="expiryTime"></span>
             </div>
             
             <!-- Nút TikTok -->
@@ -178,33 +175,56 @@
     </div>
 
     <script>
-        // Lấy key từ URL parameter
-        const urlParams = new URLSearchParams(window.location.search);
-        let keyFromUrl = urlParams.get('key');
-        
-        // Nếu không có key trong URL, tạo key mới
-        if (!keyFromUrl) {
-            const timestamp = Date.now().toString().slice(-6);
-            const randomPart = Math.random().toString(36).substring(2, 8).toUpperCase();
-            keyFromUrl = `vphuc_${timestamp}${randomPart}`;
-            
-            // Thêm key vào URL (không reload page)
-            const newUrl = `${window.location.origin}${window.location.pathname}?key=${keyFromUrl}`;
-            window.history.replaceState({}, '', newUrl);
+        // Hàm lấy ngày hôm nay dạng YYYYMMDD
+        function getTodayDate() {
+            const today = new Date();
+            const yyyy = today.getFullYear();
+            const mm = String(today.getMonth() + 1).padStart(2, '0');
+            const dd = String(today.getDate()).padStart(2, '0');
+            return yyyy + mm + dd;
         }
-        
-        // Hiển thị key
-        document.getElementById('keyDisplay').textContent = keyFromUrl;
-        
+
+        // Hàm tạo key ngẫu nhiên
+        function generateRandomKey() {
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+            let result = '';
+            for (let i = 0; i < 8; i++) {
+                result += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            return result;
+        }
+
+        // Tạo key cho hôm nay
+        function getTodayKey() {
+            const todayDate = getTodayDate();
+            const randomPart = generateRandomKey();
+            return `vphuc_${todayDate}${randomPart}`;
+        }
+
+        // Hiển thị thời gian hết hạn
+        function showExpiryTime() {
+            const tomorrow = new Date();
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            tomorrow.setHours(0, 0, 0, 0);
+            document.getElementById('expiryTime').textContent = 
+                tomorrow.toLocaleDateString('vi-VN') + ' lúc 00:00';
+        }
+
         function copyKey() {
             const keyText = document.getElementById('keyDisplay').textContent;
             navigator.clipboard.writeText(keyText).then(() => {
-                alert('Đã copy key vào clipboard !');
+                alert('Đã copy key vào clipboard!');
             });
         }
-        
-        // Lưu key vào localStorage
-        localStorage.setItem('lastKey', keyFromUrl);
+
+        // MAIN EXECUTION
+        const todayKey = getTodayKey();
+        document.getElementById('keyDisplay').textContent = todayKey;
+        showExpiryTime();
+
+        // Lưu key vào URL (tùy chọn - để share link)
+        const newUrl = `${window.location.origin}${window.location.pathname}?key=${todayKey}`;
+        window.history.replaceState({}, '', newUrl);
     </script>
 </body>
 </html>
