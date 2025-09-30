@@ -1,60 +1,58 @@
 <script>
-// === SIMPLE WORKING CODE ===
-function showKey() {
-    const today = new Date();
-    const yyyy = today.getFullYear();
-    const mm = String(today.getMonth() + 1).padStart(2, '0');
-    const dd = String(today.getDate()).padStart(2, '0');
-    const dateStr = yyyy + mm + dd;
+// === SUPER SIMPLE CODE - CHẮC CHẮN CHẠY ===
+function showKeyPage() {
+    var today = new Date();
+    var yyyy = today.getFullYear();
+    var mm = today.getMonth() + 1;
+    var dd = today.getDate();
+    if (mm < 10) mm = '0' + mm;
+    if (dd < 10) dd = '0' + dd;
     
-    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-    let randomPart = '';
-    for (let i = 0; i < 8; i++) {
+    var dateStr = yyyy + '' + mm + '' + dd;
+    var randomPart = '';
+    var chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ123456789';
+    
+    for (var i = 0; i < 8; i++) {
         randomPart += chars.charAt(Math.floor(Math.random() * chars.length));
     }
     
-    const key = "vphuc_" + dateStr + randomPart;
+    var key = 'vphuc_' + dateStr + randomPart;
+    var tomorrow = new Date(today.getTime() + 86400000);
+    var expires = tomorrow.getDate() + '/' + (tomorrow.getMonth() + 1) + '/' + tomorrow.getFullYear();
     
-    const tomorrow = new Date(today);
-    tomorrow.setDate(tomorrow.getDate() + 1);
-    const expires = tomorrow.toLocaleDateString('vi-VN');
-    
-    document.getElementById('content').innerHTML = `
-        <div class="key-section">
-            <div class="key-label">🔑 Key Tool Ngày Hôm Nay:</div>
-            <div class="key-value">${key}</div>
-            <button class="copy-btn" onclick="copyKey('${key}')">📋 Copy Key</button>
-        </div>
-        <div class="expiry">
-            ⏰ Key có hiệu lực đến: ${expires} 00:00
-        </div>
-    `;
+    document.getElementById('content').innerHTML = 
+        '<div class="key-section">' +
+        '<div class="key-label">🔑 Key Tool Ngày Hôm Nay:</div>' +
+        '<div class="key-value">' + key + '</div>' +
+        '<button class="copy-btn" onclick="copyKey(\'' + key + '\')">📋 Copy Key</button>' +
+        '</div>' +
+        '<div class="expiry">⏰ Key có hiệu lực đến: ' + expires + ' 00:00</div>';
 }
 
-function showError() {
-    document.getElementById('content').innerHTML = `
-        <div class="no-key">
-            <h3>🔑 Key Chỉ Hiện Thị 1 Lần Duy Nhất Sau Khi Vượt Link</h3>
-            <p>Vui Lòng Vượt Link Trong Tool Để Lấy Key !</p>
-        </div>
-    `;
+function showErrorPage() {
+    document.getElementById('content').innerHTML = 
+        '<div class="no-key">' +
+        '<h3>🔑 Key Chỉ Hiện Thị 1 Lần Duy Nhất Sau Khi Vượt Link</h3>' +
+        '<p>Vui Lòng Vượt Link Trong Tool Để Lấy Key !</p>' +
+        '</div>';
 }
 
-function copyKey(key) {
-    navigator.clipboard.writeText(key).then(function() {
+function copyKey(keyText) {
+    navigator.clipboard.writeText(keyText).then(function() {
         alert('Đã Copy Key Vào Clipboard !');
     });
 }
 
-// === CHECK URL PARAMETER ===
-const urlSearch = window.location.search;
-if (urlSearch.includes('key=GET_DAILY_KEY')) {
-    showKey();
-    // Xóa parameter
+// === CHECK URL ===
+var currentUrl = window.location.href;
+if (currentUrl.indexOf('key=GET_DAILY_KEY') > -1) {
+    showKeyPage();
+    // Xóa URL parameter sau 1 giây
     setTimeout(function() {
-        window.history.replaceState({}, '', '/vphuc.luv/');
+        var newUrl = window.location.origin + window.location.pathname;
+        window.history.replaceState({}, '', newUrl);
     }, 1000);
 } else {
-    showError();
+    showErrorPage();
 }
 </script>
