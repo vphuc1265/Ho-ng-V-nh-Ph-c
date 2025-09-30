@@ -184,54 +184,104 @@
     </div>
 
     <script>
-        // Hàm lấy ngày hôm nay dạng YYYYMMDD
-        function getTodayDate() {
-            const today = new Date();
-            const yyyy = today.getFullYear();
-            const mm = String(today.getMonth() + 1).padStart(2, '0');
-            const dd = String(today.getDate()).padStart(2, '0');
-            return yyyy + mm + dd;
-        }
-
-        // Hàm tạo key ngẫu nhiên
-        function generateRandomKey() {
-            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-            let result = '';
-            for (let i = 0; i < 8; i++) {
-                result += chars.charAt(Math.floor(Math.random() * chars.length));
+        // Hàm giải mã nâng cao
+        async function advancedDecrypt(encryptedData) {
+            try {
+                const secretKey = "vphuc_2025_secure_key_@#$%";
+                const salt = "salt_2025_vphuc_tool";
+                
+                // Decode base64
+                const combined = Uint8Array.from(atob(encryptedData), c => c.charCodeAt(0));
+                
+                // Tách IV và encrypted data
+                const iv = combined.slice(0, 12);
+                const encrypted = combined.slice(12);
+                
+                // Tạo key
+                const keyMaterial = await crypto.subtle.importKey(
+                    "raw",
+                    new TextEncoder().encode(secretKey + salt),
+                    { name: "PBKDF2" },
+                    false,
+                    ["deriveKey"]
+                );
+                
+                const key = await crypto.subtle.deriveKey(
+                    {
+                        name: "PBKDF2",
+                        salt: new TextEncoder().encode(salt),
+                        iterations: 100000,
+                        hash: "SHA-256"
+                    },
+                    keyMaterial,
+                    { name: "AES-GCM", length: 256 },
+                    false,
+                    ["decrypt"]
+                );
+                
+                // Giải mã
+                const decrypted = await crypto.subtle.decrypt(
+                    {
+                        name: "AES-GCM",
+                        iv: iv
+                    },
+                    key,
+                    encrypted
+                );
+                
+                return new TextDecoder().decode(decrypted);
+            } catch (error) {
+                console.error("Decrypt error:", error);
+                return null;
             }
-            return result;
         }
 
-        // Tạo key cho hôm nay
-        function getTodayKey() {
-            const todayDate = getTodayDate();
-            const randomPart = generateRandomKey();
-            return `vphuc_${todayDate}${randomPart}`;
-        }
-
-        // Kiểm tra key có hợp lệ cho hôm nay không
-        function isValidTodayKey(key) {
-            const todayDate = getTodayDate();
-            const keyPattern = /^vphuc_(\d{8})[A-Z0-9]{8}$/;
-            const match = key.match(keyPattern);
-            
-            if (!match) return false;
-            
-            const keyDate = match[1];
-            return keyDate === todayDate;
+        // Hàm lấy key từ Cloudflare Worker
+        async function getDailyKey() {
+            try {
+                const response = await fetch('https://vphuc-key-server.hoangvinhphucbro.workers.dev', {
+                    method: 'GET',
+                    headers: {
+                        'User-Agent': 'Mozilla/5.0 vphuc-tool',
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                const result = await response.json();
+                
+                if (result.success && result.data) {
+                    // Giải mã key
+                    const decrypted = await advancedDecrypt(result.data);
+                    if (decrypted) {
+                        const keyData = JSON.parse(decrypted);
+                        
+                        // Verify ngày
+                        const today = new Date().toISOString().slice(0,10).replace(/-/g, '');
+                        if (keyData.date === today) {
+                            showValidKey(keyData.key, keyData.expires);
+                        } else {
+                            showInvalidKey();
+                        }
+                        return;
+                    }
+                }
+                showAccessError();
+            } catch (error) {
+                console.error('Lỗi:', error);
+                showAccessError();
+            }
         }
 
         // Hiển thị key hợp lệ
-        function showValidKey(key) {
+        function showValidKey(key, expires) {
             document.getElementById('content').innerHTML = `
                 <div class="key-section">
-                    <div class="key-label">Key Tool Ngày Hôm Nay :</div>
+                    <div class="key-label">🔑 Key Tool Ngày Hôm Nay:</div>
                     <div class="key-value">${key}</div>
                     <button class="copy-btn" onclick="copyKey('${key}')">📋 Copy Key</button>
                 </div>
                 <div class="expiry">
-                    ⏰ Key Có Hiệu Lực Đến : ${getExpiryTime()}
+                    ⏰ Key có hiệu lực đến: ${expires} 00:00
                 </div>
             `;
         }
@@ -240,8 +290,8 @@
         function showInvalidKey() {
             document.getElementById('content').innerHTML = `
                 <div class="no-key">
-                    <h3>🔑 Key Chỉ Hiện Thị 1 Lần Duy Nhất Sau Khi Vượt Link</h3>
-                    <p>Vui Lòng Vượt Link Trong Tool Để Lấy Key !</p>
+                    <h3>🔑 Key Đã Hết Hạn</h3>
+                    <p>Key hiện tại không còn hợp lệ. Vui lòng đợi key mới!</p>
                 </div>
             `;
         }
@@ -256,42 +306,16 @@
             `;
         }
 
-        // Lấy thời gian hết hạn
-        function getExpiryTime() {
-            const tomorrow = new Date();
-            tomorrow.setDate(tomorrow.getDate() + 1);
-            tomorrow.setHours(0, 0, 0, 0);
-            return tomorrow.toLocaleDateString('vi-VN') + ' Vào Lúc 00:00';
-        }
-
         function copyKey(key) {
             navigator.clipboard.writeText(key).then(() => {
                 alert('Đã Copy Key Vào Clipboard !');
             });
         }
 
-        // MAIN EXECUTION
-        const urlParams = new URLSearchParams(window.location.search);
-        const keyParam = urlParams.get('key');
-
-        if (keyParam === 'GET_DAILY_KEY') {
-            // Tạo key mới và hiển thị
-            const todayKey = getTodayKey();
-            showValidKey(todayKey);
-            
-            // Xóa parameter khỏi URL để tránh reload tạo key mới
-            window.history.replaceState({}, '', window.location.pathname);
-        } else if (keyParam && isValidTodayKey(keyParam)) {
-            // Key hợp lệ từ URL
-            showValidKey(keyParam);
-            window.history.replaceState({}, '', window.location.pathname);
-        } else if (keyParam) {
-            // Key không hợp lệ
-            showInvalidKey();
-        } else {
-            // Không có key - truy cập trực tiếp
-            showAccessError();
-        }
+        // Tự động chạy khi trang load
+        document.addEventListener('DOMContentLoaded', function() {
+            getDailyKey();
+        });
     </script>
 </body>
 </html>
