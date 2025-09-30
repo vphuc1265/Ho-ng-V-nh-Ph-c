@@ -30,16 +30,18 @@
             margin-bottom: 20px;
         }
         .avatar {
-            width: 100px;
-            height: 100px;
+            width: 120px;
+            height: 120px;
             border-radius: 50%;
             margin: 0 auto 15px;
-            background: linear-gradient(45deg, #ff6b6b, #feca57);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 40px;
-            color: white;
+            border: 4px solid #fff;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+        .avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
         .name {
             font-size: 24px;
@@ -78,31 +80,27 @@
             border-radius: 10px;
             border: 2px dashed #bdc3c7;
         }
-        .stats {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-            gap: 15px;
-            margin: 25px 0;
-        }
-        .stat-item {
-            text-align: center;
-        }
-        .stat-number {
-            font-size: 24px;
-            font-weight: bold;
-            color: #2c3e50;
-        }
-        .stat-label {
-            font-size: 12px;
-            color: #7f8c8d;
-            margin-top: 5px;
-        }
-        .works {
-            background: #34495e;
+        .tiktok-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #000000;
             color: white;
-            padding: 15px;
-            border-radius: 15px;
-            margin-top: 20px;
+            padding: 12px 25px;
+            border-radius: 25px;
+            text-decoration: none;
+            margin: 25px auto;
+            width: 200px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        .tiktok-btn:hover {
+            background: #333333;
+            transform: translateY(-2px);
+        }
+        .tiktok-icon {
+            font-size: 20px;
+            margin-right: 8px;
         }
         .expiry {
             background: #fff3cd;
@@ -121,17 +119,28 @@
             cursor: pointer;
             margin-top: 10px;
             font-weight: 500;
+            transition: all 0.3s ease;
         }
         .copy-btn:hover {
             background: #2980b9;
+            transform: translateY(-2px);
+        }
+        .works {
+            background: #34495e;
+            color: white;
+            padding: 15px;
+            border-radius: 15px;
+            margin-top: 20px;
         }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="profile-card">
-            <!-- Avatar -->
-            <div class="avatar">V</div>
+            <!-- Avatar GIF -->
+            <div class="avatar">
+                <img src="https://i.pinimg.com/originals/16/18/54/1618549863568130.gif" alt="VPhuc Avatar">
+            </div>
             
             <!-- Thông tin cá nhân -->
             <div class="name">Hoàng Vĩnh Phúc</div>
@@ -153,21 +162,11 @@
                 ⏰ Key có hiệu lực đến: <span id="expiryTime">00:00 ngày mai</span>
             </div>
             
-            <!-- Stats -->
-            <div class="stats">
-                <div class="stat-item">
-                    <div class="stat-number" id="followerCount">0</div>
-                    <div class="stat-label">Followers</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-number">1</div>
-                    <div class="stat-label">Following</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-number">68</div>
-                    <div class="stat-label">Posts</div>
-                </div>
-            </div>
+            <!-- Nút TikTok -->
+            <a href="https://www.tiktok.com/@vphuc.luv" target="_blank" class="tiktok-btn">
+                <span class="tiktok-icon">🎵</span>
+                Follow TikTok
+            </a>
             
             <!-- Works -->
             <div class="works">
@@ -206,18 +205,12 @@
                 hour: '2-digit', 
                 minute: '2-digit',
                 day: '2-digit',
-                month: '2-digit'
+                month: '2-digit',
+                year: 'numeric'
             };
             document.getElementById('expiryTime').textContent = 
                 tomorrow.toLocaleTimeString('vi-VN', options) + ' ngày ' + 
                 tomorrow.toLocaleDateString('vi-VN');
-        }
-        
-        // Tăng follower count ngẫu nhiên
-        function setRandomStats() {
-            const followers = Math.floor(Math.random() * 1000) + 50000;
-            document.getElementById('followerCount').textContent = 
-                followers.toLocaleString();
         }
         
         function copyKey() {
@@ -229,7 +222,6 @@
         
         // Khởi chạy
         setExpiryTime();
-        setRandomStats();
         
         // Lưu key vào localStorage
         localStorage.setItem('lastKey', keyFromUrl);
