@@ -1,4 +1,4 @@
-name: 🔑 Generate Daily Key & Secret
+name: 🔑 Generate Daily Key
 
 on:
   schedule:
@@ -6,25 +6,59 @@ on:
   workflow_dispatch:
 
 jobs:
-  generate-secure-data:
+  generate-key:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
     
-    - name: Generate Daily Keys
+    - name: Generate Daily Key
       run: |
-        # Tạo key ngẫu nhiên
+        # Tạo key random
         KEY="vphuc_$(date +%Y%m%d)_$(openssl rand -hex 6 | tr '[:lower:]' '[:upper:]')"
-        SECRET="vphuc_secret_$(openssl rand -hex 8)"
         
-        # Lưu files
+        # Lưu key
         echo "$KEY" > daily-key.txt
-        echo "$SECRET" > daily-secret.txt
         echo "{\"key\":\"$KEY\",\"date\":\"$(date +%Y%m%d)\"}" > daily-key.json
         
-        # Commit
+        # Tạo HTML với key verification
+        cat > index.html << EOF
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <title>Key Access</title>
+            <style>body{font-family:Arial; background:#f0f0f0; display:flex; justify-content:center; align-items:center; height:100vh; margin:0;} .container{background:white; padding:30px; border-radius:10px; box-shadow:0 0 10px rgba(0,0,0,0.1); text-align:center;}</style>
+        </head>
+        <body>
+            <div class="container">
+                <h1>🔑 Daily Key</h1>
+                <div id="content">Verifying...</div>
+            </div>
+            <script>
+                const urlParams = new URLSearchParams(window.location.search);
+                const urlKey = urlParams.get('key');
+                const validKey = "$KEY";
+                
+                if(urlKey === validKey) {
+                    document.getElementById('content').innerHTML = \`
+                        <div style="font-size:18px; font-weight:bold; color:#333; margin:20px 0; padding:15px; background:#f8f9fa; border-radius:5px; border:2px dashed #667eea;">
+                            🔑 Today Key : <br>
+                            <span style="color:#667eea; font-size:20px;">\${validKey}</span>
+                        </div>
+                        <button onclick="navigator.clipboard.writeText('\${validKey}').then(() => alert('Đã Copy Key !'))" 
+                                style="padding:10px 20px; background:#667eea; color:white; border:none; border-radius:5px; cursor:pointer;">
+                            Copy Key
+                        </button>
+                    \`;
+                } else {
+                    document.getElementById('content').innerHTML = '<div style="color:red; font-weight:bold;">Error - Key Không Hợp Lệ !</div>';
+                }
+            </script>
+        </body>
+        </html>
+        EOF
+        
         git config user.name "github-actions"
         git config user.email "actions@github.com"
         git add .
-        git commit -m "Update daily keys & secret" || exit 0
+        git commit -m "Update daily key" || exit 0
         git push
