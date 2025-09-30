@@ -47,11 +47,6 @@
             const urlParams = new URLSearchParams(window.location.search);
             const urlKey = urlParams.get('key');
             
-            if (!urlKey) {
-                redirectToTodayLink();
-                return;
-            }
-            
             try {
                 // Lấy key HIỆN TẠI từ server
                 const keyResponse = await fetch('./daily-key.txt');
@@ -61,32 +56,30 @@
                 const linkResponse = await fetch('./daily-link.txt');
                 const todayLink = (await linkResponse.text()).trim();
                 
-                if (urlKey === currentKey) {
-                    // Key hợp lệ - hiển thị key
-                    document.getElementById('content').innerHTML = `
-                        <div class="key-display">
-                            🔑 Today Key: <br>
-                            <span style="color: #667eea; font-size: 20px;">${currentKey}</span>
-                        </div>
-                        <p>Copy key này và nhập vào tool</p>
-                        <button onclick="copyKey('${currentKey}')" 
-                                style="padding: 10px 20px; background: #667eea; color: white; border: none; border-radius: 5px; cursor: pointer;">
-                            Copy Key
-                        </button>
-                    `;
-                } else {
-                    // Key sai hoặc hết hạn - redirect về link hôm nay
+                // KIỂM TRA TẤT CẢ TRƯỜNG HỢP
+                if (!urlKey || urlKey === '' || urlKey === 'undefined' || !urlKey.startsWith('vphuc_') || urlKey !== currentKey) {
+                    // Key không tồn tại, rỗng, sai format, hoặc không khớp -> REDIRECT
                     window.location.href = todayLink;
+                    return;
                 }
                 
+                // Key hợp lệ - hiển thị key
+                document.getElementById('content').innerHTML = `
+                    <div class="key-display">
+                        🔑 Today Key: <br>
+                        <span style="color: #667eea; font-size: 20px;">${currentKey}</span>
+                    </div>
+                    <p>Copy key này và nhập vào tool</p>
+                    <button onclick="copyKey('${currentKey}')" 
+                            style="padding: 10px 20px; background: #667eea; color: white; border: none; border-radius: 5px; cursor: pointer;">
+                        Copy Key
+                    </button>
+                `;
+                
             } catch (error) {
-                redirectToTodayLink();
+                // Lỗi kết nối -> redirect về fallback
+                window.location.href = 'https://link4m.co/daily-key-today';
             }
-        }
-
-        function redirectToTodayLink() {
-            // Fallback: redirect về Link4M mặc định
-            window.location.href = 'https://link4m.co/daily-key-today';
         }
 
         function copyKey(key) {
