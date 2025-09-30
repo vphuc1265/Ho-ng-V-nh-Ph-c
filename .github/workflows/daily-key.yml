@@ -2,7 +2,7 @@ name: 🔑 Generate Daily Key & Link
 
 on:
   schedule:
-    - cron: '0 17 * * *'  # 00:00 VN time
+    - cron: '0 17 * * *'
   workflow_dispatch:
 
 permissions:
@@ -14,27 +14,19 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         
-      - name: Generate Daily Data
+      - name: Create Daily Files
         run: |
-          # Tạo key random
-          KEY="vphuc_$(date +%Y%m%d)_$(openssl rand -hex 6 | tr '[:lower:]' '[:upper:]')"
-          ORIGINAL_URL="https://vphuc1265.github.io/vphuc.luv/?key=$KEY"
+          KEY="vphuc_$(date +%Y%m%d)_$(openssl rand -hex 4 | tr '[:lower:]' '[:upper:]')"
+          LINK="https://link4m.co/vphuc-$(date +%Y%m%d)"
           
-          echo "Original URL: $ORIGINAL_URL"
+          echo $KEY > daily-key.txt
+          echo $LINK > daily-link.txt
           
-          # Gọi Link4M API và LOG response
-          API_RESPONSE=$(curl -s "https://link4m.co/api-shorten/v2?api=68db842cd32fc747763d594d&url=$ORIGINAL_URL")
-          echo "API Response: $API_RESPONSE"
-          
-          # Extract shortened URL
-          SHORT_URL=$(echo "$API_RESPONSE" | grep -o '"shortenedUrl":"[^"]*"' | cut -d'"' -f4)
-          echo "Extracted Short URL: $SHORT_URL"
-          
-          # Nếu API fail, dùng fallback
-          if [ -z "$SHORT_URL" ]; then
-            SHORT_URL="https://link4m.co/vphuc-$(date +%Y%m%d)"
-            echo "Using fallback URL: $SHORT_URL"
-          fi
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+          git add .
+          git commit -m "Update daily files - $(date)" || exit 0
+          git push          fi
           
           # Lưu files - CHẮC CHẮN có content
           echo "$KEY" > daily-key.txt
