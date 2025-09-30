@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hoàng Vĩnh Phúc</title>
+    <title>Daily Key Access</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         * {
@@ -14,317 +14,250 @@
         
         body {
             font-family: 'Rajdhani', sans-serif;
-            background: linear-gradient(135deg, #0c0c2b 0%, #1a1a3e 50%, #2d1b69 100%);
+            background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            padding: 10px;
+            padding: 20px;
             overflow: hidden;
             position: relative;
         }
-        
-        /* Background tuyết rơi */
-        .snow-background {
+
+        .matrix-bg {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            pointer-events: none;
+            opacity: 0.1;
             z-index: 1;
         }
-        
-        .snow {
-            position: absolute;
-            top: -10px;
-            color: rgba(255, 255, 255, 0.8);
-            font-size: 24px;
-            animation: snowFall 10s linear infinite;
-        }
-        
-        @keyframes snowFall {
-            0% {
-                transform: translateY(-10px) rotate(0deg);
-                opacity: 0;
-            }
-            10% {
-                opacity: 1;
-            }
-            90% {
-                opacity: 1;
-            }
-            100% {
-                transform: translateY(100vh) rotate(360deg);
-                opacity: 0;
-            }
-        }
-        
+
         .container {
-            background: rgba(255, 255, 255, 0.08);
-            backdrop-filter: blur(25px);
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
             border-radius: 20px;
-            padding: 50px 40px;
+            padding: 40px 30px;
             box-shadow: 
-                0 25px 50px rgba(0, 0, 0, 0.3),
+                0 20px 40px rgba(0, 0, 0, 0.3),
                 0 0 0 1px rgba(255, 255, 255, 0.1),
-                inset 0 1px 0 rgba(255, 255, 255, 0.2);
-            max-width: 700px;
+                inset 0 1px 0 rgba(255, 255, 255, 0.15);
+            max-width: 500px;
             width: 100%;
             text-align: center;
-            border: 1px solid rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.1);
             position: relative;
             z-index: 2;
         }
-        
-        h1 {
-            font-family: 'Orbitron', monospace;
-            color: #fff;
-            font-size: 3rem;
-            font-weight: 900;
-            margin-bottom: 15px;
-            text-shadow: 
-                0 0 20px rgba(102, 126, 234, 0.8),
-                0 0 40px rgba(102, 126, 234, 0.4);
-            letter-spacing: 2px;
-        }
-        
-        .subtitle {
-            color: #a0aec0;
-            font-size: 1.3rem;
-            margin-bottom: 40px;
-            font-weight: 500;
-            letter-spacing: 1px;
-        }
-        
-        .key-display {
-            background: rgba(255, 255, 255, 0.05);
-            border: 2px solid rgba(102, 126, 234, 0.3);
-            border-radius: 15px;
-            padding: 10px;
-            margin: 12px 0;
-            position: relative;
-            transition: all 0.3s ease;
-            backdrop-filter: blur(10px);
-        }
-        
-        .key-display::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 2px;
-            background: linear-gradient(90deg, transparent, #667eea, transparent);
-            animation: scanLine 2s linear infinite;
-        }
-        
-        @keyframes scanLine {
-            0% { transform: translateX(-100%); }
-            100% { transform: translateX(100%); }
-        }
-        
-        .key-display:hover {
-            transform: translateY(-3px);
-            border-color: rgba(102, 126, 234, 0.6);
-            box-shadow: 
-                0 15px 30px rgba(0, 0, 0, 0.4),
-                0 0 30px rgba(102, 126, 234, 0.2);
-        }
-        
-        .key-label {
-            color: #cbd5e0;
-            font-size: 1.1rem;
-            font-weight: 600;
-            margin-bottom: 15px;
-            display: block;
-            letter-spacing: 1px;
-        }
-        
-        .key-value {
-            color: #fff;
-            font-size: 1.1rem;
-            font-weight: 500;
-            font-family: 'Orbitron', monospace;
-            background: linear-gradient(135deg, #667eea, #764ba2, #f093fb);
+
+        .logo {
+            font-size: 3.5rem;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #00ff88, #00ccff);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            letter-spacing: 1px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            padding: 0 5px;
+            filter: drop-shadow(0 0 20px rgba(0, 255, 136, 0.3));
         }
-        
-        .copy-btn {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-            border: none;
-            padding: 18px 40px;
-            font-size: 1.2rem;
-            font-weight: 600;
-            border-radius: 12px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
-            margin-top: 20px;
-            font-family: 'Rajdhani', sans-serif;
+
+        h1 {
+            font-family: 'Orbitron', monospace;
+            color: #fff;
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+            text-shadow: 0 0 10px rgba(0, 204, 255, 0.5);
             letter-spacing: 1px;
-            text-transform: uppercase;
+        }
+
+        .subtitle {
+            color: #88aaff;
+            font-size: 1rem;
+            margin-bottom: 30px;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+        }
+
+        .key-card {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(0, 204, 255, 0.3);
+            border-radius: 12px;
+            padding: 15px;
+            margin: 15px 0;
             position: relative;
             overflow: hidden;
         }
-        
-        .copy-btn::before {
+
+        .key-card::before {
             content: '';
             position: absolute;
             top: 0;
             left: -100%;
             width: 100%;
             height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-            transition: 0.5s;
+            background: linear-gradient(90deg, transparent, rgba(0, 204, 255, 0.1), transparent);
+            animation: scan 3s linear infinite;
         }
-        
-        .copy-btn:hover::before {
-            left: 100%;
+
+        @keyframes scan {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(400%); }
         }
-        
+
+        .key-label {
+            color: #88aaff;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .key-value {
+            color: #00ff88;
+            font-size: 0.85rem;
+            font-weight: 600;
+            font-family: 'Orbitron', monospace;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 8px 12px;
+            border-radius: 6px;
+            border: 1px solid rgba(0, 255, 136, 0.2);
+            word-break: break-all;
+            letter-spacing: 0.5px;
+            text-shadow: 0 0 10px rgba(0, 255, 136, 0.5);
+        }
+
+        .copy-btn {
+            background: linear-gradient(135deg, #00ccff, #0066ff);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 15px;
+            font-family: 'Rajdhani', sans-serif;
+            letter-spacing: 0.5px;
+            position: relative;
+            overflow: hidden;
+        }
+
         .copy-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 15px 35px rgba(102, 126, 234, 0.6);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 102, 255, 0.4);
         }
-        
+
         .copy-btn:active {
             transform: translateY(0);
         }
-        
+
         .loading {
-            color: #667eea;
-            font-size: 1.4rem;
+            color: #00ccff;
+            font-size: 1.1rem;
             font-weight: 600;
             font-family: 'Orbitron', monospace;
-            text-shadow: 0 0 10px rgba(102, 126, 234, 0.5);
         }
-        
+
         .error {
-            background: rgba(254, 215, 215, 0.1);
-            color: #fc8181;
-            padding: 25px;
-            border-radius: 15px;
-            border: 2px solid rgba(252, 129, 129, 0.3);
+            background: rgba(255, 50, 50, 0.1);
+            color: #ff6b6b;
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 50, 50, 0.3);
             font-weight: 600;
-            font-size: 1.2rem;
-            backdrop-filter: blur(10px);
         }
-        
-        .success-animation {
-            animation: successPulse 0.6s ease;
+
+        .glow {
+            animation: glow 2s ease-in-out infinite alternate;
         }
-        
-        @keyframes successPulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.02); }
-            100% { transform: scale(1); }
+
+        @keyframes glow {
+            from { box-shadow: 0 0 10px rgba(0, 204, 255, 0.3); }
+            to { box-shadow: 0 0 20px rgba(0, 204, 255, 0.6); }
         }
-        
-        /* Tạo hiệu ứng hạt tuyết */
-        .snowflake {
-            position: absolute;
-            background: rgba(255, 255, 255, 0.8);
-            border-radius: 50%;
-            filter: blur(1px);
-            animation: snowFall linear infinite;
-        }
-        
+
         @media (max-width: 768px) {
             .container {
                 padding: 30px 20px;
-                margin: 10px;
             }
             
             h1 {
-                font-size: 2.2rem;
+                font-size: 1.5rem;
             }
             
             .key-value {
-                font-size: 1.6rem;
-            }
-            
-            .key-display {
-                padding: 20px 15px;
-            }
-            
-            .copy-btn {
-                padding: 15px 30px;
-                font-size: 1.1rem;
+                font-size: 0.8rem;
             }
         }
     </style>
 </head>
 <body>
-    <!-- Background tuyết rơi -->
-    <div class="snow-background" id="snowContainer"></div>
+    <div class="matrix-bg"></div>
     
-    <div class="container">
-        <h1>🚀 DAILY KEY</h1>
-        <div class="subtitle">SECURE ACCESS SYSTEM</div>
+    <div class="container glow">
+        <div class="logo">🔐</div>
+        <h1>DAILY ACCESS KEY</h1>
+        <div class="subtitle">SECURE SYSTEM VERIFICATION</div>
         <div id="content">
-            <div class="loading">🔄 VERIFYING ACCESS...</div>
+            <div class="loading">VERIFYING CREDENTIALS...</div>
         </div>
     </div>
 
     <script>
-        // Tạo hiệu ứng tuyết rơi
-        function createSnow() {
-            const snowContainer = document.getElementById('snowContainer');
-            const snowflakes = 80;
-            
-            for (let i = 0; i < snowflakes; i++) {
-                const snowflake = document.createElement('div');
-                snowflake.className = 'snowflake';
-                
-                // Random kích thước
-                const size = Math.random() * 5 + 2;
-                snowflake.style.width = size + 'px';
-                snowflake.style.height = size + 'px';
-                
-                // Random vị trí bắt đầu
-                snowflake.style.left = Math.random() * 100 + 'vw';
-                
-                // Random thời gian rơi
-                const duration = Math.random() * 10 + 5;
-                snowflake.style.animationDuration = duration + 's';
-                
-                // Random delay
-                snowflake.style.animationDelay = Math.random() * 10 + 's';
-                
-                // Random opacity
-                snowflake.style.opacity = Math.random() * 0.7 + 0.3;
-                
-                snowContainer.appendChild(snowflake);
-            }
-        }
-        
         async function verifyAndDisplay() {
             const urlParams = new URLSearchParams(window.location.search);
             const urlKey = urlParams.get('key');
             
             try {
-                // Lấy key HIỆN TẠI từ server
                 const keyResponse = await fetch('./daily-key.txt');
                 const currentKey = (await keyResponse.text()).trim();
                 
-                // Lấy Link4M link HIỆN TẠI  
                 const linkResponse = await fetch('./daily-link.txt');
                 const todayLink = (await linkResponse.text()).trim();
                 
-                // Kiểm tra key
                 if (!urlKey || urlKey !== currentKey) {
                     window.location.href = todayLink;
                     return;
                 }
+                
+                document.getElementById('content').innerHTML = `
+                    <div class="key-card">
+                        <span class="key-label">VALID ACCESS KEY</span>
+                        <div class="key-value">${currentKey}</div>
+                    </div>
+                    <p style="color: #88aaff; margin: 15px 0; font-size: 0.9rem;">
+                        Copy this key for authentication
+                    </p>
+                    <button class="copy-btn" onclick="copyKey('${currentKey}')">
+                        COPY TO CLIPBOARD
+                    </button>
+                `;
+                
+            } catch (error) {
+                document.getElementById('content').innerHTML = 
+                    '<div class="error">CONNECTION ERROR - PLEASE RETRY</div>';
+            }
+        }
+
+        function copyKey(key) {
+            navigator.clipboard.writeText(key).then(() => {
+                const btn = document.querySelector('.copy-btn');
+                btn.textContent = 'COPIED!';
+                btn.style.background = 'linear-gradient(135deg, #00ff88, #00cc66)';
+                
+                setTimeout(() => {
+                    btn.textContent = 'COPY TO CLIPBOARD';
+                    btn.style.background = 'linear-gradient(135deg, #00ccff, #0066ff)';
+                }, 2000);
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', verifyAndDisplay);
+    </script>
+</body>
+</html>        }
                 
                 // Key hợp lệ - hiển thị trên 1 dòng
                 document.getElementById('content').innerHTML = `
