@@ -1,48 +1,104 @@
-<script>
-// === ANTI-CRACK NÂNG CAO ===
-(function(){
-    // Chống debugger
-    setInterval(function(){
-        if(typeof window.Proxy !== 'undefined' && 
-           window.Proxy.toString().indexOf('native') === -1) {
-            window.location.href = 'about:blank';
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secure Key Access</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
-    }, 1000);
-    
-    // Chống HTTP Canary/Fiddler
-    if(window.performance && window.performance.timing){
-        const loadTime = window.performance.timing.loadEventEnd - window.performance.timing.navigationStart;
-        if(loadTime > 10000) {
-            document.body.innerHTML = '<h1>Security Violation</h1>';
-            return;
+        .container {
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            max-width: 400px;
+            width: 100%;
+            text-align: center;
         }
-    }
-    
-    // Override console methods
-    ['log','info','warn','error'].forEach(method => {
-        const original = console[method];
-        console[method] = function(...args) {
-            if(new Error().stack.includes('debugger')) return;
-            original.apply(this, args);
-        };
-    });
-})();
+        .key-display {
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+            margin: 20px 0;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 5px;
+            border: 2px dashed #667eea;
+        }
+        .error {
+            color: #dc3545;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔑 Daily Key System</h1>
+        <div id="content">
+            <div class="loading">🔄 Đang xác thực...</div>
+        </div>
+    </div>
 
-// === VERIFY LINK4M REDIRECT ===
-function verifyLink4mReferrer() {
-    const referrer = document.referrer;
-    if(!referrer.includes('link4m.co') && !referrer.includes('link4m.com')) {
-        document.body.innerHTML = '<h1>Access Denied - Use Link4M</h1>';
-        return false;
-    }
-    return true;
-}
+    <script>
+        // === SECURITY CHECK ===
+        function verifyAccess() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const secret = urlParams.get('key');
+            
+            // Kiểm tra referrer từ Link4M
+            const referrer = document.referrer;
+            if (!referrer.includes('link4m.co') && !referrer.includes('link4m.com')) {
+                document.getElementById('content').innerHTML = 
+                    '<div class="error">🚫 ACCESS DENIED - Use Official Link4M Link</div>';
+                return false;
+            }
+            
+            // Nếu có secret parameter, có thể verify thêm
+            if (secret && !secret.includes('vphuc_secret_')) {
+                document.getElementById('content').innerHTML = 
+                    '<div class="error">🚫 INVALID SECRET KEY</div>';
+                return false;
+            }
+            
+            return true;
+        }
 
-// Chỉ hiển thị key nếu qua Link4M
-if(verifyLink4mReferrer()) {
-    // Load key từ daily-key.txt
-    fetch('./daily-key.txt').then(r => r.text()).then(key => {
-        document.getElementById('key-display').innerText = key;
-    });
-}
-</script>
+        // === LOAD AND DISPLAY KEY ===
+        async function loadDailyKey() {
+            if (!verifyAccess()) return;
+            
+            try {
+                const response = await fetch('./daily-key.txt');
+                if (response.ok) {
+                    const key = await response.text();
+                    document.getElementById('content').innerHTML = `
+                        <div class="key-display">
+                            🔑 Today Key: <br>
+                            <span style="color: #667eea; font-size: 20px;">${key}</span>
+                        </div>
+                        <p>Copy key này và nhập vào tool</p>
+                    `;
+                } else {
+                    document.getElementById('content').innerHTML = 
+                        '<div class="error">❌ Key not available</div>';
+                }
+            } catch (error) {
+                document.getElementById('content').innerHTML = 
+                    '<div class="error">❌ Connection error</div>';
+            }
+        }
+
+        // Auto load khi page ready
+        document.addEventListener('DOMContentLoaded', loadDailyKey);
+    </script>
+</body>
+</html>
