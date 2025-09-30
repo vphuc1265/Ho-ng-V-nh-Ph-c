@@ -18,30 +18,29 @@ jobs:
           
       - name: Generate Daily Data
         run: |
-          # Tạo key random
           KEY="vphuc_$(date +%Y%m%d)_$(openssl rand -hex 6 | tr '[:lower:]' '[:upper:]')"
           ORIGINAL_URL="https://vphuc1265.github.io/vphuc.luv/?key=$KEY"
           
-          # Gọi Link4M API - DÙNG HEREDOC để tránh lỗi quotes
-          SHORT_URL=$(python3 << EOF
-import requests, json
+          # Tạo Python script riêng
+          cat > shorten.py << 'EOF'
+import requests, json, sys
 try:
-    api_url = "https://link4m.co/api-shorten/v2?api=68db842cd32fc747763d594d&url=$ORIGINAL_URL"
+    api_url = f"https://link4m.co/api-shorten/v2?api=68db842cd32fc747763d594d&url={sys.argv[1]}"
     response = requests.get(api_url, timeout=10)
     data = response.json()
     if data.get('status') == 'success':
         print(data['shortenedUrl'])
     else:
         print('https://link4m.co/error-api')
-except:
+except Exception as e:
     print('https://link4m.co/error-connection')
 EOF
-)
+
+          SHORT_URL=$(python3 shorten.py "$ORIGINAL_URL")
           
           echo "Key: $KEY"
           echo "Short URL: $SHORT_URL"
           
-          # Lưu files
           echo "$KEY" > daily-key.txt
           echo "$SHORT_URL" > daily-link.txt
           
