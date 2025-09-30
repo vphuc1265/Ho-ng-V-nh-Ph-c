@@ -20,20 +20,29 @@ jobs:
           KEY="vphuc_$(date +%Y%m%d)_$(openssl rand -hex 6 | tr '[:lower:]' '[:upper:]')"
           ORIGINAL_URL="https://vphuc1265.github.io/vphuc.luv/?key=$KEY"
           
-          # Gọi Link4M API đơn giản
-          SHORT_URL=$(curl -s "https://link4m.co/api-shorten/v2?api=68db842cd32fc747763d594d&url=$ORIGINAL_URL" | grep -o '"shortenedUrl":"[^"]*"' | cut -d'"' -f4)
+          echo "Original URL: $ORIGINAL_URL"
+          
+          # Gọi Link4M API và LOG response
+          API_RESPONSE=$(curl -s "https://link4m.co/api-shorten/v2?api=68db842cd32fc747763d594d&url=$ORIGINAL_URL")
+          echo "API Response: $API_RESPONSE"
+          
+          # Extract shortened URL
+          SHORT_URL=$(echo "$API_RESPONSE" | grep -o '"shortenedUrl":"[^"]*"' | cut -d'"' -f4)
+          echo "Extracted Short URL: $SHORT_URL"
           
           # Nếu API fail, dùng fallback
           if [ -z "$SHORT_URL" ]; then
             SHORT_URL="https://link4m.co/vphuc-$(date +%Y%m%d)"
+            echo "Using fallback URL: $SHORT_URL"
           fi
           
-          # Lưu files - QUAN TRỌNG: phải có content
+          # Lưu files - CHẮC CHẮN có content
           echo "$KEY" > daily-key.txt
           echo "$SHORT_URL" > daily-link.txt
           
-          echo "Key: $KEY"
-          echo "Short URL: $SHORT_URL"
+          echo "=== FINAL FILES ==="
+          echo "daily-key.txt: $(cat daily-key.txt)"
+          echo "daily-link.txt: $(cat daily-link.txt)"
           
           # Commit
           git config user.name "github-actions"
