@@ -48,6 +48,8 @@
             background: rgba(255,255,255,0.1);
             border-radius: 8px;
         }
+        a { color: #ffeb3b; text-decoration: none; }
+        a:hover { text-decoration: underline; }
     </style>
 </head>
 <body>
@@ -69,8 +71,8 @@
         <!-- BƯỚC 2: Subscribe -->
         <div class="step" id="step2" style="display:none;">
             <h3>📱 BƯỚC 2: THEO DÕI KÊNH</h3>
-            <p>Theo dõi kênh TikTok/YouTube của chúng tôi</p>
-            <a href="https://www.tiktok.com/@your-channel" target="_blank">
+            <p>Theo dõi kênh TikTok của chúng tôi</p>
+            <a href="https://www.tiktok.com/@vphuc.luv" target="_blank">
                 <button>🎵 THEO DÕI TIKTOK</button>
             </a>
             <br>
@@ -96,10 +98,7 @@
         const steps = 3;
 
         function completeStep(stepNumber) {
-            // Ẩn bước hiện tại
             document.getElementById(`step${stepNumber}`).style.display = 'none';
-            
-            // Hiện bước tiếp theo
             if (stepNumber < steps) {
                 document.getElementById(`step${stepNumber + 1}`).style.display = 'block';
                 currentStep = stepNumber + 1;
@@ -107,20 +106,13 @@
         }
 
         function generateKey() {
-            // Tạo key ngẫu nhiên theo format TTP_XXXXX
             const timestamp = Date.now().toString().slice(-9);
             const randomPart = Math.random().toString(36).substring(2, 7).toUpperCase();
-            const newKey = `TTP_${timestamp}${randomPart}`;
+            const newKey = `VPHUC_${timestamp}${randomPart}`;
             
-            // Hiển thị key
             document.getElementById('keyDisplay').textContent = newKey;
             document.getElementById('keyResult').style.display = 'block';
-            
-            // Lưu key vào localStorage (tùy chọn)
             localStorage.setItem('lastGeneratedKey', newKey);
-            
-            // Có thể gửi key về server của bạn ở đây
-            // saveKeyToServer(newKey);
         }
 
         function copyKey() {
@@ -130,13 +122,12 @@
             });
         }
 
-        // Kiểm tra nếu có key trong URL parameter
+        // Kiểm tra key trong URL
         const urlParams = new URLSearchParams(window.location.search);
         const keyFromUrl = urlParams.get('key');
         if (keyFromUrl) {
             document.getElementById('keyDisplay').textContent = keyFromUrl;
             document.getElementById('keyResult').style.display = 'block';
-            // Hiển thị trực tiếp bước 3
             document.getElementById('step1').style.display = 'none';
             document.getElementById('step2').style.display = 'none';
             document.getElementById('step3').style.display = 'block';
