@@ -1,19 +1,35 @@
-    - name: Generate Daily Data
-      run: |
-        # Tạo key random
-        KEY="vphuc_$(date +%Y%m%d)_$(openssl rand -hex 6 | tr '[:lower:]' '[:upper:]')"
-        ORIGINAL_URL="https://vphuc1265.github.io/vphuc.luv/?key=$KEY"
+name: 🔑 Generate Daily Key & Link
+
+on:
+  schedule:
+    - cron: '0 17 * * *'  # 00:00 VN time
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  generate-key:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
         
-        # Tạo Link4M URL - ĐƠN GIẢN HƠN
-        SHORT_URL="https://link4m.co/vphuc-$(date +%Y%m%d)"
-        
-        # Lưu files
-        echo "$KEY" > daily-key.txt
-        echo "$SHORT_URL" > daily-link.txt
-        echo "{\"key\":\"$KEY\",\"link\":\"$SHORT_URL\",\"date\":\"$(date +%Y%m%d)\"}" > daily-data.json
-        
-        git config user.name "github-actions"
-        git config user.email "actions@github.com"
-        git add .
-        git commit -m "Update daily key & link - $(date +%Y%m%d)" || exit 0
-        git push
+      - name: Generate Daily Data
+        run: |
+          # Tạo key random
+          KEY="vphuc_$(date +%Y%m%d)_$(openssl rand -hex 6 | tr '[:lower:]' '[:upper:]')"
+          
+          # Link4M URL đơn giản
+          SHORT_URL="https://link4m.co/vphuc-$(date +%Y%m%d)"
+          
+          # Lưu files
+          echo "$KEY" > daily-key.txt
+          echo "$SHORT_URL" > daily-link.txt
+          echo "{\"key\":\"$KEY\",\"link\":\"$SHORT_URL\",\"date\":\"$(date +%Y%m%d)\"}" > daily-data.json
+          
+          # Commit
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+          git add .
+          git commit -m "Update daily key & link - $(date +%Y%m%d)" || exit 0
+          git push
