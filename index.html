@@ -3,135 +3,236 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nhận Key Tool - Miễn Phí</title>
+    <title>VPhuc Tool Key</title>
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
         body {
-            font-family: Arial, sans-serif;
-            max-width: 600px;
-            margin: 0 auto;
-            padding: 20px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            text-align: center;
+            color: #333;
+            min-height: 100vh;
+            padding: 20px;
         }
         .container {
-            background: rgba(255,255,255,0.1);
+            max-width: 400px;
+            margin: 0 auto;
+        }
+        .profile-card {
+            background: white;
+            border-radius: 20px;
             padding: 30px;
-            border-radius: 15px;
-            backdrop-filter: blur(10px);
+            text-align: center;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
         }
-        button {
-            background: #4CAF50;
+        .avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            margin: 0 auto 15px;
+            background: linear-gradient(45deg, #ff6b6b, #feca57);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
             color: white;
-            padding: 12px 24px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 16px;
-            margin: 10px;
         }
-        button:hover {
-            background: #45a049;
+        .name {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #2c3e50;
         }
-        .key-display {
+        .bio {
+            color: #7f8c8d;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+        .location {
+            color: #e74c3c;
+            margin-bottom: 25px;
+            font-weight: 500;
+        }
+        .key-section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 15px;
+            margin: 20px 0;
+        }
+        .key-label {
+            font-size: 14px;
+            color: #7f8c8d;
+            margin-bottom: 8px;
+        }
+        .key-value {
             font-size: 18px;
             font-weight: bold;
-            background: rgba(0,0,0,0.3);
-            padding: 15px;
-            border-radius: 5px;
-            margin: 20px 0;
+            color: #27ae60;
             word-break: break-all;
+            background: white;
+            padding: 12px;
+            border-radius: 10px;
+            border: 2px dashed #bdc3c7;
         }
-        .step {
-            margin: 20px 0;
+        .stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 15px;
+            margin: 25px 0;
+        }
+        .stat-item {
+            text-align: center;
+        }
+        .stat-number {
+            font-size: 24px;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        .stat-label {
+            font-size: 12px;
+            color: #7f8c8d;
+            margin-top: 5px;
+        }
+        .works {
+            background: #34495e;
+            color: white;
             padding: 15px;
-            background: rgba(255,255,255,0.1);
-            border-radius: 8px;
+            border-radius: 15px;
+            margin-top: 20px;
         }
-        a { color: #ffeb3b; text-decoration: none; }
-        a:hover { text-decoration: underline; }
+        .expiry {
+            background: #fff3cd;
+            color: #856404;
+            padding: 10px;
+            border-radius: 10px;
+            font-size: 14px;
+            margin-top: 15px;
+        }
+        .copy-btn {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            margin-top: 10px;
+            font-weight: 500;
+        }
+        .copy-btn:hover {
+            background: #2980b9;
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>🔧 NHẬN KEY TOOL MIỄN PHÍ</h1>
-        <p>Hoàn thành các bước sau để nhận key sử dụng 12 giờ</p>
-        
-        <!-- BƯỚC 1: Vượt link -->
-        <div class="step" id="step1">
-            <h3>📺 BƯỚC 1: XEM QUẢNG CÁO</h3>
-            <p>Nhấn vào link bên dưới và chờ 5 giây</p>
-            <a href="https://adf.ly/your-link-here" target="_blank">
-                <button>🔗 CLICK VÀO ĐÂY</button>
-            </a>
-            <br>
-            <button onclick="completeStep(1)">✅ Tôi đã hoàn thành</button>
-        </div>
-
-        <!-- BƯỚC 2: Subscribe -->
-        <div class="step" id="step2" style="display:none;">
-            <h3>📱 BƯỚC 2: THEO DÕI KÊNH</h3>
-            <p>Theo dõi kênh TikTok của chúng tôi</p>
-            <a href="https://www.tiktok.com/@vphuc.luv" target="_blank">
-                <button>🎵 THEO DÕI TIKTOK</button>
-            </a>
-            <br>
-            <button onclick="completeStep(2)">✅ Tôi đã theo dõi</button>
-        </div>
-
-        <!-- BƯỚC 3: Nhận key -->
-        <div class="step" id="step3" style="display:none;">
-            <h3>🎁 BƯỚC 3: NHẬN KEY</h3>
-            <p>Nhấn nút bên dưới để nhận key của bạn</p>
-            <button onclick="generateKey()">🚀 LẤY KEY NGAY</button>
+        <div class="profile-card">
+            <!-- Avatar -->
+            <div class="avatar">V</div>
             
-            <div id="keyResult" style="display:none;">
-                <div class="key-display" id="keyDisplay"></div>
-                <p>⏰ Key có hiệu lực trong 12 giờ</p>
-                <button onclick="copyKey()">📋 Copy Key</button>
+            <!-- Thông tin cá nhân -->
+            <div class="name">Hoàng Vĩnh Phúc</div>
+            <div class="bio">
+                Mình là <strong>Hoàng Vĩnh Phúc</strong>, là một developer trẻ đam mê sáng tạo và chia sẻ những công cụ hữu ích cho cộng đồng...
+            </div>
+            
+            <div class="location">Nha Trang - Khánh Hòa</div>
+            
+            <!-- Key Section -->
+            <div class="key-section">
+                <div class="key-label">Key Tool:</div>
+                <div class="key-value" id="keyDisplay">VPHUC_XXXXXXXXX</div>
+                <button class="copy-btn" onclick="copyKey()">📋 Copy Key</button>
+            </div>
+            
+            <!-- Thông báo hết hạn -->
+            <div class="expiry">
+                ⏰ Key có hiệu lực đến: <span id="expiryTime">00:00 ngày mai</span>
+            </div>
+            
+            <!-- Stats -->
+            <div class="stats">
+                <div class="stat-item">
+                    <div class="stat-number" id="followerCount">0</div>
+                    <div class="stat-label">Followers</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">1</div>
+                    <div class="stat-label">Following</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">68</div>
+                    <div class="stat-label">Posts</div>
+                </div>
+            </div>
+            
+            <!-- Works -->
+            <div class="works">
+                <strong>Works:</strong> 2 Projects Completed
             </div>
         </div>
     </div>
 
     <script>
-        let currentStep = 1;
-        const steps = 3;
-
-        function completeStep(stepNumber) {
-            document.getElementById(`step${stepNumber}`).style.display = 'none';
-            if (stepNumber < steps) {
-                document.getElementById(`step${stepNumber + 1}`).style.display = 'block';
-                currentStep = stepNumber + 1;
-            }
-        }
-
-        function generateKey() {
-            const timestamp = Date.now().toString().slice(-9);
-            const randomPart = Math.random().toString(36).substring(2, 7).toUpperCase();
-            const newKey = `VPHUC_${timestamp}${randomPart}`;
+        // Lấy key từ URL parameter
+        const urlParams = new URLSearchParams(window.location.search);
+        let keyFromUrl = urlParams.get('key');
+        
+        // Nếu không có key trong URL, tạo key mới
+        if (!keyFromUrl) {
+            const timestamp = Date.now().toString().slice(-6);
+            const randomPart = Math.random().toString(36).substring(2, 8).toUpperCase();
+            keyFromUrl = `VPHUC_${timestamp}${randomPart}`;
             
-            document.getElementById('keyDisplay').textContent = newKey;
-            document.getElementById('keyResult').style.display = 'block';
-            localStorage.setItem('lastGeneratedKey', newKey);
+            // Thêm key vào URL (không reload page)
+            const newUrl = `${window.location.origin}${window.location.pathname}?key=${keyFromUrl}`;
+            window.history.replaceState({}, '', newUrl);
         }
-
+        
+        // Hiển thị key
+        document.getElementById('keyDisplay').textContent = keyFromUrl;
+        
+        // Tính thời gian hết hạn (đến 0h ngày mai)
+        function setExpiryTime() {
+            const now = new Date();
+            const tomorrow = new Date(now);
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            tomorrow.setHours(0, 0, 0, 0);
+            
+            const options = { 
+                hour: '2-digit', 
+                minute: '2-digit',
+                day: '2-digit',
+                month: '2-digit'
+            };
+            document.getElementById('expiryTime').textContent = 
+                tomorrow.toLocaleTimeString('vi-VN', options) + ' ngày ' + 
+                tomorrow.toLocaleDateString('vi-VN');
+        }
+        
+        // Tăng follower count ngẫu nhiên
+        function setRandomStats() {
+            const followers = Math.floor(Math.random() * 1000) + 50000;
+            document.getElementById('followerCount').textContent = 
+                followers.toLocaleString();
+        }
+        
         function copyKey() {
             const keyText = document.getElementById('keyDisplay').textContent;
             navigator.clipboard.writeText(keyText).then(() => {
                 alert('✅ Đã copy key vào clipboard!');
             });
         }
-
-        // Kiểm tra key trong URL
-        const urlParams = new URLSearchParams(window.location.search);
-        const keyFromUrl = urlParams.get('key');
-        if (keyFromUrl) {
-            document.getElementById('keyDisplay').textContent = keyFromUrl;
-            document.getElementById('keyResult').style.display = 'block';
-            document.getElementById('step1').style.display = 'none';
-            document.getElementById('step2').style.display = 'none';
-            document.getElementById('step3').style.display = 'block';
-        }
+        
+        // Khởi chạy
+        setExpiryTime();
+        setRandomStats();
+        
+        // Lưu key vào localStorage
+        localStorage.setItem('lastKey', keyFromUrl);
     </script>
 </body>
 </html>
