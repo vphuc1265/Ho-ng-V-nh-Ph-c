@@ -1,0 +1,31 @@
+name: 🔑 Generate Daily Key & Link
+
+on:
+  schedule:
+    - cron: '0 17 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  generate-key:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          
+      - name: Create Daily Files
+        run: |
+          KEY="vphuc_$(date +%Y%m%d)_$(openssl rand -hex 4 | tr '[:lower:]' '[:upper:]')"
+          LINK="https://link4m.co/vphuc-$(date +%Y%m%d)"
+          
+          echo "$KEY" > daily-key.txt
+          echo "$LINK" > daily-link.txt
+          
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+          git add .
+          git commit -m "Update daily files - $(date)" || exit 0
+          git push
