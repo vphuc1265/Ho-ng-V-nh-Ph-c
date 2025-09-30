@@ -148,18 +148,18 @@
                 Mình là <strong>Hoàng Vĩnh Phúc</strong>, là một developer trẻ đam mê sáng tạo và chia sẻ những công cụ hữu ích cho cộng đồng...
             </div>
             
-            <div class="location">Nha Trang - Khánh Hòa</div>
+            <div class="location">Bà Rịa - Vũng Tàu</div>
             
             <!-- Key Section -->
             <div class="key-section">
                 <div class="key-label">Key Tool:</div>
-                <div class="key-value" id="keyDisplay">VPHUC_XXXXXXXXX</div>
+                <div class="key-value" id="keyDisplay">vphuc_xxxxxxxxxx</div>
                 <button class="copy-btn" onclick="copyKey()">📋 Copy Key</button>
             </div>
             
             <!-- Thông báo hết hạn -->
             <div class="expiry">
-                ⏰ Key có hiệu lực đến: <span id="expiryTime">00:00 ngày mai</span>
+                ⏰ Key có hiệu lực đến : <span id="expiryTime">00:00 ngày mai</span>
             </div>
             
             <!-- Nút TikTok -->
@@ -170,7 +170,7 @@
             
             <!-- Works -->
             <div class="works">
-                <strong>Works:</strong> 2 Projects Completed
+                <strong>Works:</strong> Projects Completed
             </div>
         </div>
     </div>
@@ -216,7 +216,7 @@
         function copyKey() {
             const keyText = document.getElementById('keyDisplay').textContent;
             navigator.clipboard.writeText(keyText).then(() => {
-                alert('✅ Đã copy key vào clipboard!');
+                alert('Đã copy key vào clipboard !');
             });
         }
         
