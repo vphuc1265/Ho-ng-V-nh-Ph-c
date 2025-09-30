@@ -49,52 +49,78 @@
     </div>
 
     <script>
-        // === SECURITY CHECK - FIXED ===
-        function verifyAccess() {
+        // === REAL-TIME SECRET VERIFICATION ===
+        async function verifyAccess() {
             const urlParams = new URLSearchParams(window.location.search);
-            const secret = urlParams.get('key');
+            const urlSecret = urlParams.get('key');
             
-            // CHỈ KIỂM TRA SECRET, BỎ REFERRER CHECK
-            if (!secret) {
-                document.getElementById('content').innerHTML = 
-                    '<div class="error">🚫 ACCESS DENIED - Missing Secret Key</div>';
+            if (!urlSecret) {
+                showError('🚫 ACCESS DENIED - Missing Secret Key');
                 return false;
             }
             
-            // Verify secret format (bắt đầu bằng vphuc_secret_)
-            if (!secret.startsWith('vphuc_secret_')) {
-                document.getElementById('content').innerHTML = 
-                    '<div class="error">🚫 INVALID SECRET KEY</div>';
+            try {
+                // Lấy secret HIỆN TẠI từ server
+                const response = await fetch('./daily-secret.txt');
+                if (response.ok) {
+                    const currentSecret = (await response.text()).trim();
+                    
+                    // So sánh secret từ URL với secret hiện tại
+                    if (urlSecret !== currentSecret) {
+                        showError('🚫 KEY EXPIRED - Get new link from tool');
+                        return false;
+                    }
+                    
+                    return true;
+                } else {
+                    showError('❌ Cannot verify secret');
+                    return false;
+                }
+            } catch (error) {
+                showError('❌ Connection error');
                 return false;
             }
-            
-            return true;
         }
 
         // === LOAD AND DISPLAY KEY ===
         async function loadDailyKey() {
-            if (!verifyAccess()) return;
+            if (!await verifyAccess()) return;
             
             try {
                 const response = await fetch('./daily-key.txt');
                 if (response.ok) {
-                    const key = await response.text();
-                    document.getElementById('content').innerHTML = `
-                        <div class="key-display">
-                            🔑 Today Key: <br>
-                            <span style="color: #667eea; font-size: 20px;">${key}</span>
-                        </div>
-                        <p>Copy key này và nhập vào tool</p>
-                        <button onclick="copyKey('${key}')" style="padding: 10px 20px; background: #667eea; color: white; border: none; border-radius: 5px; cursor: pointer;">Copy Key</button>
-                    `;
+                    const key = (await response.text()).trim();
+                    const today = new Date().toISOString().slice(0,10).replace(/-/g, '');
+                    
+                    // Check key date
+                    if (!key.includes(today)) {
+                        showError('🔑 Key expired - Wait for daily update');
+                        return;
+                    }
+                    
+                    showKey(key);
                 } else {
-                    document.getElementById('content').innerHTML = 
-                        '<div class="error">❌ Key not available</div>';
+                    showError('❌ Key not available');
                 }
             } catch (error) {
-                document.getElementById('content').innerHTML = 
-                    '<div class="error">❌ Connection error</div>';
+                showError('❌ Connection error');
             }
+        }
+
+        function showKey(key) {
+            document.getElementById('content').innerHTML = `
+                <div class="key-display">
+                    🔑 Today Key: <br>
+                    <span style="color: #667eea; font-size: 20px;">${key}</span>
+                </div>
+                <p>Copy key này và nhập vào tool</p>
+                <button onclick="copyKey('${key}')" style="padding: 10px 20px; background: #667eea; color: white; border: none; border-radius: 5px; cursor: pointer;">Copy Key</button>
+            `;
+        }
+
+        function showError(message) {
+            document.getElementById('content').innerHTML = 
+                `<div class="error">${message}</div>`;
         }
 
         function copyKey(key) {
