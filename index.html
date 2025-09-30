@@ -141,6 +141,11 @@
             margin: 20px 0;
             text-align: center;
         }
+        .loading {
+            text-align: center;
+            padding: 30px;
+            color: #666;
+        }
     </style>
 </head>
 <body>
@@ -160,7 +165,9 @@
             <div class="location">Bà Rịa - Vũng Tàu</div>
             
             <div id="content">
-                <!-- Nội dung sẽ được điền bằng JavaScript -->
+                <div class="loading">
+                    <p>🔄 Đang xử lý...</p>
+                </div>
             </div>
             
             <!-- Nút TikTok -->
@@ -186,6 +193,23 @@
             return yyyy + mm + dd;
         }
 
+        // Hàm tạo key ngẫu nhiên
+        function generateRandomKey() {
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+            let result = '';
+            for (let i = 0; i < 8; i++) {
+                result += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            return result;
+        }
+
+        // Tạo key cho hôm nay
+        function getTodayKey() {
+            const todayDate = getTodayDate();
+            const randomPart = generateRandomKey();
+            return `vphuc_${todayDate}${randomPart}`;
+        }
+
         // Kiểm tra key có hợp lệ cho hôm nay không
         function isValidTodayKey(key) {
             const todayDate = getTodayDate();
@@ -207,7 +231,7 @@
                     <button class="copy-btn" onclick="copyKey('${key}')">📋 Copy Key</button>
                 </div>
                 <div class="expiry">
-                    ⏰ Key Có Hiệu Lực Đến Hết Ngày Hôm Nay
+                    ⏰ Key Có Hiệu Lực Đến : ${getExpiryTime()}
                 </div>
             `;
         }
@@ -217,7 +241,17 @@
             document.getElementById('content').innerHTML = `
                 <div class="no-key">
                     <h3>🔑 Key Đã Hết Hạn</h3>
-                    <p>Key Này Không Còn Hợp Lệ, Vui Lòng Vượt Link Để Lấy Key Mới !</p>
+                    <p>Key này không còn hợp lệ. Vui lòng vượt link để nhận key mới!</p>
+                </div>
+            `;
+        }
+
+        // Hiển thị lỗi truy cập
+        function showAccessError() {
+            document.getElementById('content').innerHTML = `
+                <div class="no-key">
+                    <h3>🔑 Key Đã Hết Hạn</h3>
+                    <p>Vui Lòng Vượt Link Trong Tool Để Lấy Key Mới !</p>
                 </div>
             `;
         }
@@ -227,23 +261,36 @@
             const tomorrow = new Date();
             tomorrow.setDate(tomorrow.getDate() + 1);
             tomorrow.setHours(0, 0, 0, 0);
-            return tomorrow.toLocaleDateString('vi-VN') + ' lúc 00:00';
+            return tomorrow.toLocaleDateString('vi-VN') + ' Vào Lúc 00:00';
         }
 
         function copyKey(key) {
             navigator.clipboard.writeText(key).then(() => {
-                alert('Đã copy key vào clipboard!');
+                alert('Đã Copy Key Vào Clipboard !');
             });
         }
 
         // MAIN EXECUTION
         const urlParams = new URLSearchParams(window.location.search);
-        const keyFromUrl = urlParams.get('key');
+        const keyParam = urlParams.get('key');
 
-        if (keyFromUrl && isValidTodayKey(keyFromUrl)) {
-            showValidKey(keyFromUrl);
-        } else {
+        if (keyParam === 'GET_DAILY_KEY') {
+            // Tạo key mới và hiển thị
+            const todayKey = getTodayKey();
+            showValidKey(todayKey);
+            
+            // Xóa parameter khỏi URL để tránh reload tạo key mới
+            window.history.replaceState({}, '', window.location.pathname);
+        } else if (keyParam && isValidTodayKey(keyParam)) {
+            // Key hợp lệ từ URL
+            showValidKey(keyParam);
+            window.history.replaceState({}, '', window.location.pathname);
+        } else if (keyParam) {
+            // Key không hợp lệ
             showInvalidKey();
+        } else {
+            // Không có key - truy cập trực tiếp
+            showAccessError();
         }
     </script>
 </body>
