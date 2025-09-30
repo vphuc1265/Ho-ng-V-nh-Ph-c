@@ -27,7 +27,7 @@
 <body>
     <div class="container">
         <h1>🔑 Daily Key System</h1>
-        <div id="content">🔄 Đang xác thực...</div>
+        <div id="content">Đang Xác Thực...</div>
     </div>
 
     <script>
@@ -37,7 +37,7 @@
             
             // KIỂM TRA NẾU ĐANG Ở LINK4M URL -> KHÔNG REDIRECT NỮA
             if (window.location.href.includes('link4m.co')) {
-                document.getElementById('content').innerHTML = '<div style="color:red;">❌ Invalid key - Use tool to get new link</div>';
+                document.getElementById('content').innerHTML = '<div style="color:red;">Key Đã Hết Hạn, Vui Lòng Vượt Link Để Lấy Key Mới !</div>';
                 return;
             }
             
@@ -57,18 +57,18 @@
                 
                 // KEY HỢP LỆ - HIỂN THỊ
                 document.getElementById('content').innerHTML = `
-                    <div style="font-size:18px; font-weight:bold; color:#333; margin:20px 0; padding:15px; background:#f8f9fa; border-radius:5px; border:2px dashed #667eea;">
-                        🔑 Today Key: <br>
-                        <span style="color:#667eea; font-size:20px;">${currentKey}</span>
+                    <div style="font-size:28px; font-weight:bold; color:#333; margin:30px 0; padding:25px; background:#f8f9fa; border-radius:10px; border:4px dashed #667eea;">
+                        🔑 Today Key : <br>
+                        <span style="color:#667eea; font-size:30px;">${currentKey}</span>
                     </div>
-                    <button onclick="navigator.clipboard.writeText('${currentKey}').then(() => alert('✅ Copied!'))" 
-                            style="padding:10px 20px; background:#667eea; color:white; border:none; border-radius:5px; cursor:pointer;">
+                    <button onclick="navigator.clipboard.writeText('${currentKey}').then(() => alert('Đã Copy !'))" 
+                            style="padding:20px 40px; background:#667eea; color:white; border:none; border-radius:10px; cursor:pointer;">
                         Copy Key
                     </button>
                 `;
                 
             } catch (error) {
-                document.getElementById('content').innerHTML = '<div style="color:red;">❌ Connection error</div>';
+                document.getElementById('content').innerHTML = '<div style="color:red;">❌ Lỗi Kết Nối</div>';
             }
         }
 
@@ -82,10 +82,10 @@
                 if (todayLink && todayLink.includes('link4m.co') && todayLink !== window.location.href) {
                     window.location.href = todayLink;
                 } else {
-                    document.getElementById('content').innerHTML = '<div style="color:red;">❌ Invalid access</div>';
+                    document.getElementById('content').innerHTML = '<div style="color:red;">❌ Lỗi Kết Nối</div>';
                 }
             } catch (error) {
-                document.getElementById('content').innerHTML = '<div style="color:red;">❌ System error</div>';
+                document.getElementById('content').innerHTML = '<div style="color:red;">❌ Lỗi Hệ Thống</div>';
             }
         }
 
