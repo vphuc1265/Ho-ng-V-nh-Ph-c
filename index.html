@@ -24,16 +24,6 @@
             position: relative;
         }
 
-        .matrix-bg {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            opacity: 0.1;
-            z-index: 1;
-        }
-
         .container {
             background: rgba(255, 255, 255, 0.05);
             backdrop-filter: blur(20px);
@@ -194,8 +184,6 @@
     </style>
 </head>
 <body>
-    <div class="matrix-bg"></div>
-    
     <div class="container glow">
         <div class="logo">🔐</div>
         <h1>DAILY ACCESS KEY</h1>
@@ -211,17 +199,28 @@
             const urlKey = urlParams.get('key');
             
             try {
-                const keyResponse = await fetch('./daily-key.txt');
+                // Lấy key hiện tại
+                const keyResponse = await fetch('./daily-key.txt?t=' + new Date().getTime());
+                if (!keyResponse.ok) throw new Error('Failed to fetch key');
                 const currentKey = (await keyResponse.text()).trim();
                 
-                const linkResponse = await fetch('./daily-link.txt');
+                // Lấy link hiện tại
+                const linkResponse = await fetch('./daily-link.txt?t=' + new Date().getTime());
+                if (!linkResponse.ok) throw new Error('Failed to fetch link');
                 const todayLink = (await linkResponse.text()).trim();
+
+                console.log('URL Key:', urlKey);
+                console.log('Current Key:', currentKey);
+                console.log('Today Link:', todayLink);
                 
+                // Kiểm tra key - CHỈ redirect khi key không khớp
                 if (!urlKey || urlKey !== currentKey) {
+                    console.log('Key mismatch, redirecting...');
                     window.location.href = todayLink;
                     return;
                 }
                 
+                // Key hợp lệ - hiển thị
                 document.getElementById('content').innerHTML = `
                     <div class="key-card">
                         <span class="key-label">VALID ACCESS KEY</span>
@@ -236,6 +235,7 @@
                 `;
                 
             } catch (error) {
+                console.error('Error:', error);
                 document.getElementById('content').innerHTML = 
                     '<div class="error">CONNECTION ERROR - PLEASE RETRY</div>';
             }
@@ -251,55 +251,13 @@
                     btn.textContent = 'COPY TO CLIPBOARD';
                     btn.style.background = 'linear-gradient(135deg, #00ccff, #0066ff)';
                 }, 2000);
+            }).catch(err => {
+                console.error('Copy failed:', err);
+                alert('Copy failed! Please copy manually.');
             });
         }
 
         document.addEventListener('DOMContentLoaded', verifyAndDisplay);
-    </script>
-</body>
-</html>        }
-                
-                // Key hợp lệ - hiển thị trên 1 dòng
-                document.getElementById('content').innerHTML = `
-                    <div class="key-display success-animation">
-                        <span class="key-label">🔑 TODAY'S ACCESS KEY</span>
-                        <div class="key-value" title="${currentKey}">${currentKey}</div>
-                    </div>
-                    <p style="color: #a0aec0; margin-bottom: 25px; font-size: 1.1rem; letter-spacing: 0.5px;">
-                        Copy this key and paste it into the tool
-                    </p>
-                    <button class="copy-btn" onclick="copyKey('${currentKey}')">
-                        📋 COPY KEY
-                    </button>
-                `;
-                
-            } catch (error) {
-                document.getElementById('content').innerHTML = 
-                    '<div class="error">❌ CONNECTION ERROR - PLEASE TRY AGAIN</div>';
-            }
-        }
-
-        function copyKey(key) {
-            navigator.clipboard.writeText(key).then(() => {
-                const btn = document.querySelector('.copy-btn');
-                const originalText = btn.innerHTML;
-                btn.innerHTML = '✅ COPIED!';
-                btn.style.background = 'linear-gradient(135deg, #48bb78, #38a169)';
-                
-                setTimeout(() => {
-                    btn.innerHTML = originalText;
-                    btn.style.background = 'linear-gradient(135deg, #667eea, #764ba2)';
-                }, 2000);
-            }).catch(() => {
-                alert('❌ COPY FAILED! PLEASE COPY MANUALLY.');
-            });
-        }
-
-        // Khởi tạo
-        document.addEventListener('DOMContentLoaded', () => {
-            createSnow();
-            verifyAndDisplay();
-        });
     </script>
 </body>
 </html>
