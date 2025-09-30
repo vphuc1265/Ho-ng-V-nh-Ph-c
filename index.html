@@ -22,74 +22,68 @@
             width: 100%;
             text-align: center;
         }
-        .key-display {
-            font-size: 18px;
-            font-weight: bold;
-            color: #333;
-            margin: 20px 0;
-            padding: 15px;
-            background: #f8f9fa;
-            border-radius: 5px;
-            border: 2px dashed #667eea;
-        }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>🔑 Daily Key System</h1>
-        <div id="content">
-            <div>🔄 Đang xác thực...</div>
-        </div>
+        <div id="content">🔄 Đang xác thực...</div>
     </div>
 
     <script>
-        async function verifyAndDisplay() {
+        async function checkKey() {
             const urlParams = new URLSearchParams(window.location.search);
             const urlKey = urlParams.get('key');
+            
+            // NẾU KHÔNG CÓ KEY HOẶC KEY SAI -> REDIRECT LUÔN
+            if (!urlKey || urlKey === '' || urlKey === 'undefined') {
+                redirectToLink4M();
+                return;
+            }
             
             try {
                 // Lấy key HIỆN TẠI từ server
                 const keyResponse = await fetch('./daily-key.txt');
                 const currentKey = (await keyResponse.text()).trim();
                 
-                // Lấy Link4M link HIỆN TẠI  
-                const linkResponse = await fetch('./daily-link.txt');
-                const todayLink = (await linkResponse.text()).trim();
-                
-                // KIỂM TRA TẤT CẢ TRƯỜNG HỢP
-                if (!urlKey || urlKey === '' || urlKey === 'undefined' || !urlKey.startsWith('vphuc_') || urlKey !== currentKey) {
-                    // Key không tồn tại, rỗng, sai format, hoặc không khớp -> REDIRECT
-                    window.location.href = todayLink;
+                // KIỂM TRA KEY CÓ KHỚP KHÔNG
+                if (urlKey !== currentKey) {
+                    redirectToLink4M();
                     return;
                 }
                 
-                // Key hợp lệ - hiển thị key
+                // Key hợp lệ - hiển thị
                 document.getElementById('content').innerHTML = `
-                    <div class="key-display">
+                    <div style="font-size:18px; font-weight:bold; color:#333; margin:20px 0; padding:15px; background:#f8f9fa; border-radius:5px; border:2px dashed #667eea;">
                         🔑 Today Key: <br>
-                        <span style="color: #667eea; font-size: 20px;">${currentKey}</span>
+                        <span style="color:#667eea; font-size:20px;">${currentKey}</span>
                     </div>
-                    <p>Copy key này và nhập vào tool</p>
-                    <button onclick="copyKey('${currentKey}')" 
-                            style="padding: 10px 20px; background: #667eea; color: white; border: none; border-radius: 5px; cursor: pointer;">
+                    <button onclick="navigator.clipboard.writeText('${currentKey}').then(() => alert('✅ Copied!'))" 
+                            style="padding:10px 20px; background:#667eea; color:white; border:none; border-radius:5px; cursor:pointer;">
                         Copy Key
                     </button>
                 `;
                 
             } catch (error) {
-                // Lỗi kết nối -> redirect về fallback
+                // Lỗi kết nối -> redirect
+                redirectToLink4M();
+            }
+        }
+
+        async function redirectToLink4M() {
+            try {
+                // Lấy Link4M link từ server
+                const linkResponse = await fetch('./daily-link.txt');
+                const todayLink = (await linkResponse.text()).trim();
+                window.location.href = todayLink;
+            } catch (error) {
+                // Fallback nếu không lấy được link
                 window.location.href = 'https://link4m.co/daily-key-today';
             }
         }
 
-        function copyKey(key) {
-            navigator.clipboard.writeText(key).then(() => {
-                alert('✅ Đã copy key!');
-            });
-        }
-
-        // Tự động chạy khi trang load
-        document.addEventListener('DOMContentLoaded', verifyAndDisplay);
+        // CHẠY NGAY KHI TRANG LOAD
+        checkKey();
     </script>
 </body>
 </html>
