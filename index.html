@@ -49,21 +49,20 @@
     </div>
 
     <script>
-        // === SECURITY CHECK ===
+        // === SECURITY CHECK - FIXED ===
         function verifyAccess() {
             const urlParams = new URLSearchParams(window.location.search);
             const secret = urlParams.get('key');
             
-            // Kiểm tra referrer từ Link4M
-            const referrer = document.referrer;
-            if (!referrer.includes('link4m.co') && !referrer.includes('link4m.com')) {
+            // CHỈ KIỂM TRA SECRET, BỎ REFERRER CHECK
+            if (!secret) {
                 document.getElementById('content').innerHTML = 
-                    '<div class="error">🚫 ACCESS DENIED - Use Official Link4M Link</div>';
+                    '<div class="error">🚫 ACCESS DENIED - Missing Secret Key</div>';
                 return false;
             }
             
-            // Nếu có secret parameter, có thể verify thêm
-            if (secret && !secret.includes('vphuc_secret_')) {
+            // Verify secret format (bắt đầu bằng vphuc_secret_)
+            if (!secret.startsWith('vphuc_secret_')) {
                 document.getElementById('content').innerHTML = 
                     '<div class="error">🚫 INVALID SECRET KEY</div>';
                 return false;
@@ -86,6 +85,7 @@
                             <span style="color: #667eea; font-size: 20px;">${key}</span>
                         </div>
                         <p>Copy key này và nhập vào tool</p>
+                        <button onclick="copyKey('${key}')" style="padding: 10px 20px; background: #667eea; color: white; border: none; border-radius: 5px; cursor: pointer;">Copy Key</button>
                     `;
                 } else {
                     document.getElementById('content').innerHTML = 
@@ -95,6 +95,12 @@
                 document.getElementById('content').innerHTML = 
                     '<div class="error">❌ Connection error</div>';
             }
+        }
+
+        function copyKey(key) {
+            navigator.clipboard.writeText(key).then(() => {
+                alert('✅ Đã copy key!');
+            });
         }
 
         // Auto load khi page ready
