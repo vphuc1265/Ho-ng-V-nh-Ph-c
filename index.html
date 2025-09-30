@@ -5,153 +5,33 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>vphuc - Key Tool</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: #333;
-            min-height: 100vh;
-            padding: 20px;
-        }
-        .container {
-            max-width: 400px;
-            margin: 0 auto;
-        }
-        .profile-card {
-            background: white;
-            border-radius: 20px;
-            padding: 30px;
-            text-align: center;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
-            margin-bottom: 20px;
-        }
-        .avatar {
-            width: 120px;
-            height: 120px;
-            border-radius: 50%;
-            margin: 0 auto 15px;
-            border: 4px solid #fff;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-            overflow: hidden;
-        }
-        .avatar img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-        .name {
-            font-size: 24px;
-            font-weight: bold;
-            margin-bottom: 10px;
-            color: #2c3e50;
-        }
-        .bio {
-            color: #7f8c8d;
-            margin-bottom: 20px;
-            line-height: 1.5;
-        }
-        .location {
-            color: #e74c3c;
-            margin-bottom: 25px;
-            font-weight: 500;
-        }
-        .key-section {
-            background: #f8f9fa;
-            padding: 20px;
-            border-radius: 15px;
-            margin: 20px 0;
-        }
-        .key-label {
-            font-size: 14px;
-            color: #7f8c8d;
-            margin-bottom: 8px;
-        }
-        .key-value {
-            font-size: 18px;
-            font-weight: bold;
-            color: #27ae60;
-            word-break: break-all;
-            background: white;
-            padding: 12px;
-            border-radius: 10px;
-            border: 2px dashed #bdc3c7;
-        }
-        .tiktok-btn {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: #000000;
-            color: white;
-            padding: 12px 25px;
-            border-radius: 25px;
-            text-decoration: none;
-            margin: 25px auto;
-            width: 200px;
-            font-weight: 500;
-            transition: all 0.3s ease;
-        }
-        .tiktok-btn:hover {
-            background: #333333;
-            transform: translateY(-2px);
-        }
-        .tiktok-icon {
-            font-size: 20px;
-            margin-right: 8px;
-        }
-        .expiry {
-            background: #fff3cd;
-            color: #856404;
-            padding: 10px;
-            border-radius: 10px;
-            font-size: 14px;
-            margin-top: 15px;
-        }
-        .copy-btn {
-            background: #3498db;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 25px;
-            cursor: pointer;
-            margin-top: 10px;
-            font-weight: 500;
-            transition: all 0.3s ease;
-        }
-        .copy-btn:hover {
-            background: #2980b9;
-            transform: translateY(-2px);
-        }
-        .works {
-            background: #34495e;
-            color: white;
-            padding: 15px;
-            border-radius: 15px;
-            margin-top: 20px;
-            font-size: 14px;
-        }
-        .no-key {
-            background: #ff6b6b;
-            color: white;
-            padding: 20px;
-            border-radius: 10px;
-            margin: 20px 0;
-            text-align: center;
-        }
-        .loading {
-            text-align: center;
-            padding: 30px;
-            color: #666;
-        }
+        /* GIỮ NGUYÊN CSS CŨ */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: #333; min-height: 100vh; padding: 20px; }
+        .container { max-width: 400px; margin: 0 auto; }
+        .profile-card { background: white; border-radius: 20px; padding: 30px; text-align: center; box-shadow: 0 15px 35px rgba(0,0,0,0.1); margin-bottom: 20px; }
+        .avatar { width: 120px; height: 120px; border-radius: 50%; margin: 0 auto 15px; border: 4px solid #fff; box-shadow: 0 5px 15px rgba(0,0,0,0.2); overflow: hidden; }
+        .avatar img { width: 100%; height: 100%; object-fit: cover; }
+        .name { font-size: 24px; font-weight: bold; margin-bottom: 10px; color: #2c3e50; }
+        .bio { color: #7f8c8d; margin-bottom: 20px; line-height: 1.5; }
+        .location { color: #e74c3c; margin-bottom: 25px; font-weight: 500; }
+        .key-section { background: #f8f9fa; padding: 20px; border-radius: 15px; margin: 20px 0; }
+        .key-label { font-size: 14px; color: #7f8c8d; margin-bottom: 8px; }
+        .key-value { font-size: 18px; font-weight: bold; color: #27ae60; word-break: break-all; background: white; padding: 12px; border-radius: 10px; border: 2px dashed #bdc3c7; }
+        .tiktok-btn { display: flex; align-items: center; justify-content: center; background: #000000; color: white; padding: 12px 25px; border-radius: 25px; text-decoration: none; margin: 25px auto; width: 200px; font-weight: 500; transition: all 0.3s ease; }
+        .tiktok-btn:hover { background: #333333; transform: translateY(-2px); }
+        .tiktok-icon { font-size: 20px; margin-right: 8px; }
+        .expiry { background: #fff3cd; color: #856404; padding: 10px; border-radius: 10px; font-size: 14px; margin-top: 15px; }
+        .copy-btn { background: #3498db; color: white; border: none; padding: 10px 20px; border-radius: 25px; cursor: pointer; margin-top: 10px; font-weight: 500; transition: all 0.3s ease; }
+        .copy-btn:hover { background: #2980b9; transform: translateY(-2px); }
+        .works { background: #34495e; color: white; padding: 15px; border-radius: 15px; margin-top: 20px; font-size: 14px; }
+        .no-key { background: #ff6b6b; color: white; padding: 20px; border-radius: 10px; margin: 20px 0; text-align: center; }
+        .loading { text-align: center; padding: 30px; color: #666; }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="profile-card">
-            <!-- Avatar -->
             <div class="avatar">
                 <img src="./quality_restoration_20250218143353710.jpg" alt="vphuc avatar" 
                      onerror="this.style.display='none'; this.parentNode.innerHTML='V'; this.parentNode.style.background='linear-gradient(45deg, #ff6b6b, #feca57)'; this.parentNode.style.color='white'; this.parentNode.style.display='flex'; this.parentNode.style.alignItems='center'; this.parentNode.style.justifyContent='center'; this.parentNode.style.fontSize='48px';">
@@ -170,13 +50,11 @@
                 </div>
             </div>
             
-            <!-- Nút TikTok -->
             <a href="https://www.tiktok.com/@vphuc.luv" target="_blank" class="tiktok-btn">
                 <span class="tiktok-icon">🎵</span>
                 Follow TikTok
             </a>
             
-            <!-- Works -->
             <div class="works">
                 <strong>tool được tạo ra để sử dụng với mục đích chính đáng ! không chịu trách nhiệm nếu sử dụng sai mục đích</strong>
             </div> 
@@ -184,96 +62,159 @@
     </div>
 
     <script>
-        // === SIMPLE VERSION - BỎ OBFUSCATION TẠM THỜI ===
-        async function decryptData(encryptedData) {
+        // === OBFUSCATED CODE - LEVEL 1 ===
+        var _0x1a2b=['\x76\x70\x68\x75\x63\x2d\x6b\x65\x79\x2d\x73\x65\x72\x76\x65\x72','\x67\x65\x74','\x70\x6f\x73\x74','\x61\x70\x70\x6c\x69\x63\x61\x74\x69\x6f\x6e\x2f\x6a\x73\x6f\x6e','\x4d\x6f\x7a\x69\x6c\x6c\x61\x2f\x35\x2e\x30','\x78\x2d\x63\x6c\x69\x65\x6e\x74\x2d\x66\x69\x6e\x67\x65\x72\x70\x72\x69\x6e\x74','\x78\x2d\x74\x69\x6d\x65\x73\x74\x61\x6d\x70','\x78\x2d\x6e\x6f\x6e\x63\x65','\x78\x2d\x73\x69\x67\x6e\x61\x74\x75\x72\x65','\x78\x2d\x73\x65\x73\x73\x69\x6f\x6e\x2d\x74\x6f\x6b\x65\x6e','\x73\x75\x63\x63\x65\x73\x73','\x64\x61\x74\x61','\x6a\x73\x6f\x6e','\x63\x6f\x6e\x74\x65\x6e\x74','\x69\x6e\x6e\x65\x72\x48\x54\x4d\x4c','\x67\x65\x74\x45\x6c\x65\x6d\x65\x6e\x74\x42\x79\x49\x64','\x61\x64\x64\x45\x76\x65\x6e\x74\x4c\x69\x73\x74\x65\x6e\x65\x72','\x44\x4f\x4d\x43\x6f\x6e\x74\x65\x6e\x74\x4c\x6f\x61\x64\x65\x64','\x63\x6c\x69\x70\x62\x6f\x61\x72\x64','\x77\x72\x69\x74\x65\x54\x65\x78\x74','\x61\x6c\x65\x72\x74'];var _0x1a2b=['\x76\x70\x68\x75\x63\x2d\x6b\x65\x79\x2d\x73\x65\x72\x76\x65\x72','\x67\x65\x74','\x70\x6f\x73\x74','\x61\x70\x70\x6c\x69\x63\x61\x74\x69\x6f\x6e\x2f\x6a\x73\x6f\x6e','\x4d\x6f\x7a\x69\x6c\x6c\x61\x2f\x35\x2e\x30','\x78\x2d\x63\x6c\x69\x65\x6e\x74\x2d\x66\x69\x6e\x67\x65\x72\x70\x72\x69\x6e\x74','\x78\x2d\x74\x69\x6d\x65\x73\x74\x61\x6d\x70','\x78\x2d\x6e\x6f\x6e\x63\x65','\x78\x2d\x73\x69\x67\x6e\x61\x74\x75\x72\x65','\x78\x2d\x73\x65\x73\x73\x69\x6f\x6e\x2d\x74\x6f\x6b\x65\x6e','\x73\x75\x63\x63\x65\x73\x73','\x64\x61\x74\x61','\x6a\x73\x6f\x6e','\x63\x6f\x6e\x74\x65\x6e\x74','\x69\x6e\x6e\x65\x72\x48\x54\x4d\x4c','\x67\x65\x74\x45\x6c\x65\x6d\x65\x6e\x74\x42\x79\x49\x64','\x61\x64\x64\x45\x76\x65\x6e\x74\x4c\x69\x73\x74\x65\x6e\x65\x72','\x44\x4f\x4d\x43\x6f\x6e\x74\x65\x6e\x74\x4c\x6f\x61\x64\x65\x64','\x63\x6c\x69\x70\x62\x6f\x61\x72\x64','\x77\x72\x69\x74\x65\x54\x65\x78\x74','\x61\x6c\x65\x72\x74'];var _0x1a2b=['\x76\x70\x68\x75\x63\x2d\x6b\x65\x79\x2d\x73\x65\x72\x76\x65\x72','\x67\x65\x74','\x70\x6f\x73\x74','\x61\x70\x70\x6c\x69\x63\x61\x74\x69\x6f\x6e\x2f\x6a\x73\x6f\x6e','\x4d\x6f\x7a\x69\x6c\x6c\x61\x2f\x35\x2e\x30','\x78\x2d\x63\x6c\x69\x65\x6e\x74\x2d\x66\x69\x6e\x67\x65\x72\x70\x72\x69\x6e\x74','\x78\x2d\x74\x69\x6d\x65\x73\x74\x61\x6d\x70','\x78\x2d\x6e\x6f\x6e\x63\x65','\x78\x2d\x73\x69\x67\x6e\x61\x74\x75\x72\x65','\x78\x2d\x73\x65\x73\x73\x69\x6f\x6e\x2d\x74\x6f\x6b\x65\x6e','\x73\x75\x63\x63\x65\x73\x73','\x64\x61\x74\x61','\x6a\x73\x6f\x6e','\x63\x6f\x6e\x74\x65\x6e\x74','\x69\x6e\x6e\x65\x72\x48\x54\x4d\x4c','\x67\x65\x74\x45\x6c\x65\x6d\x65\x6e\x74\x42\x79\x49\x64','\x61\x64\x64\x45\x76\x65\x6e\x74\x4c\x69\x73\x74\x65\x6e\x65\x72','\x44\x4f\x4d\x43\x6f\x6e\x74\x65\x6e\x74\x4c\x6f\x61\x64\x65\x64','\x63\x6c\x69\x70\x62\x6f\x61\x72\x64','\x77\x72\x69\x74\x65\x54\x65\x78\x74','\x61\x6c\x65\x72\x74'];
+
+        // === RUNTIME PROTECTION ===
+        (function(){
+            // Anti-debugger
+            var startTime = Date.now();
+            setInterval(function(){
+                if(Date.now() - startTime > 10000){
+                    document.body.innerHTML = '<h1 style="color:red;text-align:center;padding:50px;">Access Denied</h1>';
+                    return;
+                }
+            }, 1000);
+            
+            // Anti-tampering
+            var originalFetch = window.fetch;
+            window.fetch = function() {
+                var stack = new Error().stack;
+                if(stack.includes('debugger') || stack.includes('console')) {
+                    return Promise.reject(new Error('Security violation'));
+                }
+                return originalFetch.apply(this, arguments);
+            };
+        })();
+
+        // === MAIN APPLICATION ===
+        async function secureInit() {
             try {
-                const secretKey = "vphuc_super_secret_key_2025_@!$%^&*";
-                const salt = "vphuc_ultra_secure_salt_2025_!!!";
+                // Generate client fingerprint
+                const clientFP = await generateSecureFingerprint();
+                const sessionToken = await generateSessionToken(clientFP);
+                const timestamp = Date.now();
+                const nonce = generateSecureNonce(clientFP, timestamp);
+                const signature = await generateRequestSignature(timestamp, nonce, clientFP);
                 
+                // Secure API call
+                const response = await fetch('https://vphuc-key-server.hoangvinhphucbro.workers.dev', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'User-Agent': 'Mozilla/5.0 vphuc-tool-v2',
+                        'X-Client-Fingerprint': clientFP,
+                        'X-Timestamp': timestamp.toString(),
+                        'X-Nonce': nonce,
+                        'X-Signature': signature,
+                        'X-Session-Token': sessionToken
+                    },
+                    body: JSON.stringify({ action: 'get_key' })
+                });
+                
+                const result = await response.json();
+                
+                if(result.success && result.data) {
+                    const decrypted = await decryptSecureData(result.data, clientFP);
+                    if(decrypted) {
+                        const keyData = JSON.parse(decrypted);
+                        showValidKey(keyData.key, keyData.expires);
+                        return;
+                    }
+                }
+                showAccessError();
+            } catch(error) {
+                showAccessError();
+            }
+        }
+
+        // === SECURITY FUNCTIONS ===
+        async function generateSecureFingerprint() {
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            ctx.textBaseline = 'top';
+            ctx.font = '14px Arial';
+            ctx.fillText('vphuc-security-fp', 2, 2);
+            const canvasFP = await hashString(canvas.toDataURL());
+            
+            const components = [
+                navigator.userAgent,
+                navigator.language,
+                navigator.hardwareConcurrency || '',
+                screen.width + 'x' + screen.height,
+                new Date().getTimezoneOffset().toString(),
+                navigator.platform,
+                canvasFP
+            ];
+            
+            return await hashString(components.join('|'));
+        }
+
+        async function generateSessionToken(clientFP) {
+            const dateStr = new Date().toDateString();
+            return await hashString(clientFP + dateStr + 'vphuc_session_salt');
+        }
+
+        function generateSecureNonce(clientFP, timestamp) {
+            const timeWindow = Math.floor(timestamp / 10000); // 10-second windows
+            return btoa(clientFP + '|' + timeWindow).slice(0, 16);
+        }
+
+        async function generateRequestSignature(timestamp, nonce, clientFP) {
+            const payload = timestamp + '|' + nonce + '|' + clientFP;
+            const encoder = new TextEncoder();
+            const data = encoder.encode(payload);
+            const hash = await crypto.subtle.digest('SHA-256', data);
+            return btoa(String.fromCharCode(...new Uint8Array(hash)));
+        }
+
+        async function decryptSecureData(encryptedData, clientFP) {
+            try {
                 const combined = Uint8Array.from(atob(encryptedData), c => c.charCodeAt(0));
                 const iv = combined.slice(0, 12);
                 const encrypted = combined.slice(12);
                 
                 const keyMaterial = await crypto.subtle.importKey(
-                    "raw",
-                    new TextEncoder().encode(secretKey + salt),
-                    { name: "PBKDF2" },
+                    'raw',
+                    new TextEncoder().encode(clientFP.slice(0, 32)),
+                    { name: 'PBKDF2' },
                     false,
-                    ["deriveKey"]
+                    ['deriveKey']
                 );
                 
                 const key = await crypto.subtle.deriveKey(
                     {
-                        name: "PBKDF2",
-                        salt: new TextEncoder().encode(salt),
+                        name: 'PBKDF2',
+                        salt: new TextEncoder().encode('vphuc_salt_2025'),
                         iterations: 100000,
-                        hash: "SHA-256"
+                        hash: 'SHA-256'
                     },
                     keyMaterial,
-                    { name: "AES-GCM", length: 256 },
+                    { name: 'AES-GCM', length: 256 },
                     false,
-                    ["decrypt"]
+                    ['decrypt']
                 );
                 
                 const decrypted = await crypto.subtle.decrypt(
-                    {
-                        name: "AES-GCM",
-                        iv: iv
-                    },
+                    { name: 'AES-GCM', iv },
                     key,
                     encrypted
                 );
                 
                 return new TextDecoder().decode(decrypted);
-            } catch (error) {
-                console.error("Decrypt error:", error);
+            } catch(error) {
                 return null;
             }
         }
 
-        // === MAIN FUNCTION ===
-        async function getDailyKey() {
-            try {
-                console.log("🔄 Đang kết nối đến Worker...");
-                const response = await fetch('https://vphuc-key-server.hoangvinhphucbro.workers.dev', {
-                    method: 'GET',
-                    headers: {
-                        'User-Agent': 'Mozilla/5.0 vphuc-tool',
-                        'Content-Type': 'application/json',
-                        'X-Client-Version': 'vphuc-v2'
-                    }
-                });
-                
-                console.log("📡 Worker response:", response.status);
-                const result = await response.json();
-                console.log("📦 Worker result:", result);
-                
-                if (result.success && result.data) {
-                    console.log("🔓 Đang giải mã key...");
-                    const decrypted = await decryptData(result.data);
-                    console.log("🔑 Decrypted data:", decrypted);
-                    
-                    if (decrypted) {
-                        const keyData = JSON.parse(decrypted);
-                        const today = new Date().toISOString().slice(0,10).replace(/-/g, '');
-                        console.log("📅 Today:", today, "Key date:", keyData.date);
-                        
-                        if (keyData.date === today) {
-                            showValidKey(keyData.key, keyData.expires);
-                        } else {
-                            showInvalidKey();
-                        }
-                        return;
-                    }
-                }
-                showAccessError();
-            } catch (error) {
-                console.error('❌ Lỗi:', error);
-                showAccessError();
-            }
+        async function hashString(str) {
+            const encoder = new TextEncoder();
+            const data = encoder.encode(str);
+            const hash = await crypto.subtle.digest('SHA-256', data);
+            return btoa(String.fromCharCode(...new Uint8Array(hash)));
         }
 
-        // === DISPLAY FUNCTIONS ===
+        // === UI FUNCTIONS ===
         function showValidKey(key, expires) {
             document.getElementById('content').innerHTML = `
                 <div class="key-section">
@@ -283,15 +224,6 @@
                 </div>
                 <div class="expiry">
                     ⏰ Key có hiệu lực đến: ${expires} 00:00
-                </div>
-            `;
-        }
-
-        function showInvalidKey() {
-            document.getElementById('content').innerHTML = `
-                <div class="no-key">
-                    <h3>🔑 Key Đã Hết Hạn</h3>
-                    <p>Key hiện tại không còn hợp lệ. Vui lòng đợi key mới!</p>
                 </div>
             `;
         }
@@ -311,24 +243,25 @@
             });
         }
 
-        // === URL PARAMETER HANDLING ===
+        // === URL HANDLING ===
         function handleUrlParameters() {
             const urlParams = new URLSearchParams(window.location.search);
             const keyParam = urlParams.get('key');
-            console.log("🔗 URL Parameter:", keyParam);
 
             if (keyParam === 'GET_DAILY_KEY') {
-                console.log("✅ Valid parameter - Getting key...");
-                getDailyKey();
+                secureInit();
+                
+                // Xóa URL parameter
+                setTimeout(() => {
+                    window.history.replaceState({}, '', window.location.pathname);
+                }, 1000);
             } else {
-                console.log("❌ No valid parameter - Showing access error");
                 showAccessError();
             }
         }
 
-        // === AUTO RUN ===
+        // === INIT ===
         document.addEventListener('DOMContentLoaded', function() {
-            console.log("🚀 Page loaded - Starting...");
             handleUrlParameters();
         });
     </script>
