@@ -1,45 +1,10 @@
-name: 🔑 Generate Daily Key & Link
-
-on:
-  schedule:
-    - cron: '0 17 * * *'  # 00:00 VN time
-  workflow_dispatch:
-
-permissions:
-  contents: write
-
-jobs:
-  generate-key:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          
       - name: Generate Daily Data
         run: |
           KEY="vphuc_$(date +%Y%m%d)_$(openssl rand -hex 6 | tr '[:lower:]' '[:upper:]')"
           ORIGINAL_URL="https://vphuc1265.github.io/vphuc.luv/?key=$KEY"
           
-          # Tạo Python script riêng
-          cat > shorten.py << 'EOF'
-import requests, json, sys
-try:
-    api_url = f"https://link4m.co/api-shorten/v2?api=68db842cd32fc747763d594d&url={sys.argv[1]}"
-    response = requests.get(api_url, timeout=10)
-    data = response.json()
-    if data.get('status') == 'success':
-        print(data['shortenedUrl'])
-    else:
-        print('https://link4m.co/error-api')
-except Exception as e:
-    print('https://link4m.co/error-connection')
-EOF
-
-          SHORT_URL=$(python3 shorten.py "$ORIGINAL_URL")
-          
-          echo "Key: $KEY"
-          echo "Short URL: $SHORT_URL"
+          # Gọi Link4M API bằng curl + jq
+          SHORT_URL=$(curl -s "https://link4m.co/api-shorten/v2?api=68db842cd32fc747763d594d&url=$ORIGINAL_URL" | jq -r '.shortenedUrl // "https://link4m.co/error"')
           
           echo "$KEY" > daily-key.txt
           echo "$SHORT_URL" > daily-link.txt
