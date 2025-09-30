@@ -2,7 +2,7 @@ name: 🔑 Generate Daily Key & Secret
 
 on:
   schedule:
-    - cron: '0 17 * * *'  # 00:00 VN time
+    - cron: '0 17 * * *'  # 17:00 UTC = 00:00 VN time
   workflow_dispatch:
 
 jobs:
@@ -12,24 +12,14 @@ jobs:
     - uses: actions/checkout@v4
     - name: Generate Daily Data
       run: |
-        # Daily key
         TODAY=$(date -u +%Y%m%d)
-        KEY="vphuc_${TODAY}$(openssl rand -hex 4 | tr '[:lower:]' '[:upper:]')"
+        # Tạo key phức tạp hơn
+        KEY="vphuc_${TODAY}$(openssl rand -hex 6 | tr '[:lower:]' '[:upper:]')_$(openssl rand -hex 3)"
+        SECRET="vphuc_secret_$(openssl rand -hex 12)_${TODAY}"
         
-        # Daily secret (cho URL parameter)
-        SECRET="vphuc_secret_$(openssl rand -hex 8)"
-        
-        # Tạo files
         echo "$KEY" > daily-key.txt
         echo "$SECRET" > daily-secret.txt
         
-        echo "Key: $KEY"
-        echo "Secret: $SECRET"
-        echo "Web URL: https://vphuc1265.github.io/vphuc.luv/?key=$SECRET"
-    - name: Commit Data
-      run: |
-        git config user.name "github-actions"
-        git config user.email "actions@github.com"
-        git add daily-key.txt daily-secret.txt
-        git commit -m "Update daily keys & secret" || exit 0
-        git push
+        # Tạo JSON với checksum
+        CHECKSUM=$(echo -n "$KEY$SECRET" | sha256sum | cut -d' ' -f1)
+        echo "{\"key\":\"$KEY\",\"secret\":\"$SECRET\",\"date\":\"$TODAY\",\"checksum\":\"$CHECKSUM\"}" > daily-data.json
