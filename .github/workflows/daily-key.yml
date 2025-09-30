@@ -1,39 +1,17 @@
-name: 🔑 Generate Daily Key & Link
-
-on:
-  schedule:
-    - cron: '0 17 * * *'  # 00:00 VN time
-  workflow_dispatch:
-
-jobs:
-  generate-key:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v4
-    
     - name: Generate Daily Data
       run: |
         # Tạo key random
         KEY="vphuc_$(date +%Y%m%d)_$(openssl rand -hex 6 | tr '[:lower:]' '[:upper:]')"
-        
-        # Tạo URL với key
         ORIGINAL_URL="https://vphuc1265.github.io/vphuc.luv/?key=$KEY"
         
-        # Rút gọn qua Link4M API - DÙNG jq ĐỂ PARSE JSON
-        API_RESPONSE=$(curl -s "https://link4m.co/api-shorten/v2?api=68db842cd32fc747763d594d&url=$ORIGINAL_URL")
-        SHORT_URL=$(echo $API_RESPONSE | jq -r '.shortenedUrl // empty')
-        
-        # Nếu lỗi API hoặc không có URL, dùng fallback
-        if [ -z "$SHORT_URL" ]; then
-          SHORT_URL="https://link4m.co/vphuc-$(date +%Y%m%d)"
-        fi
+        # Tạo Link4M URL - ĐƠN GIẢN HƠN
+        SHORT_URL="https://link4m.co/vphuc-$(date +%Y%m%d)"
         
         # Lưu files
         echo "$KEY" > daily-key.txt
         echo "$SHORT_URL" > daily-link.txt
         echo "{\"key\":\"$KEY\",\"link\":\"$SHORT_URL\",\"date\":\"$(date +%Y%m%d)\"}" > daily-data.json
         
-        # Commit
         git config user.name "github-actions"
         git config user.email "actions@github.com"
         git add .
