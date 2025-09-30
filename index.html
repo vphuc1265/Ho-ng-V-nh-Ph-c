@@ -35,24 +35,27 @@
             const urlParams = new URLSearchParams(window.location.search);
             const urlKey = urlParams.get('key');
             
-            // NẾU KHÔNG CÓ KEY HOẶC KEY SAI -> REDIRECT LUÔN
-            if (!urlKey || urlKey === '' || urlKey === 'undefined') {
+            // KIỂM TRA NẾU ĐANG Ở LINK4M URL -> KHÔNG REDIRECT NỮA
+            if (window.location.href.includes('link4m.co')) {
+                document.getElementById('content').innerHTML = '<div style="color:red;">❌ Invalid key - Use tool to get new link</div>';
+                return;
+            }
+            
+            if (!urlKey) {
                 redirectToLink4M();
                 return;
             }
             
             try {
-                // Lấy key HIỆN TẠI từ server
                 const keyResponse = await fetch('./daily-key.txt');
                 const currentKey = (await keyResponse.text()).trim();
                 
-                // KIỂM TRA KEY CÓ KHỚP KHÔNG
                 if (urlKey !== currentKey) {
                     redirectToLink4M();
                     return;
                 }
                 
-                // Key hợp lệ - hiển thị
+                // KEY HỢP LỆ - HIỂN THỊ
                 document.getElementById('content').innerHTML = `
                     <div style="font-size:18px; font-weight:bold; color:#333; margin:20px 0; padding:15px; background:#f8f9fa; border-radius:5px; border:2px dashed #667eea;">
                         🔑 Today Key: <br>
@@ -65,24 +68,27 @@
                 `;
                 
             } catch (error) {
-                // Lỗi kết nối -> redirect
-                redirectToLink4M();
+                document.getElementById('content').innerHTML = '<div style="color:red;">❌ Connection error</div>';
             }
         }
 
         async function redirectToLink4M() {
             try {
-                // Lấy Link4M link từ server
                 const linkResponse = await fetch('./daily-link.txt');
-                const todayLink = (await linkResponse.text()).trim();
-                window.location.href = todayLink;
+                let todayLink = await linkResponse.text();
+                todayLink = todayLink.trim();
+                
+                // CHỈ REDIRECT NẾU LINK HỢP LỆ VÀ KHÔNG PHẢI URL HIỆN TẠI
+                if (todayLink && todayLink.includes('link4m.co') && todayLink !== window.location.href) {
+                    window.location.href = todayLink;
+                } else {
+                    document.getElementById('content').innerHTML = '<div style="color:red;">❌ Invalid access</div>';
+                }
             } catch (error) {
-                // Fallback nếu không lấy được link
-                window.location.href = 'https://link4m.co/daily-key-today';
+                document.getElementById('content').innerHTML = '<div style="color:red;">❌ System error</div>';
             }
         }
 
-        // CHẠY NGAY KHI TRANG LOAD
         checkKey();
     </script>
 </body>
