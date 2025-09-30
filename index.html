@@ -133,6 +133,14 @@
             margin-top: 20px;
             font-size: 14px;
         }
+        .no-key {
+            background: #ff6b6b;
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            text-align: center;
+        }
     </style>
 </head>
 <body>
@@ -151,14 +159,8 @@
             
             <div class="location">Bà Rịa - Vũng Tàu</div>
             
-            <div class="key-section">
-                <div class="key-label">Key Tool Ngày Hôm Nay :</div>
-                <div class="key-value" id="keyDisplay">Đang tạo key...</div>
-                <button class="copy-btn" onclick="copyKey()">📋 Copy Key</button>
-            </div>
-            
-            <div class="expiry">
-                ⏰ Key có hiệu lực đến: <span id="expiryTime"></span>
+            <div id="content">
+                <!-- Nội dung sẽ được điền bằng JavaScript -->
             </div>
             
             <!-- Nút TikTok -->
@@ -201,30 +203,83 @@
             return `vphuc_${todayDate}${randomPart}`;
         }
 
-        // Hiển thị thời gian hết hạn
-        function showExpiryTime() {
+        // Kiểm tra xem có key trong URL không (từ Link4M redirect)
+        function hasKeyInUrl() {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.has('key');
+        }
+
+        // Hiển thị key hợp lệ
+        function showValidKey(key) {
+            document.getElementById('content').innerHTML = `
+                <div class="key-section">
+                    <div class="key-label">Key Tool Ngày Hôm Nay :</div>
+                    <div class="key-value">${key}</div>
+                    <button class="copy-btn" onclick="copyKey('${key}')">📋 Copy Key</button>
+                </div>
+                <div class="expiry">
+                    ⏰ Key có hiệu lực đến: ${getExpiryTime()}
+                </div>
+            `;
+        }
+
+        // Hiển thị thông báo không có key
+        function showNoKey() {
+            document.getElementById('content').innerHTML = `
+                <div class="no-key">
+                    <h3>🔑 Chưa Có Key</h3>
+                    <p>Vui lòng vượt link trong tool để nhận key!</p>
+                    <p><small>Key sẽ được cập nhật sau khi bạn hoàn thành vượt link.</small></p>
+                </div>
+            `;
+        }
+
+        // Lấy thời gian hết hạn
+        function getExpiryTime() {
             const tomorrow = new Date();
             tomorrow.setDate(tomorrow.getDate() + 1);
             tomorrow.setHours(0, 0, 0, 0);
-            document.getElementById('expiryTime').textContent = 
-                tomorrow.toLocaleDateString('vi-VN') + ' lúc 00:00';
+            return tomorrow.toLocaleDateString('vi-VN') + ' lúc 00:00';
         }
 
-        function copyKey() {
-            const keyText = document.getElementById('keyDisplay').textContent;
-            navigator.clipboard.writeText(keyText).then(() => {
+        function copyKey(key) {
+            navigator.clipboard.writeText(key).then(() => {
                 alert('Đã copy key vào clipboard!');
             });
         }
 
         // MAIN EXECUTION
-        const todayKey = getTodayKey();
-        document.getElementById('keyDisplay').textContent = todayKey;
-        showExpiryTime();
-
-        // Lưu key vào URL (tùy chọn - để share link)
-        const newUrl = `${window.location.origin}${window.location.pathname}?key=${todayKey}`;
-        window.history.replaceState({}, '', newUrl);
+        if (hasKeyInUrl()) {
+            // Có key trong URL (từ Link4M redirect) - lưu key và hiển thị
+            const urlParams = new URLSearchParams(window.location.search);
+            const keyFromUrl = urlParams.get('key');
+            
+            // Lưu key vào localStorage với ngày hôm nay
+            localStorage.setItem('dailyKey', keyFromUrl);
+            localStorage.setItem('keyDate', getTodayDate());
+            
+            // Xóa key khỏi URL để tránh reload lấy key mới
+            window.history.replaceState({}, '', window.location.pathname);
+            
+            showValidKey(keyFromUrl);
+        } else {
+            // Không có key trong URL - kiểm tra localStorage
+            const storedKey = localStorage.getItem('dailyKey');
+            const storedDate = localStorage.getItem('keyDate');
+            const today = getTodayDate();
+            
+            if (storedKey && storedDate === today) {
+                // Có key của hôm nay trong localStorage - hiển thị
+                showValidKey(storedKey);
+            } else {
+                // Không có key hoặc key đã cũ - hiển thị thông báo
+                showNoKey();
+                
+                // Xóa key cũ nếu có
+                localStorage.removeItem('dailyKey');
+                localStorage.removeItem('keyDate');
+            }
+        }
     </script>
 </body>
 </html>
