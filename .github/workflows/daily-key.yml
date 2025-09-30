@@ -19,12 +19,12 @@ jobs:
         # Tạo URL với key
         ORIGINAL_URL="https://vphuc1265.github.io/vphuc.luv/?key=$KEY"
         
-        # Rút gọn qua Link4M API và lấy short URL
+        # Rút gọn qua Link4M API - DÙNG jq ĐỂ PARSE JSON
         API_RESPONSE=$(curl -s "https://link4m.co/api-shorten/v2?api=68db842cd32fc747763d594d&url=$ORIGINAL_URL")
-        SHORT_URL=$(echo $API_RESPONSE | python3 -c "import sys, json; print(json.load(sys.stdin)['shortenedUrl'])")
+        SHORT_URL=$(echo $API_RESPONSE | jq -r '.shortenedUrl // empty')
         
-        # Nếu lỗi API, dùng fallback URL
-        if [ $? -ne 0 ]; then
+        # Nếu lỗi API hoặc không có URL, dùng fallback
+        if [ -z "$SHORT_URL" ]; then
           SHORT_URL="https://link4m.co/vphuc-$(date +%Y%m%d)"
         fi
         
