@@ -1,28 +1,73 @@
-<script>
-async function loadDailyKey() {
-    try {
-        const today = new Date().toISOString().slice(0,10).replace(/-/g, '');
-        const response = await fetch('./daily-key.txt');
-        
-        if (response.ok) {
-            const key = (await response.text()).trim();
-            
-            // CHECK KEY DATE - QUAN TRỌNG
-            if (!key.includes(today)) {
-                document.getElementById('content').innerHTML = 
-                    '<div style="color: red;">🔑 KEY ĐÃ HẾT HẠN<br>Vui Lòng Vượt Link Mới Từ Tool</div>';
-                return;
-            }
-            
-            document.getElementById('content').innerHTML = `
-                <div class="key-display">🔑 Today Key : <br><span style="color: #667eea; font-size: 20px;">${key}</span></div>
-                <button onclick="copyKey('${key}')">Copy Key</button>
-            `;
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily Key Access</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
-    } catch (error) {
-        document.getElementById('content').innerHTML = '<div style="color: red;">❌ Lỗi Kết Nối</div>';
-    }
-}
+        .container {
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            max-width: 400px;
+            width: 100%;
+            text-align: center;
+        }
+        .key-display {
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+            margin: 20px 0;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 5px;
+            border: 2px dashed #667eea;
+        }
+        .error {
+            color: #dc3545;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔑 Daily Key System</h1>
+        <div id="content">
+            <div>Đang Tải Key...</div>
+        </div>
+    </div>
 
-document.addEventListener('DOMContentLoaded', loadDailyKey);
-</script>
+    <script>
+        // ĐƠN GIẢN - KHÔNG CHECK GÌ CẢ
+        fetch('./daily-key.txt')
+            .then(response => response.text())
+            .then(key => {
+                document.getElementById('content').innerHTML = `
+                    <div class="key-display">
+                        🔑 Today Key : <br>
+                        <span style="color: #667eea; font-size: 20px;">${key}</span>
+                    </div>
+                    <p>Copy Key Này Và Nhập Vào Tool</p>
+                    <button onclick="navigator.clipboard.writeText('${key}').then(() => alert('Đã Copy Key !'))" 
+                            style="padding: 10px 20px; background: #667eea; color: white; border: none; border-radius: 5px; cursor: pointer;">
+                        Copy Key
+                    </button>
+                `;
+            })
+            .catch(error => {
+                document.getElementById('content').innerHTML = '<div class="error">❌ Lỗi Tải Key</div>';
+            });
+    </script>
+</body>
+</html>
