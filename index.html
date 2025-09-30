@@ -131,15 +131,17 @@
             padding: 15px;
             border-radius: 15px;
             margin-top: 20px;
+            font-size: 14px;
         }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="profile-card">
-            <!-- Avatar GIF -->
+            <!-- Avatar từ ảnh đã upload -->
             <div class="avatar">
-                <img src="https://i.pinimg.com/originals/16/18/54/1618549863568130.gif" alt="vphuc avatar">
+                <img src="./quality_restoration_20250218143353710.jpg" alt="vphuc avatar" 
+                     onerror="this.style.display='none'; this.parentNode.innerHTML='V'; this.parentNode.style.background='linear-gradient(45deg, #ff6b6b, #feca57)'; this.parentNode.style.color='white'; this.parentNode.style.display='flex'; this.parentNode.style.alignItems='center'; this.parentNode.style.justifyContent='center'; this.parentNode.style.fontSize='48px';">
             </div>
             
             <!-- Thông tin cá nhân -->
@@ -170,7 +172,7 @@
             
             <!-- Works -->
             <div class="works">
-                <strong> tool được tạo ra để hỗ trợ với mục đích chính đáng, nghiêm cấm các hành vi sử dụng sai mục đích !<strong>
+                <strong>tool được tạo ra để sử dụng với mục đích chính đáng ! không chịu trách nhiệm nếu sử dụng sai mục đích</strong>
             </div> 
         </div>
     </div>
@@ -194,34 +196,12 @@
         // Hiển thị key
         document.getElementById('keyDisplay').textContent = keyFromUrl;
         
-        // Tính thời gian hết hạn (đến 0h ngày mai)
-        function setExpiryTime() {
-            const now = new Date();
-            const tomorrow = new Date(now);
-            tomorrow.setDate(tomorrow.getDate() + 1);
-            tomorrow.setHours(0, 0, 0, 0);
-            
-            const options = { 
-                hour: '2-digit', 
-                minute: '2-digit',
-                day: '2-digit',
-                month: '2-digit',
-                year: 'numeric'
-            };
-            document.getElementById('expiryTime').textContent = 
-                tomorrow.toLocaleTimeString('vi-VN', options) + ' ngày ' + 
-                tomorrow.toLocaleDateString('vi-VN');
-        }
-        
         function copyKey() {
             const keyText = document.getElementById('keyDisplay').textContent;
             navigator.clipboard.writeText(keyText).then(() => {
                 alert('Đã copy key vào clipboard !');
             });
         }
-        
-        // Khởi chạy
-        setExpiryTime();
         
         // Lưu key vào localStorage
         localStorage.setItem('lastKey', keyFromUrl);
