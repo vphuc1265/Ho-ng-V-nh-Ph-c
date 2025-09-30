@@ -278,10 +278,12 @@
                 // Hiển thị key khi có parameter
                 getDailyKey();
                 
-                // Xóa parameter khỏi URL
+                // Xóa parameter khỏi URL SAU KHI đã load xong
                 setTimeout(() => {
-                    window.history.replaceState({}, '', window.location.pathname);
-                }, 100);
+                    if (window.history && window.history.replaceState) {
+                        window.history.replaceState({}, '', window.location.pathname);
+                    }
+                }, 2000); // Chờ 2 giây để đảm bảo đã lấy key xong
             } else {
                 // Không có key hoặc key không hợp lệ
                 showAccessError();
