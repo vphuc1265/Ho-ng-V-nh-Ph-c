@@ -4,28 +4,143 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>vphuc - Key Tool</title>
-    <!-- GIỮ NGUYÊN CSS -->
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Segoe UI', sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: #333; min-height: 100vh; padding: 20px; }
-        .container { max-width: 400px; margin: 0 auto; }
-        .profile-card { background: white; border-radius: 20px; padding: 30px; text-align: center; box-shadow: 0 15px 35px rgba(0,0,0,0.1); margin-bottom: 20px; }
-        .avatar { width: 120px; height: 120px; border-radius: 50%; margin: 0 auto 15px; border: 4px solid #fff; box-shadow: 0 5px 15px rgba(0,0,0,0.2); overflow: hidden; }
-        .avatar img { width: 100%; height: 100%; object-fit: cover; }
-        .name { font-size: 24px; font-weight: bold; margin-bottom: 10px; color: #2c3e50; }
-        .bio { color: #7f8c8d; margin-bottom: 20px; line-height: 1.5; }
-        .location { color: #e74c3c; margin-bottom: 25px; font-weight: 500; }
-        .key-section { background: #f8f9fa; padding: 20px; border-radius: 15px; margin: 20px 0; }
-        .key-label { font-size: 14px; color: #7f8c8d; margin-bottom: 8px; }
-        .key-value { font-size: 18px; font-weight: bold; color: #27ae60; word-break: break-all; background: white; padding: 12px; border-radius: 10px; border: 2px dashed #bdc3c7; }
-        .tiktok-btn { display: flex; align-items: center; justify-content: center; background: #000000; color: white; padding: 12px 25px; border-radius: 25px; text-decoration: none; margin: 25px auto; width: 200px; font-weight: 500; transition: all 0.3s ease; }
-        .tiktok-btn:hover { background: #333333; transform: translateY(-2px); }
-        .tiktok-icon { font-size: 20px; margin-right: 8px; }
-        .expiry { background: #fff3cd; color: #856404; padding: 10px; border-radius: 10px; font-size: 14px; margin-top: 15px; }
-        .copy-btn { background: #3498db; color: white; border: none; padding: 10px 20px; border-radius: 25px; cursor: pointer; margin-top: 10px; font-weight: 500; transition: all 0.3s ease; }
-        .copy-btn:hover { background: #2980b9; transform: translateY(-2px); }
-        .works { background: #34495e; color: white; padding: 15px; border-radius: 15px; margin-top: 20px; font-size: 14px; }
-        .no-key { background: #ff6b6b; color: white; padding: 20px; border-radius: 10px; margin: 20px 0; text-align: center; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            max-width: 400px;
+            margin: 0 auto;
+        }
+        .profile-card {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            text-align: center;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            margin: 0 auto 15px;
+            border: 4px solid #fff;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+        .avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .name {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #2c3e50;
+        }
+        .bio {
+            color: #7f8c8d;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+        .location {
+            color: #e74c3c;
+            margin-bottom: 25px;
+            font-weight: 500;
+        }
+        .key-section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 15px;
+            margin: 20px 0;
+        }
+        .key-label {
+            font-size: 14px;
+            color: #7f8c8d;
+            margin-bottom: 8px;
+        }
+        .key-value {
+            font-size: 18px;
+            font-weight: bold;
+            color: #27ae60;
+            word-break: break-all;
+            background: white;
+            padding: 12px;
+            border-radius: 10px;
+            border: 2px dashed #bdc3c7;
+        }
+        .tiktok-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #000000;
+            color: white;
+            padding: 12px 25px;
+            border-radius: 25px;
+            text-decoration: none;
+            margin: 25px auto;
+            width: 200px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        .tiktok-btn:hover {
+            background: #333333;
+            transform: translateY(-2px);
+        }
+        .tiktok-icon {
+            font-size: 20px;
+            margin-right: 8px;
+        }
+        .expiry {
+            background: #fff3cd;
+            color: #856404;
+            padding: 10px;
+            border-radius: 10px;
+            font-size: 14px;
+            margin-top: 15px;
+        }
+        .copy-btn {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            margin-top: 10px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        .copy-btn:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+        }
+        .works {
+            background: #34495e;
+            color: white;
+            padding: 15px;
+            border-radius: 15px;
+            margin-top: 20px;
+            font-size: 14px;
+        }
+        .no-key {
+            background: #ff6b6b;
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            text-align: center;
+        }
     </style>
 </head>
 <body>
@@ -71,48 +186,16 @@
             return yyyy + mm + dd;
         }
 
-        // Hàm tạo key ngẫu nhiên
-        function generateRandomKey() {
-            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-            let result = '';
-            for (let i = 0; i < 8; i++) {
-                result += chars.charAt(Math.floor(Math.random() * chars.length));
-            }
-            return result;
-        }
-
-        // Tạo key cho hôm nay
-        function getTodayKey() {
+        // Kiểm tra key có hợp lệ cho hôm nay không
+        function isValidTodayKey(key) {
             const todayDate = getTodayDate();
-            const randomPart = generateRandomKey();
-            return `vphuc_${todayDate}${randomPart}`;
-        }
-
-        // Tự động tạo key khi URL có GET_DAILY_KEY
-        function autoGenerateKey() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const keyParam = urlParams.get('key');
+            const keyPattern = /^vphuc_(\d{8})[A-Z0-9]{8}$/;
+            const match = key.match(keyPattern);
             
-            if (keyParam === 'GET_DAILY_KEY') {
-                const todayKey = getTodayKey();
-                
-                // Thay thế parameter bằng key thật
-                const newUrl = `${window.location.origin}${window.location.pathname}?key=${todayKey}`;
-                window.history.replaceState({}, '', newUrl);
-                
-                // Lưu key vào localStorage
-                localStorage.setItem('dailyKey', todayKey);
-                localStorage.setItem('keyDate', getTodayDate());
-                
-                return todayKey;
-            }
-            return null;
-        }
-
-        // Kiểm tra xem có key trong URL không
-        function hasKeyInUrl() {
-            const urlParams = new URLSearchParams(window.location.search);
-            return urlParams.has('key') && urlParams.get('key') !== 'GET_DAILY_KEY';
+            if (!match) return false;
+            
+            const keyDate = match[1];
+            return keyDate === todayDate;
         }
 
         // Hiển thị key hợp lệ
@@ -129,13 +212,12 @@
             `;
         }
 
-        // Hiển thị thông báo không có key
-        function showNoKey() {
+        // Hiển thị key không hợp lệ
+        function showInvalidKey() {
             document.getElementById('content').innerHTML = `
                 <div class="no-key">
-                    <h3>🔑 Chưa Có Key</h3>
-                    <p>Vui lòng vượt link trong tool để nhận key!</p>
-                    <p><small>Key sẽ được cập nhật sau khi bạn hoàn thành vượt link.</small></p>
+                    <h3>🔑 Key Đã Hết Hạn</h3>
+                    <p>Key Này Không Còn Hợp Lệ, Vui Lòng Vượt Link Để Nhận Key Mới!</p>
                 </div>
             `;
         }
@@ -150,48 +232,18 @@
 
         function copyKey(key) {
             navigator.clipboard.writeText(key).then(() => {
-                alert('Đã Copy Key Vào Clipboard !');
+                alert('Đã copy key vào clipboard!');
             });
         }
 
-        // Tự động xóa key cũ khi sang ngày mới
-        function cleanupOldKeys() {
-            const storedDate = localStorage.getItem('keyDate');
-            const today = getTodayDate();
-            
-            if (storedDate && storedDate !== today) {
-                localStorage.removeItem('dailyKey');
-                localStorage.removeItem('keyDate');
-            }
-        }
-
         // MAIN EXECUTION
-        cleanupOldKeys();
-        
-        const autoKey = autoGenerateKey();
-        if (autoKey) {
-            showValidKey(autoKey);
-        } else if (hasKeyInUrl()) {
-            const urlParams = new URLSearchParams(window.location.search);
-            const keyFromUrl = urlParams.get('key');
-            
-            localStorage.setItem('dailyKey', keyFromUrl);
-            localStorage.setItem('keyDate', getTodayDate());
-            
-            window.history.replaceState({}, '', window.location.pathname);
+        const urlParams = new URLSearchParams(window.location.search);
+        const keyFromUrl = urlParams.get('key');
+
+        if (keyFromUrl && isValidTodayKey(keyFromUrl)) {
             showValidKey(keyFromUrl);
         } else {
-            const storedKey = localStorage.getItem('dailyKey');
-            const storedDate = localStorage.getItem('keyDate');
-            const today = getTodayDate();
-            
-            if (storedKey && storedDate === today) {
-                showValidKey(storedKey);
-            } else {
-                showNoKey();
-                localStorage.removeItem('dailyKey');
-                localStorage.removeItem('keyDate');
-            }
+            showInvalidKey();
         }
     </script>
 </body>
