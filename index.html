@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Secure Key Access</title>
+    <title>Daily Key Access</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -34,93 +34,38 @@
             border-radius: 5px;
             border: 2px dashed #667eea;
         }
-        .error {
-            color: #dc3545;
-            font-weight: bold;
-        }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>🔑 Daily Key System</h1>
         <div id="content">
-            <div class="loading">🔄 Đang xác thực...</div>
+            <div class="loading">🔄 Đang tải key...</div>
         </div>
     </div>
 
     <script>
-        // === REAL-TIME SECRET VERIFICATION ===
-        async function verifyAccess() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const urlSecret = urlParams.get('key');
-            
-            if (!urlSecret) {
-                showError('🚫 ACCESS DENIED - Missing Secret Key');
-                return false;
-            }
-            
-            try {
-                // Lấy secret HIỆN TẠI từ server
-                const response = await fetch('./daily-secret.txt');
-                if (response.ok) {
-                    const currentSecret = (await response.text()).trim();
-                    
-                    // So sánh secret từ URL với secret hiện tại
-                    if (urlSecret !== currentSecret) {
-                        showError('🚫 KEY EXPIRED - Get new link from tool');
-                        return false;
-                    }
-                    
-                    return true;
-                } else {
-                    showError('❌ Cannot verify secret');
-                    return false;
-                }
-            } catch (error) {
-                showError('❌ Connection error');
-                return false;
-            }
-        }
-
-        // === LOAD AND DISPLAY KEY ===
         async function loadDailyKey() {
-            if (!await verifyAccess()) return;
-            
             try {
                 const response = await fetch('./daily-key.txt');
                 if (response.ok) {
                     const key = (await response.text()).trim();
-                    const today = new Date().toISOString().slice(0,10).replace(/-/g, '');
-                    
-                    // Check key date
-                    if (!key.includes(today)) {
-                        showError('🔑 Key expired - Wait for daily update');
-                        return;
-                    }
-                    
-                    showKey(key);
+                    document.getElementById('content').innerHTML = `
+                        <div class="key-display">
+                            🔑 Today Key: <br>
+                            <span style="color: #667eea; font-size: 20px;">${key}</span>
+                        </div>
+                        <p>Copy key này và nhập vào tool</p>
+                        <button onclick="copyKey('${key}')" style="padding: 10px 20px; background: #667eea; color: white; border: none; border-radius: 5px; cursor: pointer;">Copy Key</button>
+                    `;
                 } else {
-                    showError('❌ Key not available');
+                    document.getElementById('content').innerHTML = 
+                        '<div style="color: red;">❌ Key chưa có, đợi update 00:00</div>';
                 }
             } catch (error) {
-                showError('❌ Connection error');
+                document.getElementById('content').innerHTML = 
+                    '<div style="color: red;">❌ Lỗi kết nối</div>';
             }
-        }
-
-        function showKey(key) {
-            document.getElementById('content').innerHTML = `
-                <div class="key-display">
-                    🔑 Today Key: <br>
-                    <span style="color: #667eea; font-size: 20px;">${key}</span>
-                </div>
-                <p>Copy key này và nhập vào tool</p>
-                <button onclick="copyKey('${key}')" style="padding: 10px 20px; background: #667eea; color: white; border: none; border-radius: 5px; cursor: pointer;">Copy Key</button>
-            `;
-        }
-
-        function showError(message) {
-            document.getElementById('content').innerHTML = 
-                `<div class="error">${message}</div>`;
         }
 
         function copyKey(key) {
@@ -129,7 +74,6 @@
             });
         }
 
-        // Auto load khi page ready
         document.addEventListener('DOMContentLoaded', loadDailyKey);
     </script>
 </body>
