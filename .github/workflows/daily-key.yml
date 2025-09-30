@@ -18,14 +18,22 @@ jobs:
         run: |
           # Tạo key random
           KEY="vphuc_$(date +%Y%m%d)_$(openssl rand -hex 6 | tr '[:lower:]' '[:upper:]')"
+          ORIGINAL_URL="https://vphuc1265.github.io/vphuc.luv/?key=$KEY"
           
-          # Link4M URL đơn giản
-          SHORT_URL="https://link4m.co/vphuc-$(date +%Y%m%d)"
+          # Gọi Link4M API đơn giản
+          SHORT_URL=$(curl -s "https://link4m.co/api-shorten/v2?api=68db842cd32fc747763d594d&url=$ORIGINAL_URL" | grep -o '"shortenedUrl":"[^"]*"' | cut -d'"' -f4)
           
-          # Lưu files
+          # Nếu API fail, dùng fallback
+          if [ -z "$SHORT_URL" ]; then
+            SHORT_URL="https://link4m.co/vphuc-$(date +%Y%m%d)"
+          fi
+          
+          # Lưu files - QUAN TRỌNG: phải có content
           echo "$KEY" > daily-key.txt
           echo "$SHORT_URL" > daily-link.txt
-          echo "{\"key\":\"$KEY\",\"link\":\"$SHORT_URL\",\"date\":\"$(date +%Y%m%d)\"}" > daily-data.json
+          
+          echo "Key: $KEY"
+          echo "Short URL: $SHORT_URL"
           
           # Commit
           git config user.name "github-actions"
