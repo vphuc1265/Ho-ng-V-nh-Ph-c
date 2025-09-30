@@ -2,23 +2,56 @@ name: Generate Daily Key
 
 on:
   schedule:
-    - cron: '0 17 * * *'
-  workflow_dispatch:
+    - cron: '0 17 * * *'  # 17:00 UTC = 00:00 Vietnam Time
+  workflow_dispatch:       # Cho phép chạy thủ công
 
 jobs:
   generate-key:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    
     steps:
-    - uses: actions/checkout@v4
-    - name: Generate Key
+    - name: 📥 Checkout code
+      uses: actions/checkout@v4
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        
+    - name: 🔑 Generate Daily Key
       run: |
-        TODAY=$(date +%Y%m%d)
-        RANDOM=$(openssl rand -hex 4 | tr '[:lower:]' '[:upper:]')
-        echo "{\"key\":\"vphuc_${TODAY}${RANDOM}\",\"date\":\"$TODAY\"}" > daily-key.json
-    - name: Commit Key
+        # Get today's date
+        TODAY=$(date -u +%Y%m%d)
+        
+        # Generate random part
+        RANDOM_PART=$(openssl rand -hex 4 | tr '[:lower:]' '[:upper:]')
+        
+        # Create the key
+        KEY="vphuc_${TODAY}${RANDOM_PART}"
+        
+        echo "✅ Generated key: $KEY"
+        
+        # Create JSON file
+        cat > daily-key.json << EOF
+        {
+          "key": "$KEY",
+          "date": "$TODAY",
+          "expires": "$(date -u -d '+1 day' +%Y-%m-%d)",
+          "generated_at": "$(date -u -Iseconds)"
+        }
+        EOF
+        
+    - name: 📤 Commit & Push
       run: |
-        git config user.name "github-actions"
-        git config user.email "actions@github.com"
+        git config --global user.name "github-actions[bot]"
+        git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+        
         git add daily-key.json
-        git commit -m "Update key $(date +%Y%m%d)" || exit 0
-        git push
+        
+        # Check if there are changes
+        if git diff --staged --quiet; then
+          echo "🔄 No changes to commit"
+        else
+          git commit -m "🔑 Update daily key $(date -u +%Y%m%d)"
+          git push
+          echo "✅ Key committed successfully"
+        fi
