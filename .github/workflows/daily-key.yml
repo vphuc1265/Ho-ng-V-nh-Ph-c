@@ -2,7 +2,7 @@ name: 🔑 Generate Daily Key & Link
 
 on:
   schedule:
-    - cron: '0 17 * * *'
+    - cron: '0 17 * * *'  # 00:00 VN time
   workflow_dispatch:
 
 permissions:
@@ -16,16 +16,39 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           
-      - name: Create Daily Files
+      - name: Generate Daily Data
         run: |
-          KEY="vphuc_$(date +%Y%m%d)_$(openssl rand -hex 4 | tr '[:lower:]' '[:upper:]')"
-          LINK="https://link4m.co/vphuc-$(date +%Y%m%d)"
+          # Tạo key random
+          KEY="vphuc_$(date +%Y%m%d)_$(openssl rand -hex 6 | tr '[:lower:]' '[:upper:]')"
+          ORIGINAL_URL="https://vphuc1265.github.io/vphuc.luv/?key=$KEY"
           
+          # Gọi Link4M API để lấy short URL THẬT
+          API_URL="https://link4m.co/api-shorten/v2?api=68db842cd32fc747763d594d&url=$ORIGINAL_URL"
+          echo "Calling Link4M API: $API_URL"
+          
+          # Dùng Python để gọi API đơn giản
+          SHORT_URL=$(python3 -c "
+import requests, json
+try:
+    response = requests.get('$API_URL', timeout=10)
+    data = response.json()
+    if data.get('status') == 'success':
+        print(data['shortenedUrl'])
+    else:
+        print('https://link4m.co/error')
+except Exception as e:
+    print('https://link4m.co/fallback')
+")
+          
+          echo "Generated Key: $KEY"
+          echo "Short URL: $SHORT_URL"
+          
+          # Lưu files
           echo "$KEY" > daily-key.txt
-          echo "$LINK" > daily-link.txt
+          echo "$SHORT_URL" > daily-link.txt
           
           git config user.name "github-actions"
           git config user.email "actions@github.com"
           git add .
-          git commit -m "Update daily files - $(date)" || exit 0
+          git commit -m "Update daily key & link - $(date +%Y%m%d)" || exit 0
           git push
