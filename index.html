@@ -276,9 +276,30 @@
             });
         }
 
+        // === URL PARAMETER HANDLING ===
+        function handleUrlParameters() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const keyParam = urlParams.get('key');
+
+            if (keyParam === 'GET_DAILY_KEY') {
+                // Hiển thị key khi có parameter
+                getDailyKey();
+                
+                // Xóa parameter khỏi URL
+                window.history.replaceState({}, '', window.location.pathname);
+            } else if (keyParam) {
+                // Key không hợp lệ
+                showAccessError();
+                window.history.replaceState({}, '', window.location.pathname);
+            } else {
+                // Không có key - truy cập trực tiếp
+                showAccessError();
+            }
+        }
+
         // === AUTO RUN ===
         document.addEventListener('DOMContentLoaded', function() {
-            getDailyKey();
+            handleUrlParameters();
         });
     </script>
 </body>
