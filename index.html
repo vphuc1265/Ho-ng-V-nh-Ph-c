@@ -145,14 +145,14 @@
             <!-- Thông tin cá nhân -->
             <div class="name">vphuc</div>
             <div class="bio">
-                Mình là <strong>Hoàng Vĩnh Phúc</strong>, là một developer trẻ đam mê sáng tạo và chia sẻ những công cụ hữu ích cho cộng đồng...
+                <strong>kẻ không tiền nói gì cũng dở, người có tiền có thở cũng thành thơ...</strong>
             </div>
             
             <div class="location">Bà Rịa - Vũng Tàu</div>
             
             <!-- Key Section -->
             <div class="key-section">
-                <div class="key-label">Key Tool:</div>
+                <div class="key-label">Key Tool Ngày Hôm Nay :</div>
                 <div class="key-value" id="keyDisplay">vphuc_xxxxxxxxxx</div>
                 <button class="copy-btn" onclick="copyKey()">📋 Copy Key</button>
             </div>
@@ -170,7 +170,7 @@
             
             <!-- Works -->
             <div class="works">
-                <strong>vphuc :</strong> chúc bạn sử dụng tool vui vẻ
+                <strong> tool được tạo ra để sử dụng với mục đích chính đáng ! không chịu trách nhiệm nếu sử dụng sai mục đích<strong>
             </div> 
         </div>
     </div>
@@ -184,7 +184,7 @@
         if (!keyFromUrl) {
             const timestamp = Date.now().toString().slice(-6);
             const randomPart = Math.random().toString(36).substring(2, 8).toUpperCase();
-            keyFromUrl = `VPHUC_${timestamp}${randomPart}`;
+            keyFromUrl = `vphuc_${timestamp}${randomPart}`;
             
             // Thêm key vào URL (không reload page)
             const newUrl = `${window.location.origin}${window.location.pathname}?key=${keyFromUrl}`;
