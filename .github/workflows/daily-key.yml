@@ -1,4 +1,4 @@
-name: 🔒 Generate Daily Key & Secret
+name: 🔑 Generate Daily Key & Secret
 
 on:
   schedule:
@@ -6,29 +6,30 @@ on:
   workflow_dispatch:
 
 jobs:
-  generate-secure-key:
+  generate-secure-data:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
-    - name: Generate Keys
+    - name: Generate Daily Data
       run: |
         # Daily key
         TODAY=$(date -u +%Y%m%d)
         KEY="vphuc_${TODAY}$(openssl rand -hex 4 | tr '[:lower:]' '[:upper:]')"
         
-        # Daily secret (cho URL)
-        SECRET="vphuc_$(openssl rand -hex 8)"
+        # Daily secret (cho URL parameter)
+        SECRET="vphuc_secret_$(openssl rand -hex 8)"
         
-        # Tạo cả 2 files
+        # Tạo files
         echo "$KEY" > daily-key.txt
         echo "$SECRET" > daily-secret.txt
         
         echo "Key: $KEY"
         echo "Secret: $SECRET"
-    - name: Commit Keys
+        echo "Web URL: https://vphuc1265.github.io/vphuc.luv/?key=$SECRET"
+    - name: Commit Data
       run: |
         git config user.name "github-actions"
         git config user.email "actions@github.com"
         git add daily-key.txt daily-secret.txt
-        git commit -m "Update daily keys" || exit 0
+        git commit -m "Update daily keys & secret" || exit 0
         git push
