@@ -82,109 +82,88 @@
         <h1 class="cyber-title">HOANG VINH PHUC</h1>
         <div class="subtitle">SECURE KEY SYSTEM</div>
         <div id="content">
-            <div class="loading">VERIFYING SECURITY...</div>
+            <div class="loading">GENERATING SECURE KEY...</div>
         </div>
     </div>
 
     <script>
-        // KEY-BASED SECRET VERIFICATION - ĐƠN GIẢN HÓA
-        async function getKeyBasedSecret(key) {
-            const base = "vphuc_base_2025";
-            try {
-                const parts = key.split('_');
-                if (parts.length >= 3) {
-                    const randomPart = parts[2];
-                    const combined = base + randomPart;
-                    return await sha256(combined);
-                }
-            } catch (e) {
-                console.error("Error generating secret:", e);
-            }
-            return await sha256(base);
+        // SECRET CỐ ĐỊNH DÙNG CHUNG VỚI TOOL
+        const SECRET = "vphuc_secret_hoangvinhphuc";
+        
+        // Tạo key dựa trên secret, ngày, và random
+        function generateSecureKey() {
+            const today = new Date();
+            const dateStr = today.getFullYear().toString() + 
+                          (today.getMonth() + 1).toString().padStart(2, '0') + 
+                          today.getDate().toString().padStart(2, '0');
+            
+            // Tạo random 12 ký tự hex (6 bytes)
+            const randomBuffer = new Uint8Array(6);
+            crypto.getRandomValues(randomBuffer);
+            const randomPart = Array.from(randomBuffer, byte => 
+                byte.toString(16).padStart(2, '0').toUpperCase()
+            ).join('');
+            
+            // Tạo key
+            const key = `vphuc_${dateStr}_${randomPart}`;
+            const timestamp = Date.now().toString();
+            
+            return {
+                key: key,
+                timestamp: timestamp,
+                signature: generateSignature(key, timestamp)
+            };
         }
-
-        async function verifyAndDisplay() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const urlKey = urlParams.get('key');
-            const urlSig = urlParams.get('sig');
-            const urlTs = urlParams.get('ts');
+        
+        // Tạo signature với secret
+        async function generateSignature(key, timestamp) {
+            const encoder = new TextEncoder();
+            const secretKey = await crypto.subtle.importKey(
+                'raw',
+                encoder.encode(SECRET),
+                { name: 'HMAC', hash: 'SHA-256' },
+                false,
+                ['sign']
+            );
             
-            console.log("URL Parameters:", { key: urlKey, sig: urlSig, ts: urlTs });
+            const data = encoder.encode(key + timestamp);
+            const signature = await crypto.subtle.sign('HMAC', secretKey, data);
             
-            if (!urlKey || !urlSig || !urlTs) {
-                showError('INVALID ACCESS PARAMETERS');
-                return;
-            }
-            
-            // Check timestamp (30 phút)
-            const now = Date.now();
-            if (Math.abs(now - parseInt(urlTs)) > 1800000) {
-                showError('KEY EXPIRED');
-                return;
-            }
-            
+            return Array.from(new Uint8Array(signature))
+                .map(b => b.toString(16).padStart(2, '0'))
+                .join('');
+        }
+        
+        // Hiển thị key
+        async function displaySecureKey() {
             try {
-                // TẠO SECRET ĐỘNG TỪ KEY
-                const dynamicSecret = await getKeyBasedSecret(urlKey);
-                const verifyData = urlKey + urlTs;
-                const calculatedSig = await hmacSha256(dynamicSecret, verifyData);
+                const keyData = generateSecureKey();
                 
-                console.log("Verification:", {
-                    dynamicSecret: dynamicSecret.substring(0, 16) + "...",
-                    verifyData: verifyData,
-                    calculatedSig: calculatedSig.substring(0, 16) + "...",
-                    urlSig: urlSig.substring(0, 16) + "..."
-                });
-                
-                if (calculatedSig !== urlSig) {
-                    showError('INVALID SIGNATURE');
-                    return;
-                }
-                
-                // Key hợp lệ - HIỂN THỊ RÕ RÀNG
                 document.getElementById('content').innerHTML = `
                     <div class="key-display">
                         <div style="color: #00ffea; margin-bottom: 10px;">VALID SECURE KEY</div>
-                        <div class="key-value">${urlKey}</div>
+                        <div class="key-value">${keyData.key}</div>
+                        <div style="margin-top: 10px; font-size: 0.9rem; color: #00aaff;">
+                            Key chỉ có hiệu lực trong ngày
+                        </div>
                     </div>
                     <div class="instruction">COPY KEY VÀ DÁN VÀO TOOL ĐỂ SỬ DỤNG</div>
                     <div class="button-container">
-                        <button class="cyber-btn" onclick="copyKey('${urlKey}')">COPY KEY</button>
+                        <button class="cyber-btn" onclick="copyKey('${keyData.key}')">COPY KEY</button>
                     </div>
                 `;
                 
             } catch (error) {
-                console.error("Verification error:", error);
-                showError('SECURITY VERIFICATION FAILED');
+                console.error("Key generation error:", error);
+                showError('KEY GENERATION FAILED');
             }
         }
-
-        // HMAC SHA256 
-        async function hmacSha256(secret, data) {
-            const encoder = new TextEncoder();
-            const key = await crypto.subtle.importKey(
-                'raw', 
-                encoder.encode(secret),
-                { name: 'HMAC', hash: 'SHA-256' }, 
-                false, 
-                ['sign']
-            );
-            const signature = await crypto.subtle.sign('HMAC', key, encoder.encode(data));
-            return Array.from(new Uint8Array(signature)).map(b => b.toString(16).padStart(2, '0')).join('');
-        }
-
-        // SHA256
-        async function sha256(data) {
-            const encoder = new TextEncoder();
-            const hash = await crypto.subtle.digest('SHA-256', encoder.encode(data));
-            return Array.from(new Uint8Array(hash)).map(b => b.toString(16).padStart(2, '0')).join('');
-        }
-
+        
         function showError(msg) {
             document.getElementById('content').innerHTML = 
                 `<div class="error">${msg}</div>`;
         }
-
+        
         function copyKey(key) {
             navigator.clipboard.writeText(key).then(() => {
                 const btn = document.querySelector('.cyber-btn');
@@ -199,8 +178,9 @@
                 }, 2000);
             });
         }
-
-        document.addEventListener('DOMContentLoaded', verifyAndDisplay);
+        
+        // Tạo và hiển thị key ngay khi trang load
+        document.addEventListener('DOMContentLoaded', displaySecureKey);
     </script>
 </body>
 </html>
