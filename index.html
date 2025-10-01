@@ -410,11 +410,11 @@
     </div>
     
     <div class="cyber-terminal">
-        <div class="floating-badge">SECURE SYSTEM</div>
+        <div class="floating-badge">KEY SECURITY</div>
         
         <div class="header">
             <h1 class="cyber-title" data-text="HOANG VINH PHUC">HOANG VINH PHUC</h1>
-            <div class="subtitle">PREMIUM ACCESS SYSTEM</div>
+            <div class="subtitle"></div>
         </div>
         
         <div id="content">
@@ -464,7 +464,7 @@
             // Check date
             const today = new Date().toISOString().slice(0,10).replace(/-/g, '');
             if (urlDate !== today) {
-                showError('KEY EXPIRED - PLEASE GET NEW KEY');
+                showError('KEY DA HET HAN SU DUNG - PLEASE GET NEW KEY');
                 return;
             }
             
@@ -482,13 +482,13 @@
                 // Key hợp lệ
                 document.getElementById('content').innerHTML = `
                     <div class="key-display">
-                        <span class="key-label">VALID SECURE ACCESS KEY</span>
+                        <span class="key-label">TODAY'S KEY</span>
                         <div class="key-value">${urlKey}</div>
                     </div>
-                    <div class="instruction">COPY THIS KEY AND PASTE INTO THE TOOL</div>
+                    <div class="instruction">COPY KEY & PASTE VAO TOOL DE SU DUNG</div>
                     <div class="button-container">
                         <button class="cyber-btn" onclick="copyKey('${urlKey}')">
-                            COPY TO CLIPBOARD
+                            COPY KEY
                         </button>
                     </div>
                 `;
@@ -518,7 +518,7 @@
             navigator.clipboard.writeText(key).then(() => {
                 const btn = document.querySelector('.cyber-btn');
                 const originalText = btn.innerHTML;
-                btn.innerHTML = '✓ COPIED SUCCESSFULLY';
+                btn.innerHTML = 'COPY SUCCESSFULLY';
                 btn.style.background = 'linear-gradient(135deg, #00ff88, #00cc66)';
                 btn.style.color = '#0a0a16';
                 btn.style.boxShadow = '0 0 40px #00ff88, 0 0 80px #00cc66';
@@ -532,14 +532,14 @@
                     btn.style.borderColor = '#00ffea';
                 }, 3000);
             }).catch(err => {
-                alert('COPY FAILED! Please copy manually.');
+                alert('COPY FAILED, Please Copy Manually !');
             });
         }
 
         // Khởi tạo
         document.addEventListener('DOMContentLoaded', () => {
             createParticles();
-            setTimeout(verifyAndDisplay, 1500); // Delay để show animation
+            setTimeout(verifyAndDisplay, 3000); // Delay để show animation
         });
     </script>
 </body>
