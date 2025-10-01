@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CYBER ACCESS</title>
+    <title>Hoàng Vĩnh Phúc</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <style>
         * {
@@ -294,8 +294,8 @@
     
     <div class="cyber-terminal">
         <div class="header">
-            <h1 class="cyber-title" data-text="CYBER ACCESS">CYBER ACCESS</h1>
-            <div class="subtitle">NEURAL INTERFACE VERIFICATION</div>
+            <h1 class="cyber-title" data-text="Hoàng Vĩnh Phúc">Hoàng Vĩnh Phúc</h1>
+            <div class="subtitle">Key Xác Thực Tool</div>
         </div>
         
         <div id="content">
@@ -324,12 +324,12 @@
                 
                 document.getElementById('content').innerHTML = `
                     <div class="key-display">
-                        <span class="key-label">>> ACCESS KEY VERIFIED</span>
+                        <span class="key-label"Key Ngày Hôm Nay</span>
                         <div class="key-value">${currentKey}</div>
                     </div>
                     <div class="instruction">Copy neural key to interface buffer</div>
                     <button class="cyber-btn" onclick="copyKey('${currentKey}')">
-                        DOWNLOAD TO CLIPBOARD
+                        Copy Key
                     </button>
                 `;
                 
@@ -343,7 +343,7 @@
             navigator.clipboard.writeText(key).then(() => {
                 const btn = document.querySelector('.cyber-btn');
                 const originalText = btn.innerHTML;
-                btn.innerHTML = 'KEY DOWNLOADED!';
+                btn.innerHTML = 'Đã Copy Key !';
                 btn.style.background = '#00ffea';
                 btn.style.color = '#0a0a16';
                 btn.style.boxShadow = '0 0 30px #00ffea';
@@ -355,7 +355,7 @@
                     btn.style.boxShadow = 'none';
                 }, 2000);
             }).catch(err => {
-                alert('DOWNLOAD FAILED! Copy manually.');
+                alert('DOWNLOAD FAILED, Copy Manually !');
             });
         }
 
