@@ -26,18 +26,20 @@ jobs:
         SECRET="vphuc_secret_1c0b057cf79cb842"
         SIGNATURE=$(echo -n "${KEY}${TIMESTAMP}" | openssl dgst -sha256 -hmac "$SECRET" | awk '{print $2}')
         
-        # Tạo secure URL
+        # Tạo secure URL - CHỈ LƯU LINK, KHÔNG LƯU KEY
         ORIGINAL_URL="https://vphuc1265.github.io/vphuc.luv/?key=${KEY}&sig=${SIGNATURE}&ts=${TIMESTAMP}"
         
         # Shorten link
         SHORT_URL=$(curl -s "https://link4m.co/api-shorten/v2?api=68db842cd32fc747763d594d&url=$ORIGINAL_URL" | jq -r '.shortenedUrl // "https://link4m.co/error"')
         
-        # Lưu files
-        echo "$KEY" > daily-key.txt
+        # CHỈ lưu link, KHÔNG lưu key ra file public
         echo "$SHORT_URL" > daily-link.txt
+        
+        # XOÁ file key cũ nếu có
+        rm -f daily-key.txt
         
         git config user.name "github-actions"
         git config user.email "actions@github.com"
         git add .
-        git commit -m "Update secure daily files" || exit 0
+        git commit -m "Update secure daily link" || exit 0
         git push
