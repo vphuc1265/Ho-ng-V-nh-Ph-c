@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hoàng Vĩnh Phúc</title>
+    <title>HOANG VINH PHUC</title>
     <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@300;400;500;600;700&family=Exo+2:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         * {
@@ -25,7 +25,6 @@
             position: relative;
         }
 
-        /* Hiệu ứng grid background */
         .grid-bg {
             position: absolute;
             top: 0;
@@ -59,7 +58,6 @@
                 inset 0 0 30px rgba(0, 255, 234, 0.1);
         }
 
-        /* Hiệu ứng góc neon */
         .cyber-terminal::before,
         .cyber-terminal::after {
             content: '';
@@ -241,7 +239,6 @@
             font-weight: 500;
         }
 
-        /* Hiệu ứng glitch cho title */
         .cyber-title {
             position: relative;
             display: inline-block;
@@ -312,12 +309,12 @@
     
     <div class="cyber-terminal">
         <div class="header">
-            <h1 class="cyber-title" data-text="Hoàng Vĩnh Phúc">Hoàng Vĩnh Phúc</h1>
-            <div class="subtitle"KEY XÁC THỰC TOOL</div>
+            <h1 class="cyber-title" data-text="HOANG VINH PHUC">HOANG VINH PHUC</h1>
+            <div class="subtitle">KEY XAC THUC TOOL</div>
         </div>
         
         <div id="content">
-            <div class="loading">INITIALIZING SYSTEM</div>
+            <div class="loading">DANG KIEM TRA KEY...</div>
         </div>
     </div>
 
@@ -342,10 +339,10 @@
                 
                 document.getElementById('content').innerHTML = `
                     <div class="key-display">
-                        <span> class="key-label"KEY XÁC THỰC TOOL HÔM NAY</span>
+                        <span class="key-label">KEY XAC THUC TOOL HOM NAY</span>
                         <div class="key-value">${currentKey}</div>
                     </div>
-                    <div class="instruction">Copy Neural Key To Interface Buffer</div>
+                    <div class="instruction">Copy key va dan vao tool de su dung</div>
                     <button class="cyber-btn" onclick="copyKey('${currentKey}')">
                         COPY KEY
                     </button>
@@ -353,7 +350,7 @@
                 
             } catch (error) {
                 document.getElementById('content').innerHTML = 
-                    '<div class="error">SYSTEM ERROR : NETWORK FAILURE !</div>';
+                    '<div class="error">LOI MANG - THU LAI !</div>';
             }
         }
 
@@ -361,7 +358,7 @@
             navigator.clipboard.writeText(key).then(() => {
                 const btn = document.querySelector('.cyber-btn');
                 const originalText = btn.innerHTML;
-                btn.innerHTML = 'ĐÃ COPY KEY !';
+                btn.innerHTML = 'DA COPY KEY !';
                 btn.style.background = '#00ffea';
                 btn.style.color = '#0a0a16';
                 btn.style.boxShadow = '0 0 30px #00ffea';
@@ -373,7 +370,7 @@
                     btn.style.boxShadow = 'none';
                 }, 2000);
             }).catch(err => {
-                alert('COPY FAILED, Copy manually !');
+                alert('COPY THAT BAI, hay copy thu cong !');
             });
         }
 
