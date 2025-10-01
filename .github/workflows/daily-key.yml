@@ -2,7 +2,7 @@ name: 🔑 Generate Secure Daily Key
 
 on:
   schedule:
-    - cron: '0 17 * * *'
+    - cron: '0 17 * * *'  # 5PM daily
   workflow_dispatch:
 
 permissions:
@@ -19,27 +19,24 @@ jobs:
     - name: Generate Secure Daily Data
       run: |
         # Generate key
-        KEY="vphuc_$(date +%Y%m%d)_$(openssl rand -hex 6 | tr '[:lower:]' '[:upper:]')"
+        TODAY=$(date +%Y%m%d)
+        KEY="vphuc_${TODAY}_$(openssl rand -hex 6 | tr '[:lower:]' '[:upper:]')"
         
-        # Generate timestamp và signature
-        TIMESTAMP=$(date +%s%3N)
+        # Tạo signature
         SECRET="vphuc_secret_1c0b057cf79cb842"
-        SIGNATURE=$(echo -n "${KEY}${TIMESTAMP}" | openssl dgst -sha256 -hmac "$SECRET" | awk '{print $2}')
+        SIGNATURE=$(echo -n "${KEY}${TODAY}" | openssl dgst -sha256 -hmac "$SECRET" | awk '{print $2}')
         
-        # Tạo secure URL - CHỈ LƯU LINK, KHÔNG LƯU KEY
-        ORIGINAL_URL="https://vphuc1265.github.io/vphuc.luv/?key=${KEY}&sig=${SIGNATURE}&ts=${TIMESTAMP}"
+        # Tạo secure URL
+        ORIGINAL_URL="https://vphuc1265.github.io/vphuc.luv/?key=${KEY}&sig=${SIGNATURE}&ts=${TODAY}"
         
         # Shorten link
         SHORT_URL=$(curl -s "https://link4m.co/api-shorten/v2?api=68db842cd32fc747763d594d&url=$ORIGINAL_URL" | jq -r '.shortenedUrl // "https://link4m.co/error"')
         
-        # CHỈ lưu link, KHÔNG lưu key ra file public
+        # CHỈ lưu link
         echo "$SHORT_URL" > daily-link.txt
-        
-        # XOÁ file key cũ nếu có
-        rm -f daily-key.txt
         
         git config user.name "github-actions"
         git config user.email "actions@github.com"
         git add .
-        git commit -m "Update secure daily link" || exit 0
+        git commit -m "Update daily link - $(date)" || exit 0
         git push
