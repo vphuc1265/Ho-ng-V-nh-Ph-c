@@ -6,67 +6,490 @@
     <title>HOANG VINH PHUC</title>
     <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@300;400;500;600;700&family=Exo+2:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        /* GIỮ NGUYÊN CSS NHƯ CŨ */
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { background: #0a0a16; color: #00ffea; font-family: 'Exo 2', sans-serif; min-height: 100vh; display: flex; justify-content: center; align-items: center; padding: 20px; overflow: hidden; position: relative; }
-        .grid-bg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(rgba(0,255,234,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(0,255,234,0.1) 1px, transparent 1px); background-size: 50px 50px; animation: gridMove 20s linear infinite; z-index: 1; }
-        .cyber-terminal { background: rgba(0,20,30,0.9); border: 2px solid #00ffea; border-radius: 15px; padding: 40px 30px; max-width: 600px; width: 100%; position: relative; z-index: 2; box-shadow: 0 0 50px rgba(0,255,234,0.3), inset 0 0 30px rgba(0,255,234,0.1); text-align: center; }
-        .cyber-title { font-family: 'Rajdhani', sans-serif; font-size: 2.5rem; font-weight: 700; color: #00ffea; text-shadow: 0 0 10px #00ffea, 0 0 20px #00ffea, 0 0 40px #0084ff; margin-bottom: 10px; letter-spacing: 3px; }
-        .key-display { background: rgba(0,40,50,0.6); border: 1px solid #00ffea; border-radius: 10px; padding: 20px; margin: 25px 0; position: relative; overflow: hidden; text-align: center; }
-        .key-value { color: #00ffea; font-family: 'Rajdhani', sans-serif; font-size: 0.95rem; font-weight: 600; word-break: break-all; text-shadow: 0 0 10px rgba(0,255,234,0.5); text-align: center; }
-        .cyber-btn { background: transparent; color: #00ffea; border: 2px solid #00ffea; padding: 15px 40px; font-family: 'Exo 2', sans-serif; font-size: 1.1rem; font-weight: 600; cursor: pointer; margin-top: 20px; position: relative; overflow: hidden; transition: all 0.3s ease; letter-spacing: 2px; text-transform: uppercase; border-radius: 8px; display: inline-block; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background: #0a0a16;
+            color: #00ffea;
+            font-family: 'Exo 2', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* ANIMATED BACKGROUND */
+        .animated-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+
+        .floating-particle {
+            position: absolute;
+            background: rgba(0, 255, 234, 0.1);
+            border-radius: 50%;
+            animation: float 15s infinite linear;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0) translateX(0) rotate(0deg); opacity: 0; }
+            10% { opacity: 0.3; }
+            50% { opacity: 0.1; }
+            90% { opacity: 0.3; }
+            100% { transform: translateY(-100vh) translateX(100px) rotate(360deg); opacity: 0; }
+        }
+
+        .grid-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                linear-gradient(rgba(0, 255, 234, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 255, 234, 0.05) 1px, transparent 1px);
+            background-size: 50px 50px;
+            animation: gridMove 20s linear infinite;
+        }
+
+        @keyframes gridMove {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(50px, 50px); }
+        }
+
+        .cyber-terminal {
+            background: rgba(0, 20, 30, 0.85);
+            border: 2px solid #00ffea;
+            border-radius: 20px;
+            padding: 50px 40px;
+            max-width: 650px;
+            width: 100%;
+            position: relative;
+            z-index: 2;
+            box-shadow: 
+                0 0 60px rgba(0, 255, 234, 0.4),
+                inset 0 0 40px rgba(0, 255, 234, 0.15);
+            text-align: center;
+            backdrop-filter: blur(10px);
+            animation: terminalGlow 3s ease-in-out infinite alternate;
+        }
+
+        @keyframes terminalGlow {
+            0% { box-shadow: 0 0 40px rgba(0, 255, 234, 0.3), inset 0 0 30px rgba(0, 255, 234, 0.1); }
+            100% { box-shadow: 0 0 80px rgba(0, 255, 234, 0.6), inset 0 0 50px rgba(0, 255, 234, 0.2); }
+        }
+
+        .cyber-terminal::before,
+        .cyber-terminal::after {
+            content: '';
+            position: absolute;
+            width: 25px;
+            height: 25px;
+            border: 2px solid #00ffea;
+            animation: cornerPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes cornerPulse {
+            0%, 100% { opacity: 0.7; }
+            50% { opacity: 1; }
+        }
+
+        .cyber-terminal::before {
+            top: -2px;
+            left: -2px;
+            border-right: none;
+            border-bottom: none;
+            border-radius: 20px 0 0 0;
+        }
+
+        .cyber-terminal::after {
+            bottom: -2px;
+            right: -2px;
+            border-left: none;
+            border-top: none;
+            border-radius: 0 0 20px 0;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            animation: fadeInDown 1s ease-out;
+        }
+
+        @keyframes fadeInDown {
+            0% { opacity: 0; transform: translateY(-30px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        .cyber-title {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 3rem;
+            font-weight: 800;
+            color: #00ffea;
+            text-shadow: 
+                0 0 15px #00ffea,
+                0 0 30px #00ffea,
+                0 0 60px #0084ff;
+            margin-bottom: 15px;
+            letter-spacing: 4px;
+            animation: titleGlitch 5s infinite;
+            position: relative;
+        }
+
+        @keyframes titleGlitch {
+            0%, 100% { transform: translate(0, 0); text-shadow: 0 0 15px #00ffea, 0 0 30px #00ffea, 0 0 60px #0084ff; }
+            97% { transform: translate(0, 0); text-shadow: 0 0 15px #00ffea, 0 0 30px #00ffea, 0 0 60px #0084ff; }
+            98% { transform: translate(-2px, 1px); text-shadow: 0 0 15px #ff003c, 0 0 30px #ff003c, 0 0 60px #ff003c; }
+            99% { transform: translate(1px, -1px); text-shadow: 0 0 15px #0084ff, 0 0 30px #0084ff, 0 0 60px #0084ff; }
+        }
+
+        .subtitle {
+            color: #00b3a4;
+            font-size: 1.3rem;
+            letter-spacing: 3px;
+            font-family: 'Exo 2', sans-serif;
+            font-weight: 600;
+            text-shadow: 0 0 10px rgba(0, 179, 164, 0.5);
+            animation: subtitleFloat 3s ease-in-out infinite;
+        }
+
+        @keyframes subtitleFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+
+        .key-display {
+            background: rgba(0, 40, 50, 0.7);
+            border: 1px solid #00ffea;
+            border-radius: 15px;
+            padding: 25px;
+            margin: 30px 0;
+            position: relative;
+            overflow: hidden;
+            text-align: center;
+            animation: slideInUp 0.8s ease-out;
+            backdrop-filter: blur(5px);
+        }
+
+        @keyframes slideInUp {
+            0% { opacity: 0; transform: translateY(30px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        .key-display::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 255, 234, 0.3), transparent);
+            animation: scan 2.5s linear infinite;
+        }
+
+        @keyframes scan {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(400%); }
+        }
+
+        .key-label {
+            color: #00b3a4;
+            font-size: 1rem;
+            margin-bottom: 15px;
+            display: block;
+            letter-spacing: 2px;
+            font-family: 'Exo 2', sans-serif;
+            font-weight: 700;
+            text-align: center;
+            text-shadow: 0 0 8px rgba(0, 179, 164, 0.6);
+        }
+
+        .key-value {
+            color: #00ffea;
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 700;
+            word-break: break-all;
+            text-shadow: 0 0 15px rgba(0, 255, 234, 0.7);
+            text-align: center;
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            border: 1px solid rgba(0, 255, 234, 0.2);
+            animation: textPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes textPulse {
+            0%, 100% { text-shadow: 0 0 15px rgba(0, 255, 234, 0.7); }
+            50% { text-shadow: 0 0 25px rgba(0, 255, 234, 1), 0 0 35px rgba(0, 132, 255, 0.8); }
+        }
+
+        .button-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 25px;
+            width: 100%;
+            animation: fadeInUp 1s ease-out 0.3s both;
+        }
+
+        @keyframes fadeInUp {
+            0% { opacity: 0; transform: translateY(20px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        .cyber-btn {
+            background: transparent;
+            color: #00ffea;
+            border: 2px solid #00ffea;
+            padding: 18px 50px;
+            font-family: 'Exo 2', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 700;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s ease;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            border-radius: 12px;
+            display: inline-block;
+            text-shadow: 0 0 10px rgba(0, 255, 234, 0.5);
+            animation: btnGlow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes btnGlow {
+            0% { box-shadow: 0 0 20px rgba(0, 255, 234, 0.3); }
+            100% { box-shadow: 0 0 40px rgba(0, 255, 234, 0.7), 0 0 60px rgba(0, 132, 255, 0.3); }
+        }
+
+        .cyber-btn:hover {
+            background: #00ffea;
+            color: #0a0a16;
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 
+                0 0 30px #00ffea,
+                0 0 60px #00ffea,
+                0 0 90px #0084ff;
+            text-shadow: none;
+            animation: none;
+        }
+
+        .cyber-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.6), transparent);
+            transition: 0.6s;
+        }
+
+        .cyber-btn:hover::before {
+            left: 100%;
+        }
+
+        .loading {
+            color: #00ffea;
+            font-family: 'Exo 2', sans-serif;
+            font-size: 1.4rem;
+            text-align: center;
+            text-shadow: 0 0 15px rgba(0, 255, 234, 0.7);
+            font-weight: 700;
+            animation: loadingPulse 1.5s ease-in-out infinite;
+        }
+
+        @keyframes loadingPulse {
+            0%, 100% { opacity: 0.7; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.05); }
+        }
+
+        .loading::after {
+            content: '...';
+            animation: dots 1.5s steps(4, end) infinite;
+        }
+
+        @keyframes dots {
+            0%, 20% { content: '.'; }
+            40% { content: '..'; }
+            60%, 100% { content: '...'; }
+        }
+
+        .error {
+            background: rgba(255, 0, 60, 0.15);
+            color: #ff003c;
+            border: 1px solid #ff003c;
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+            font-family: 'Exo 2', sans-serif;
+            text-shadow: 0 0 15px rgba(255, 0, 60, 0.7);
+            box-shadow: 0 0 30px rgba(255, 0, 60, 0.4);
+            font-weight: 700;
+            animation: errorPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes errorPulse {
+            0%, 100% { box-shadow: 0 0 20px rgba(255, 0, 60, 0.3); }
+            50% { box-shadow: 0 0 40px rgba(255, 0, 60, 0.6); }
+        }
+
+        .instruction {
+            color: #00b3a4;
+            font-size: 1rem;
+            margin: 20px 0;
+            text-align: center;
+            letter-spacing: 2px;
+            font-family: 'Exo 2', sans-serif;
+            font-weight: 600;
+            text-transform: uppercase;
+            text-shadow: 0 0 8px rgba(0, 179, 164, 0.5);
+            animation: fadeIn 1s ease-out 0.5s both;
+        }
+
+        @keyframes fadeIn {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+
+        .floating-badge {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 0, 60, 0.2);
+            color: #ff003c;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            border: 1px solid #ff003c;
+            animation: badgeFloat 4s ease-in-out infinite;
+            z-index: 3;
+        }
+
+        @keyframes badgeFloat {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-10px) rotate(5deg); }
+        }
+
+        @media (max-width: 768px) {
+            .cyber-title {
+                font-size: 2.2rem;
+            }
+            
+            .cyber-terminal {
+                padding: 30px 20px;
+                border-radius: 15px;
+            }
+            
+            .key-value {
+                font-size: 0.95rem;
+            }
+            
+            .cyber-btn {
+                padding: 15px 35px;
+                font-size: 1.1rem;
+            }
+        }
     </style>
 </head>
 <body>
-    <div class="grid-bg"></div>
+    <div class="animated-bg">
+        <div class="grid-bg"></div>
+    </div>
+    
     <div class="cyber-terminal">
-        <h1 class="cyber-title">HOANG VINH PHUC</h1>
-        <div class="subtitle">SECURE KEY SYSTEM</div>
+        <div class="floating-badge">SECURE SYSTEM</div>
+        
+        <div class="header">
+            <h1 class="cyber-title" data-text="HOANG VINH PHUC">HOANG VINH PHUC</h1>
+            <div class="subtitle">PREMIUM ACCESS SYSTEM</div>
+        </div>
+        
         <div id="content">
-            <div class="loading">VERIFYING SECURITY...</div>
+            <div class="loading">INITIALIZING SECURITY PROTOCOL</div>
         </div>
     </div>
 
     <script>
-        // SECURE KEY VERIFICATION - KHÔNG CẦN SERVER KEY
+        // Tạo floating particles
+        function createParticles() {
+            const bg = document.querySelector('.animated-bg');
+            const particleCount = 15;
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'floating-particle';
+                
+                // Random kích thước và vị trí
+                const size = Math.random() * 100 + 20;
+                particle.style.width = size + 'px';
+                particle.style.height = size + 'px';
+                particle.style.left = Math.random() * 100 + 'vw';
+                particle.style.top = Math.random() * 100 + 'vh';
+                
+                // Random animation
+                const duration = Math.random() * 20 + 10;
+                const delay = Math.random() * 5;
+                particle.style.animationDuration = duration + 's';
+                particle.style.animationDelay = delay + 's';
+                
+                bg.appendChild(particle);
+            }
+        }
+
+        // SECURE KEY VERIFICATION
         async function verifyAndDisplay() {
             const urlParams = new URLSearchParams(window.location.search);
             const urlKey = urlParams.get('key');
             const urlSig = urlParams.get('sig');
-            const urlTs = urlParams.get('ts');
+            const urlDate = urlParams.get('ts');
             
-            if (!urlKey || !urlSig || !urlTs) {
+            if (!urlKey || !urlSig || !urlDate) {
                 showError('INVALID ACCESS PARAMETERS');
                 return;
             }
             
-            // Check timestamp (30 phút)
-            const now = Date.now();
-            if (Math.abs(now - parseInt(urlTs)) > 1800000) {
-                showError('KEY EXPIRED');
+            // Check date
+            const today = new Date().toISOString().slice(0,10).replace(/-/g, '');
+            if (urlDate !== today) {
+                showError('KEY EXPIRED - PLEASE GET NEW KEY');
                 return;
             }
             
             try {
-                // Verify signature với secret - ĐÂY LÀ CÁCH DUY NHẤT ĐỂ VERIFY
+                // Verify signature
                 const secret = 'vphuc_secret_1c0b057cf79cb842';
-                const verifyData = urlKey + urlTs;
+                const verifyData = urlKey + urlDate;
                 const calculatedSig = await sha256HMAC(secret, verifyData);
                 
                 if (calculatedSig !== urlSig) {
-                    showError('INVALID SIGNATURE');
+                    showError('INVALID SECURITY SIGNATURE');
                     return;
                 }
                 
-                // Key hợp lệ - hiển thị (key chỉ có qua URL params)
+                // Key hợp lệ
                 document.getElementById('content').innerHTML = `
                     <div class="key-display">
-                        <span class="key-label">VALID SECURE KEY</span>
+                        <span class="key-label">VALID SECURE ACCESS KEY</span>
                         <div class="key-value">${urlKey}</div>
                     </div>
-                    <div class="instruction">COPY KEY VA DAN VAO TOOL DE SU DUNG</div>
+                    <div class="instruction">COPY THIS KEY AND PASTE INTO THE TOOL</div>
                     <div class="button-container">
-                        <button class="cyber-btn" onclick="copyKey('${urlKey}')">COPY KEY</button>
+                        <button class="cyber-btn" onclick="copyKey('${urlKey}')">
+                            COPY TO CLIPBOARD
+                        </button>
                     </div>
                 `;
                 
@@ -75,7 +498,7 @@
             }
         }
 
-        // HMAC SHA256 (giữ nguyên)
+        // HMAC SHA256
         async function sha256HMAC(secret, data) {
             const encoder = new TextEncoder();
             const key = await crypto.subtle.importKey(
@@ -95,21 +518,29 @@
             navigator.clipboard.writeText(key).then(() => {
                 const btn = document.querySelector('.cyber-btn');
                 const originalText = btn.innerHTML;
-                btn.innerHTML = 'COPIED!';
-                btn.style.background = '#00ffea';
+                btn.innerHTML = '✓ COPIED SUCCESSFULLY';
+                btn.style.background = 'linear-gradient(135deg, #00ff88, #00cc66)';
                 btn.style.color = '#0a0a16';
-                btn.style.boxShadow = '0 0 30px #00ffea';
+                btn.style.boxShadow = '0 0 40px #00ff88, 0 0 80px #00cc66';
+                btn.style.borderColor = '#00ff88';
                 
                 setTimeout(() => {
                     btn.innerHTML = originalText;
                     btn.style.background = 'transparent';
                     btn.style.color = '#00ffea';
-                    btn.style.boxShadow = 'none';
-                }, 2000);
+                    btn.style.boxShadow = '';
+                    btn.style.borderColor = '#00ffea';
+                }, 3000);
+            }).catch(err => {
+                alert('COPY FAILED! Please copy manually.');
             });
         }
 
-        document.addEventListener('DOMContentLoaded', verifyAndDisplay);
+        // Khởi tạo
+        document.addEventListener('DOMContentLoaded', () => {
+            createParticles();
+            setTimeout(verifyAndDisplay, 1500); // Delay để show animation
+        });
     </script>
 </body>
-</html>
+                </html>
