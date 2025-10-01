@@ -6,13 +6,75 @@
     <title>HOANG VINH PHUC - SECURE KEY</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { background: #0a0a16; color: #00ffea; font-family: 'Arial', sans-serif; min-height: 100vh; display: flex; justify-content: center; align-items: center; padding: 20px; }
-        .cyber-terminal { background: rgba(0,20,30,0.9); border: 2px solid #00ffea; border-radius: 15px; padding: 40px 30px; max-width: 600px; width: 100%; text-align: center; box-shadow: 0 0 50px rgba(0,255,234,0.3); }
-        .cyber-title { font-size: 2.5rem; font-weight: 700; color: #00ffea; text-shadow: 0 0 10px #00ffea; margin-bottom: 10px; }
-        .key-display { background: rgba(0,40,50,0.6); border: 1px solid #00ffea; border-radius: 10px; padding: 20px; margin: 25px 0; }
-        .key-value { color: #00ffea; font-size: 0.95rem; word-break: break-all; }
-        .cyber-btn { background: transparent; color: #00ffea; border: 2px solid #00ffea; padding: 15px 40px; font-size: 1.1rem; cursor: pointer; margin-top: 20px; border-radius: 8px; }
-        .error { color: #ff4444; margin: 20px 0; }
+        body { 
+            background: #0a0a16; 
+            color: #00ffea; 
+            font-family: 'Arial', sans-serif; 
+            min-height: 100vh; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            padding: 20px; 
+        }
+        .cyber-terminal { 
+            background: rgba(0,20,30,0.9); 
+            border: 2px solid #00ffea; 
+            border-radius: 15px; 
+            padding: 40px 30px; 
+            max-width: 600px; 
+            width: 100%; 
+            text-align: center; 
+            box-shadow: 0 0 50px rgba(0,255,234,0.3); 
+        }
+        .cyber-title { 
+            font-size: 2.5rem; 
+            font-weight: 700; 
+            color: #00ffea; 
+            text-shadow: 0 0 10px #00ffea; 
+            margin-bottom: 10px; 
+        }
+        .key-display { 
+            background: rgba(0,40,50,0.6); 
+            border: 1px solid #00ffea; 
+            border-radius: 10px; 
+            padding: 20px; 
+            margin: 25px 0; 
+        }
+        .key-value { 
+            color: #00ffea; 
+            font-size: 1.1rem; 
+            word-break: break-all; 
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+        }
+        .cyber-btn { 
+            background: transparent; 
+            color: #00ffea; 
+            border: 2px solid #00ffea; 
+            padding: 15px 40px; 
+            font-size: 1.1rem; 
+            cursor: pointer; 
+            margin-top: 20px; 
+            border-radius: 8px; 
+            transition: all 0.3s ease;
+        }
+        .cyber-btn:hover {
+            background: #00ffea;
+            color: #0a0a16;
+        }
+        .error { 
+            color: #ff4444; 
+            margin: 20px 0; 
+            font-size: 1.2rem;
+        }
+        .instruction {
+            margin: 15px 0;
+            color: #00ffea;
+        }
+        .loading {
+            color: #00ffea;
+            font-size: 1.2rem;
+        }
     </style>
 </head>
 <body>
@@ -25,7 +87,7 @@
     </div>
 
     <script>
-        // KEY-BASED SECRET VERIFICATION - KHÔNG CẦN SECRET CỐ ĐỊNH
+        // KEY-BASED SECRET VERIFICATION - ĐƠN GIẢN HÓA
         async function getKeyBasedSecret(key) {
             const base = "vphuc_base_2025";
             try {
@@ -35,7 +97,9 @@
                     const combined = base + randomPart;
                     return await sha256(combined);
                 }
-            } catch (e) {}
+            } catch (e) {
+                console.error("Error generating secret:", e);
+            }
             return await sha256(base);
         }
 
@@ -44,6 +108,8 @@
             const urlKey = urlParams.get('key');
             const urlSig = urlParams.get('sig');
             const urlTs = urlParams.get('ts');
+            
+            console.log("URL Parameters:", { key: urlKey, sig: urlSig, ts: urlTs });
             
             if (!urlKey || !urlSig || !urlTs) {
                 showError('INVALID ACCESS PARAMETERS');
@@ -63,24 +129,32 @@
                 const verifyData = urlKey + urlTs;
                 const calculatedSig = await hmacSha256(dynamicSecret, verifyData);
                 
+                console.log("Verification:", {
+                    dynamicSecret: dynamicSecret.substring(0, 16) + "...",
+                    verifyData: verifyData,
+                    calculatedSig: calculatedSig.substring(0, 16) + "...",
+                    urlSig: urlSig.substring(0, 16) + "..."
+                });
+                
                 if (calculatedSig !== urlSig) {
                     showError('INVALID SIGNATURE');
                     return;
                 }
                 
-                // Key hợp lệ
+                // Key hợp lệ - HIỂN THỊ RÕ RÀNG
                 document.getElementById('content').innerHTML = `
                     <div class="key-display">
-                        <span class="key-label">VALID SECURE KEY</span>
+                        <div style="color: #00ffea; margin-bottom: 10px;">VALID SECURE KEY</div>
                         <div class="key-value">${urlKey}</div>
                     </div>
-                    <div class="instruction">COPY KEY VA DAN VAO TOOL DE SU DUNG</div>
+                    <div class="instruction">COPY KEY VÀ DÁN VÀO TOOL ĐỂ SỬ DỤNG</div>
                     <div class="button-container">
                         <button class="cyber-btn" onclick="copyKey('${urlKey}')">COPY KEY</button>
                     </div>
                 `;
                 
             } catch (error) {
+                console.error("Verification error:", error);
                 showError('SECURITY VERIFICATION FAILED');
             }
         }
@@ -89,8 +163,11 @@
         async function hmacSha256(secret, data) {
             const encoder = new TextEncoder();
             const key = await crypto.subtle.importKey(
-                'raw', encoder.encode(secret),
-                { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']
+                'raw', 
+                encoder.encode(secret),
+                { name: 'HMAC', hash: 'SHA-256' }, 
+                false, 
+                ['sign']
             );
             const signature = await crypto.subtle.sign('HMAC', key, encoder.encode(data));
             return Array.from(new Uint8Array(signature)).map(b => b.toString(16).padStart(2, '0')).join('');
@@ -110,7 +187,16 @@
 
         function copyKey(key) {
             navigator.clipboard.writeText(key).then(() => {
-                alert('KEY COPIED!');
+                const btn = document.querySelector('.cyber-btn');
+                btn.textContent = 'COPIED!';
+                btn.style.background = '#00ffea';
+                btn.style.color = '#0a0a16';
+                
+                setTimeout(() => {
+                    btn.textContent = 'COPY KEY';
+                    btn.style.background = 'transparent';
+                    btn.style.color = '#00ffea';
+                }, 2000);
             });
         }
 
