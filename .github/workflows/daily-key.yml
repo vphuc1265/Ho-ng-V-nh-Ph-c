@@ -1,4 +1,4 @@
-name: 🔑 Generate Daily Key & Link
+name: 🔑 Generate Secure Daily Key
 
 on:
   schedule:
@@ -16,19 +16,28 @@ jobs:
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
         
-    - name: Generate Daily Data
+    - name: Generate Secure Daily Data
       run: |
+        # Generate key
         KEY="vphuc_$(date +%Y%m%d)_$(openssl rand -hex 6 | tr '[:lower:]' '[:upper:]')"
-        ORIGINAL_URL="https://vphuc1265.github.io/vphuc.luv/?key=$KEY"
         
-        # Gọi Link4M API
+        # Generate timestamp và signature
+        TIMESTAMP=$(date +%s%3N)
+        SECRET="vphuc_secret_1c0b057cf79cb842"
+        SIGNATURE=$(echo -n "${KEY}${TIMESTAMP}" | openssl dgst -sha256 -hmac "$SECRET" | awk '{print $2}')
+        
+        # Tạo secure URL
+        ORIGINAL_URL="https://vphuc1265.github.io/vphuc.luv/?key=${KEY}&sig=${SIGNATURE}&ts=${TIMESTAMP}"
+        
+        # Shorten link
         SHORT_URL=$(curl -s "https://link4m.co/api-shorten/v2?api=68db842cd32fc747763d594d&url=$ORIGINAL_URL" | jq -r '.shortenedUrl // "https://link4m.co/error"')
         
+        # Lưu files
         echo "$KEY" > daily-key.txt
         echo "$SHORT_URL" > daily-link.txt
         
         git config user.name "github-actions"
         git config user.email "actions@github.com"
         git add .
-        git commit -m "Update daily files" || exit 0
+        git commit -m "Update secure daily files" || exit 0
         git push
