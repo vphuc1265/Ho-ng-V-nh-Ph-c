@@ -18,21 +18,21 @@ jobs:
         
     - name: Generate Secure Daily Data
       run: |
-        # Generate key
+        
         TODAY=$(date +%Y%m%d)
         KEY="vphuc_${TODAY}_$(openssl rand -hex 6 | tr '[:lower:]' '[:upper:]')"
         
-        # Tạo signature
+        
         SECRET="vphuc_secret_1c0b057cf79cb842"
         SIGNATURE=$(echo -n "${KEY}${TODAY}" | openssl dgst -sha256 -hmac "$SECRET" | awk '{print $2}')
         
-        # Tạo secure URL
+        
         ORIGINAL_URL="https://vphuc1265.github.io/vphuc.luv/?key=${KEY}&sig=${SIGNATURE}&ts=${TODAY}"
         
-        # Shorten link
+        
         SHORT_URL=$(curl -s "https://link4m.co/api-shorten/v2?api=68db842cd32fc747763d594d&url=$ORIGINAL_URL" | jq -r '.shortenedUrl // "https://link4m.co/error"')
         
-        # CHỈ lưu link
+        
         echo "$SHORT_URL" > daily-link.txt
         
         git config user.name "github-actions"
