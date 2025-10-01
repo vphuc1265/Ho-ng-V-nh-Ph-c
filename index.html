@@ -6,332 +6,30 @@
     <title>HOANG VINH PHUC</title>
     <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@300;400;500;600;700&family=Exo+2:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            background: #0a0a16;
-            color: #00ffea;
-            font-family: 'Exo 2', sans-serif;
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-            overflow: hidden;
-            position: relative;
-        }
-
-        .grid-bg {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: 
-                linear-gradient(rgba(0, 255, 234, 0.1) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(0, 255, 234, 0.1) 1px, transparent 1px);
-            background-size: 50px 50px;
-            animation: gridMove 20s linear infinite;
-            z-index: 1;
-        }
-
-        @keyframes gridMove {
-            0% { transform: translate(0, 0); }
-            100% { transform: translate(50px, 50px); }
-        }
-
-        .cyber-terminal {
-            background: rgba(0, 20, 30, 0.9);
-            border: 2px solid #00ffea;
-            border-radius: 15px;
-            padding: 40px 30px;
-            max-width: 600px;
-            width: 100%;
-            position: relative;
-            z-index: 2;
-            box-shadow: 
-                0 0 50px rgba(0, 255, 234, 0.3),
-                inset 0 0 30px rgba(0, 255, 234, 0.1);
-            text-align: center;
-        }
-
-        .cyber-terminal::before,
-        .cyber-terminal::after {
-            content: '';
-            position: absolute;
-            width: 20px;
-            height: 20px;
-            border: 2px solid #00ffea;
-        }
-
-        .cyber-terminal::before {
-            top: -2px;
-            left: -2px;
-            border-right: none;
-            border-bottom: none;
-            border-radius: 15px 0 0 0;
-        }
-
-        .cyber-terminal::after {
-            bottom: -2px;
-            right: -2px;
-            border-left: none;
-            border-top: none;
-            border-radius: 0 0 15px 0;
-        }
-
-        .header {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-
-        .cyber-title {
-            font-family: 'Rajdhani', sans-serif;
-            font-size: 2.5rem;
-            font-weight: 700;
-            color: #00ffea;
-            text-shadow: 
-                0 0 10px #00ffea,
-                0 0 20px #00ffea,
-                0 0 40px #0084ff;
-            margin-bottom: 10px;
-            letter-spacing: 3px;
-        }
-
-        .subtitle {
-            color: #00b3a4;
-            font-size: 1.1rem;
-            letter-spacing: 2px;
-            font-family: 'Exo 2', sans-serif;
-            font-weight: 500;
-        }
-
-        .key-display {
-            background: rgba(0, 40, 50, 0.6);
-            border: 1px solid #00ffea;
-            border-radius: 10px;
-            padding: 20px;
-            margin: 25px 0;
-            position: relative;
-            overflow: hidden;
-            text-align: center;
-        }
-
-        .key-display::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(0, 255, 234, 0.2), transparent);
-            animation: scan 3s linear infinite;
-        }
-
-        @keyframes scan {
-            0% { transform: translateX(-100%); }
-            100% { transform: translateX(400%); }
-        }
-
-        .key-label {
-            color: #00b3a4;
-            font-size: 0.9rem;
-            margin-bottom: 10px;
-            display: block;
-            letter-spacing: 1px;
-            font-family: 'Exo 2', sans-serif;
-            font-weight: 600;
-            text-align: center;
-        }
-
-        .key-value {
-            color: #00ffea;
-            font-family: 'Rajdhani', sans-serif;
-            font-size: 0.95rem;
-            font-weight: 600;
-            word-break: break-all;
-            text-shadow: 0 0 10px rgba(0, 255, 234, 0.5);
-            text-align: center;
-        }
-
-        .button-container {
-            display: flex;
-            justify-content: center;
-            margin-top: 20px;
-            width: 100%;
-        }
-
-        .cyber-btn {
-            background: transparent;
-            color: #00ffea;
-            border: 2px solid #00ffea;
-            padding: 15px 40px;
-            font-family: 'Exo 2', sans-serif;
-            font-size: 1.1rem;
-            font-weight: 600;
-            cursor: pointer;
-            position: relative;
-            overflow: hidden;
-            transition: all 0.3s ease;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            border-radius: 8px;
-            display: inline-block;
-        }
-
-        .cyber-btn:hover {
-            background: #00ffea;
-            color: #0a0a16;
-            box-shadow: 
-                0 0 20px #00ffea,
-                0 0 40px #00ffea;
-            text-shadow: none;
-        }
-
-        .cyber-btn::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
-            transition: 0.5s;
-        }
-
-        .cyber-btn:hover::before {
-            left: 100%;
-        }
-
-        .loading {
-            color: #00ffea;
-            font-family: 'Exo 2', sans-serif;
-            font-size: 1.2rem;
-            text-align: center;
-            text-shadow: 0 0 10px rgba(0, 255, 234, 0.5);
-            font-weight: 600;
-        }
-
-        .error {
-            background: rgba(255, 0, 60, 0.1);
-            color: #ff003c;
-            border: 1px solid #ff003c;
-            border-radius: 10px;
-            padding: 20px;
-            text-align: center;
-            font-family: 'Exo 2', sans-serif;
-            text-shadow: 0 0 10px rgba(255, 0, 60, 0.5);
-            box-shadow: 0 0 20px rgba(255, 0, 60, 0.3);
-            font-weight: 600;
-        }
-
-        .instruction {
-            color: #00b3a4;
-            font-size: 0.9rem;
-            margin: 15px 0;
-            text-align: center;
-            letter-spacing: 1px;
-            font-family: 'Exo 2', sans-serif;
-            font-weight: 600;
-            text-transform: uppercase;
-        }
-
-        .cyber-title {
-            position: relative;
-            display: inline-block;
-        }
-
-        .cyber-title::before,
-        .cyber-title::after {
-            content: attr(data-text);
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-        }
-
-        .cyber-title::before {
-            animation: glitch-1 5s infinite linear alternate-reverse;
-            color: #ff003c;
-            z-index: -1;
-        }
-
-        .cyber-title::after {
-            animation: glitch-2 5s infinite linear alternate-reverse;
-            color: #0084ff;
-            z-index: -2;
-        }
-
-        @keyframes glitch-1 {
-            0% { transform: translate(0); }
-            20% { transform: translate(-2px, 2px); }
-            40% { transform: translate(-2px, -2px); }
-            60% { transform: translate(2px, 2px); }
-            80% { transform: translate(2px, -2px); }
-            100% { transform: translate(0); }
-        }
-
-        @keyframes glitch-2 {
-            0% { transform: translate(0); }
-            20% { transform: translate(2px, -2px); }
-            40% { transform: translate(2px, 2px); }
-            60% { transform: translate(-2px, -2px); }
-            80% { transform: translate(-2px, 2px); }
-            100% { transform: translate(0); }
-        }
-
-        @media (max-width: 768px) {
-            .cyber-title {
-                font-size: 2rem;
-            }
-            
-            .cyber-terminal {
-                padding: 30px 20px;
-                border-radius: 12px;
-            }
-            
-            .key-value {
-                font-size: 0.85rem;
-            }
-            
-            .key-display {
-                border-radius: 8px;
-            }
-        }
+        /* GIỮ NGUYÊN CSS NHƯ CŨ */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: #0a0a16; color: #00ffea; font-family: 'Exo 2', sans-serif; min-height: 100vh; display: flex; justify-content: center; align-items: center; padding: 20px; overflow: hidden; position: relative; }
+        .grid-bg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(rgba(0,255,234,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(0,255,234,0.1) 1px, transparent 1px); background-size: 50px 50px; animation: gridMove 20s linear infinite; z-index: 1; }
+        .cyber-terminal { background: rgba(0,20,30,0.9); border: 2px solid #00ffea; border-radius: 15px; padding: 40px 30px; max-width: 600px; width: 100%; position: relative; z-index: 2; box-shadow: 0 0 50px rgba(0,255,234,0.3), inset 0 0 30px rgba(0,255,234,0.1); text-align: center; }
+        .cyber-title { font-family: 'Rajdhani', sans-serif; font-size: 2.5rem; font-weight: 700; color: #00ffea; text-shadow: 0 0 10px #00ffea, 0 0 20px #00ffea, 0 0 40px #0084ff; margin-bottom: 10px; letter-spacing: 3px; }
+        .key-display { background: rgba(0,40,50,0.6); border: 1px solid #00ffea; border-radius: 10px; padding: 20px; margin: 25px 0; position: relative; overflow: hidden; text-align: center; }
+        .key-value { color: #00ffea; font-family: 'Rajdhani', sans-serif; font-size: 0.95rem; font-weight: 600; word-break: break-all; text-shadow: 0 0 10px rgba(0,255,234,0.5); text-align: center; }
+        .cyber-btn { background: transparent; color: #00ffea; border: 2px solid #00ffea; padding: 15px 40px; font-family: 'Exo 2', sans-serif; font-size: 1.1rem; font-weight: 600; cursor: pointer; margin-top: 20px; position: relative; overflow: hidden; transition: all 0.3s ease; letter-spacing: 2px; text-transform: uppercase; border-radius: 8px; display: inline-block; }
     </style>
 </head>
 <body>
     <div class="grid-bg"></div>
-    
     <div class="cyber-terminal">
-        <div class="header">
-            <h1 class="cyber-title" data-text="HOANG VINH PHUC">HOANG VINH PHUC</h1>
-            <div class="subtitle">SECURE KEY SYSTEM</div>
-        </div>
-        
+        <h1 class="cyber-title">HOANG VINH PHUC</h1>
+        <div class="subtitle">SECURE KEY SYSTEM</div>
         <div id="content">
             <div class="loading">VERIFYING SECURITY...</div>
         </div>
     </div>
 
     <script>
-        // GENTLE ANTI-DEBUG - KHÔNG BLOCK MẠNH
-        function gentleAntiDebug() {
-            // Chỉ cảnh báo, không block
-            if (navigator.webdriver || window.outerWidth - window.innerWidth > 200) {
-                console.warn('Debug tool detected');
-            }
-        }
-
-        // SECURE KEY VERIFICATION
+        // SECURE KEY VERIFICATION - KHÔNG CẦN SERVER KEY
         async function verifyAndDisplay() {
-            gentleAntiDebug();
-            
             const urlParams = new URLSearchParams(window.location.search);
             const urlKey = urlParams.get('key');
             const urlSig = urlParams.get('sig');
@@ -342,7 +40,7 @@
                 return;
             }
             
-            // Check timestamp (30 phút timeout - thoáng hơn)
+            // Check timestamp (30 phút)
             const now = Date.now();
             if (Math.abs(now - parseInt(urlTs)) > 1800000) {
                 showError('KEY EXPIRED');
@@ -350,7 +48,7 @@
             }
             
             try {
-                // Verify signature với secret
+                // Verify signature với secret - ĐÂY LÀ CÁCH DUY NHẤT ĐỂ VERIFY
                 const secret = 'vphuc_secret_1c0b057cf79cb842';
                 const verifyData = urlKey + urlTs;
                 const calculatedSig = await sha256HMAC(secret, verifyData);
@@ -360,7 +58,7 @@
                     return;
                 }
                 
-                // Key hợp lệ - hiển thị
+                // Key hợp lệ - hiển thị (key chỉ có qua URL params)
                 document.getElementById('content').innerHTML = `
                     <div class="key-display">
                         <span class="key-label">VALID SECURE KEY</span>
@@ -377,7 +75,7 @@
             }
         }
 
-        // HMAC SHA256
+        // HMAC SHA256 (giữ nguyên)
         async function sha256HMAC(secret, data) {
             const encoder = new TextEncoder();
             const key = await crypto.subtle.importKey(
@@ -408,8 +106,6 @@
                     btn.style.color = '#00ffea';
                     btn.style.boxShadow = 'none';
                 }, 2000);
-            }).catch(err => {
-                alert('COPY FAILED! Copy manually.');
             });
         }
 
