@@ -2,7 +2,7 @@ name: 🔑 Generate Secure Daily Key
 
 on:
   schedule:
-    - cron: '0 17 * * *'  # 5PM daily
+    - cron: '0 17 * * *'  
   workflow_dispatch:
 
 permissions:
@@ -18,25 +18,32 @@ jobs:
         
     - name: Generate Secure Daily Data
       run: |
-        
+        # Tạo timestamp milliseconds
+        TIMESTAMP=$(date +%s%3N)
         TODAY=$(date +%Y%m%d)
+        
+      
         KEY="vphuc_${TODAY}_$(openssl rand -hex 6 | tr '[:lower:]' '[:upper:]')"
         
         
         SECRET="vphuc_secret_1c0b057cf79cb842"
-        SIGNATURE=$(echo -n "${KEY}${TODAY}" | openssl dgst -sha256 -hmac "$SECRET" | awk '{print $2}')
+        SIGNATURE=$(echo -n "${KEY}${TIMESTAMP}" | openssl dgst -sha256 -hmac "$SECRET" | awk '{print $2}')
         
+      
+        ORIGINAL_URL="https://vphuc1265.github.io/vphuc.luv/?key=${KEY}&sig=${SIGNATURE}&ts=${TIMESTAMP}"
         
-        ORIGINAL_URL="https://vphuc1265.github.io/vphuc.luv/?key=${KEY}&sig=${SIGNATURE}&ts=${TODAY}"
+      
+        RESPONSE=$(curl -s "https://link4m.co/api-shorten/v2?api=68db842cd32fc747763d594d&url=${ORIGINAL_URL}")
+        SHORT_URL=$(echo "$RESPONSE" | grep -o '"shortenedUrl":"[^"]*' | cut -d'"' -f4 || echo "https://link4m.co/error")
         
-        
-        SHORT_URL=$(curl -s "https://link4m.co/api-shorten/v2?api=68db842cd32fc747763d594d&url=$ORIGINAL_URL" | jq -r '.shortenedUrl // "https://link4m.co/error"')
-        
-        
+    
+        echo "$KEY" > daily-secret.txt
         echo "$SHORT_URL" > daily-link.txt
+        echo "{\"key\":\"$KEY\",\"date\":\"$TODAY\"}" > daily-key.json
         
+      
         git config user.name "github-actions"
         git config user.email "actions@github.com"
         git add .
-        git commit -m "Update daily link - $(date)" || exit 0
+        git commit -m "Update daily key - $(date)" || exit 0
         git push
