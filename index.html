@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HOANG VINH PHUC - SECURE KEY</title>
+    <title>SECURITY KEY</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { 
@@ -75,15 +75,15 @@
 </head>
 <body>
     <div class="cyber-terminal">
-        <h1 class="cyber-title">HOANG VINH PHUC</h1>
-        <div class="subtitle">SECURE KEY SYSTEM</div>
+        <h1 class="cyber-title">HVP_Tool</h1>
+        <div class="subtitle">SECURIRY KEY SYSTEM</div>
         <div id="content">
-            <div>Đang tải key...</div>
+            <div>Đang Tải Key...</div>
         </div>
     </div>
 
     <script>
-        // Lấy key từ URL parameters
+        
         function getKeyFromURL() {
             const urlParams = new URLSearchParams(window.location.search);
             const key = urlParams.get('key');
@@ -91,13 +91,13 @@
             if (key) {
                 document.getElementById('content').innerHTML = `
                     <div class="key-display">
-                        <div style="color: #00ffea; margin-bottom: 10px;">KEY HỢP LỆ</div>
+                        <div style="color: #00ffea; margin-bottom: 10px;">KEY CỦA NGÀY HÔM NAY</div>
                         <div class="key-value">${key}</div>
                         <div style="margin-top: 10px; font-size: 0.9rem; color: #00aaff;">
                             Key chỉ có hiệu lực đến 23:59 hôm nay
                         </div>
                     </div>
-                    <div class="instruction">COPY KEY VÀ DÁN VÀO TOOL</div>
+                    <div class="instruction">COPY KEY NÀY VÀ DÁN VÀO TOOL ĐỂ SỬ DỤNG</div>
                     <div class="button-container">
                         <button class="cyber-btn" onclick="copyKey('${key}')">COPY KEY</button>
                     </div>
@@ -111,7 +111,7 @@
         function copyKey(key) {
             navigator.clipboard.writeText(key).then(() => {
                 const btn = document.querySelector('.cyber-btn');
-                btn.textContent = 'ĐÃ COPY!';
+                btn.textContent = 'ĐÃ COPY !';
                 btn.style.background = '#00ffea';
                 btn.style.color = '#0a0a16';
                 
@@ -123,7 +123,7 @@
             });
         }
         
-        // Hiển thị key ngay khi trang load
+    
         document.addEventListener('DOMContentLoaded', getKeyFromURL);
     </script>
 </body>
