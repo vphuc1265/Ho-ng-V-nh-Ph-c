@@ -71,10 +71,6 @@
             margin: 15px 0;
             color: #00ffea;
         }
-        .loading {
-            color: #00ffea;
-            font-size: 1.2rem;
-        }
     </style>
 </head>
 <body>
@@ -82,92 +78,40 @@
         <h1 class="cyber-title">HOANG VINH PHUC</h1>
         <div class="subtitle">SECURE KEY SYSTEM</div>
         <div id="content">
-            <div class="loading">GENERATING SECURE KEY...</div>
+            <div>Đang tải key...</div>
         </div>
     </div>
 
     <script>
-        // SECRET CỐ ĐỊNH DÙNG CHUNG VỚI TOOL
-        const SECRET = "vphuc_secret_hoangvinhphuc";
-        
-        // Tạo key dựa trên secret, ngày, và random
-        function generateSecureKey() {
-            const today = new Date();
-            const dateStr = today.getFullYear().toString() + 
-                          (today.getMonth() + 1).toString().padStart(2, '0') + 
-                          today.getDate().toString().padStart(2, '0');
+        // Lấy key từ URL parameters
+        function getKeyFromURL() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const key = urlParams.get('key');
             
-            // Tạo random 12 ký tự hex (6 bytes)
-            const randomBuffer = new Uint8Array(6);
-            crypto.getRandomValues(randomBuffer);
-            const randomPart = Array.from(randomBuffer, byte => 
-                byte.toString(16).padStart(2, '0').toUpperCase()
-            ).join('');
-            
-            // Tạo key
-            const key = `vphuc_${dateStr}_${randomPart}`;
-            const timestamp = Date.now().toString();
-            
-            return {
-                key: key,
-                timestamp: timestamp,
-                signature: generateSignature(key, timestamp)
-            };
-        }
-        
-        // Tạo signature với secret
-        async function generateSignature(key, timestamp) {
-            const encoder = new TextEncoder();
-            const secretKey = await crypto.subtle.importKey(
-                'raw',
-                encoder.encode(SECRET),
-                { name: 'HMAC', hash: 'SHA-256' },
-                false,
-                ['sign']
-            );
-            
-            const data = encoder.encode(key + timestamp);
-            const signature = await crypto.subtle.sign('HMAC', secretKey, data);
-            
-            return Array.from(new Uint8Array(signature))
-                .map(b => b.toString(16).padStart(2, '0'))
-                .join('');
-        }
-        
-        // Hiển thị key
-        async function displaySecureKey() {
-            try {
-                const keyData = generateSecureKey();
-                
+            if (key) {
                 document.getElementById('content').innerHTML = `
                     <div class="key-display">
-                        <div style="color: #00ffea; margin-bottom: 10px;">VALID SECURE KEY</div>
-                        <div class="key-value">${keyData.key}</div>
+                        <div style="color: #00ffea; margin-bottom: 10px;">KEY HỢP LỆ</div>
+                        <div class="key-value">${key}</div>
                         <div style="margin-top: 10px; font-size: 0.9rem; color: #00aaff;">
-                            Key chỉ có hiệu lực trong ngày
+                            Key chỉ có hiệu lực đến 23:59 hôm nay
                         </div>
                     </div>
-                    <div class="instruction">COPY KEY VÀ DÁN VÀO TOOL ĐỂ SỬ DỤNG</div>
+                    <div class="instruction">COPY KEY VÀ DÁN VÀO TOOL</div>
                     <div class="button-container">
-                        <button class="cyber-btn" onclick="copyKey('${keyData.key}')">COPY KEY</button>
+                        <button class="cyber-btn" onclick="copyKey('${key}')">COPY KEY</button>
                     </div>
                 `;
-                
-            } catch (error) {
-                console.error("Key generation error:", error);
-                showError('KEY GENERATION FAILED');
+            } else {
+                document.getElementById('content').innerHTML = 
+                    '<div class="error">KHÔNG CÓ KEY TRONG URL</div>';
             }
-        }
-        
-        function showError(msg) {
-            document.getElementById('content').innerHTML = 
-                `<div class="error">${msg}</div>`;
         }
         
         function copyKey(key) {
             navigator.clipboard.writeText(key).then(() => {
                 const btn = document.querySelector('.cyber-btn');
-                btn.textContent = 'COPIED!';
+                btn.textContent = 'ĐÃ COPY!';
                 btn.style.background = '#00ffea';
                 btn.style.color = '#0a0a16';
                 
@@ -179,8 +123,8 @@
             });
         }
         
-        // Tạo và hiển thị key ngay khi trang load
-        document.addEventListener('DOMContentLoaded', displaySecureKey);
+        // Hiển thị key ngay khi trang load
+        document.addEventListener('DOMContentLoaded', getKeyFromURL);
     </script>
 </body>
 </html>
