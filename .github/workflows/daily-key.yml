@@ -24,10 +24,8 @@ jobs:
         TODAY=$(date +%Y%m%d)
         KEY="vphuc_${TODAY}_$(openssl rand -hex 6 | tr '[:lower:]' '[:upper:]')"
         
-        # Tạo GitHub Pages URL với key
-        GITHUB_PAGES_URL="https://dailykey-hvp.github.io/key-${KEY}/"
-        
         # Rút gọn link vượt (CHỈ 1 LẦN/NGÀY)
+        GITHUB_PAGES_URL="https://dailykey-hvp.github.io/"
         RESPONSE=$(curl -s "https://link4m.co/api-shorten/v2?api=68db842cd32fc747763d594d&url=${GITHUB_PAGES_URL}")
         SHORT_URL=$(echo "$RESPONSE" | grep -o '"shortenedUrl":"[^"]*' | cut -d'"' -f4 || echo "$GITHUB_PAGES_URL")
         
@@ -40,11 +38,20 @@ jobs:
         <!DOCTYPE html>
         <html>
         <head>
-            <meta http-equiv="refresh" content="0; url=$SHORT_URL">
-            <title>Redirecting...</title>
+            <title>SECURITY KEY - $TODAY</title>
+            <style>
+                body { background: #0a0a15; color: #00ffea; font-family: Arial; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+                .container { text-align: center; }
+                .key { font-size: 1.5rem; margin: 20px 0; padding: 15px; border: 2px solid #00ffea; border-radius: 10px; }
+            </style>
         </head>
         <body>
-            <p>Redirecting to secure key...</p>
+            <div class="container">
+                <h1>DAILY SECURITY KEY</h1>
+                <div class="key">$KEY</div>
+                <p>Copy key này và dán vào tool</p>
+                <p>⏰ Key hết hạn lúc 23:59 ngày $TODAY</p>
+            </div>
         </body>
         </html>
         EOF
@@ -54,3 +61,9 @@ jobs:
         git add daily-key.json docs/
         git commit -m "Auto: Daily key for $TODAY"
         git push
+
+    - name: Deploy to GitHub Pages
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./docs
