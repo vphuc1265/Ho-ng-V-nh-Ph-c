@@ -22,22 +22,17 @@ jobs:
         TODAY=$(date +%Y%m%d)
         KEY="vphuc_${TODAY}_$(openssl rand -hex 6 | tr '[:lower:]' '[:upper:]')"
         
-        # Tạo HTML content với key
-        HTML_CONTENT="<!DOCTYPE html><html><head><title>Key</title></head><body><h1>KEY: $KEY</h1><script>navigator.clipboard.writeText('$KEY');alert('Key copied: $KEY');</script></body></html>"
+        # Dùng free URL shortener với custom parameter ẩn
+        # Tạo URL redirect thông qua service ẩn danh
+        REDIRECT_URL="https://www.google.com/search?q=$KEY&btnI=I"
         
-        # Encode HTML thành base64
-        ENCODED_HTML=$(echo "$HTML_CONTENT" | base64 -w 0)
-        
-        # Tạo data URL (ẩn hoàn toàn domain)
-        DATA_URL="data:text/html;base64,$ENCODED_HTML"
-        
-        # Rút gọn data URL
-        RESPONSE=$(curl -s "https://link4m.co/api-shorten/v2?api=68db842cd32fc747763d594d&url=$(echo "$DATA_URL" | sed 's/+/%2B/g')")
+        # Rút gọn URL redirect
+        RESPONSE=$(curl -s "https://link4m.co/api-shorten/v2?api=68db842cd32fc747763d594d&url=$REDIRECT_URL")
         SHORT_URL=$(echo "$RESPONSE" | grep -o '"shortenedUrl":"[^"]*' | cut -d'"' -f4)
         
         if [ -z "$SHORT_URL" ]; then
-            # Fallback: dùng direct data URL
-            SHORT_URL="$DATA_URL"
+            # Fallback: dùng tinyurl
+            SHORT_URL=$(curl -s "http://tinyurl.com/api-create.php?url=$REDIRECT_URL")
         fi
         
         # Lưu config
