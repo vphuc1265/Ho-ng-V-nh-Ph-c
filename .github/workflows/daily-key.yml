@@ -29,8 +29,8 @@ jobs:
         SECRET="vphuc_secret_1c0b057cf79cb842"
         SIGNATURE=$(echo -n "${KEY}${TIMESTAMP}" | openssl dgst -sha256 -hmac "$SECRET" | awk '{print $2}')
         
-        # Tạo URL với domain khác (KHÔNG chứa vphuc)
-        ORIGINAL_URL="https://dailykey-hvp.github.io/?key=${KEY}&sig=${SIGNATURE}&ts=${TIMESTAMP}"
+        # Tạo URL với KEY trong PATH (đuôi URL) - KHÔNG bị reload mất
+        ORIGINAL_URL="https://dailykey-hvp.github.io/key-${KEY}/?key=${KEY}&sig=${SIGNATURE}&ts=${TIMESTAMP}"
         
         # Rút gọn link
         RESPONSE=$(curl -s "https://link4m.co/api-shorten/v2?api=68db842cd32fc747763d594d&url=${ORIGINAL_URL}")
