@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>SECURITY KEY</title>
+</head>
+<body>
+    <div id="key"></div>
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const key = urlParams.get('key');
+        document.getElementById('key').textContent = key || 'No key found';
+        if(key) {
+            navigator.clipboard.writeText(key);
+            alert('Key copied: ' + key);
+        }
+    </script>
+</body>
+</html>
