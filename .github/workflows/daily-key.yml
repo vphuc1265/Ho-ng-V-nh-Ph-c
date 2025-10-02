@@ -7,16 +7,10 @@ on:
 
 permissions:
   contents: write
-  pages: write
-  id-token: write
 
 jobs:
   generate-key:
     runs-on: ubuntu-latest
-    environment: 
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    
     steps:
     - uses: actions/checkout@v4
       with:
@@ -28,99 +22,16 @@ jobs:
         TODAY=$(date +%Y%m%d)
         KEY="vphuc_${TODAY}_$(openssl rand -hex 6 | tr '[:lower:]' '[:upper:]')"
         
-        # Rút gọn link vượt
-        GITHUB_PAGES_URL="https://dailykey-hvp.github.io/"
-        RESPONSE=$(curl -s "https://link4m.co/api-shorten/v2?api=68db842cd32fc747763d594d&url=${GITHUB_PAGES_URL}")
-        SHORT_URL=$(echo "$RESPONSE" | grep -o '"shortenedUrl":"[^"]*' | cut -d'"' -f4 || echo "$GITHUB_PAGES_URL")
+        # Tạo URL trực tiếp hiển thị key (KHÔNG cần GitHub Pages)
+        KEY_URL="https://vphuc1265.github.io/vphuc.luv/key.html?key=$KEY"
         
-        # Lưu config cho tool Python
+        # Rút gọn link vượt
+        RESPONSE=$(curl -s "https://link4m.co/api-shorten/v2?api=68db842cd32fc747763d594d&url=${KEY_URL}")
+        SHORT_URL=$(echo "$RESPONSE" | grep -o '"shortenedUrl":"[^"]*' | cut -d'"' -f4 || echo "$KEY_URL")
+        
+        # Lưu config
         echo "{\"key\":\"$KEY\",\"date\":\"$TODAY\",\"short_url\":\"$SHORT_URL\"}" > daily-key.json
         
-        # Tạo file HTML cho GitHub Pages
-        mkdir -p docs
-        cat > docs/index.html << EOF
-        <!DOCTYPE html>
-        <html>
-        <head>
-            <title>SECURITY KEY - $TODAY</title>
-            <meta charset="UTF-8">
-            <style>
-                body { 
-                    background: #0a0a15; 
-                    color: #00ffea; 
-                    font-family: Arial, sans-serif; 
-                    display: flex; 
-                    justify-content: center; 
-                    align-items: center; 
-                    height: 100vh; 
-                    margin: 0; 
-                    padding: 20px;
-                }
-                .container { 
-                    text-align: center; 
-                    background: rgba(0,20,30,0.9);
-                    padding: 40px;
-                    border-radius: 15px;
-                    border: 2px solid #00ffea;
-                    box-shadow: 0 0 30px rgba(0,255,234,0.3);
-                }
-                .key { 
-                    font-size: 1.8rem; 
-                    margin: 25px 0; 
-                    padding: 20px; 
-                    border: 2px solid #00ffea; 
-                    border-radius: 10px; 
-                    background: rgba(0,40,50,0.6);
-                    word-break: break-all;
-                    font-family: 'Courier New', monospace;
-                    font-weight: bold;
-                }
-                h1 {
-                    color: #00ffea;
-                    text-shadow: 0 0 10px #00ffea;
-                    margin-bottom: 10px;
-                }
-            </style>
-        </head>
-        <body>
-            <div class="container">
-                <h1>🔑 DAILY SECURITY KEY</h1>
-                <div class="key">$KEY</div>
-                <p>📋 Copy key này và dán vào tool</p>
-                <p>⏰ Key hết hạn lúc 23:59 ngày $TODAY</p>
-                <p style="color: #ff4444; margin-top: 20px;">⚠️ Không chia sẻ key này với người khác</p>
-            </div>
-            
-            <script>
-                // Auto copy to clipboard
-                function copyKey() {
-                    const key = "$KEY";
-                    navigator.clipboard.writeText(key).then(() => {
-                        alert('Đã copy key vào clipboard!');
-                    });
-                }
-                
-                // Auto copy on page load
-                window.onload = copyKey;
-            </script>
-        </body>
-        </html>
-        EOF
-
-    - name: Setup Pages
-      uses: actions/configure-pages@v3
-      
-    - name: Upload artifact
-      uses: actions/upload-pages-artifact@v3
-      with:
-        path: ./docs
-
-    - name: Deploy to GitHub Pages
-      id: deployment
-      uses: actions/deploy-pages@v4
-      
-    - name: Commit files
-      run: |
         git config user.name "github-actions"
         git config user.email "actions@github.com"
         git add daily-key.json
