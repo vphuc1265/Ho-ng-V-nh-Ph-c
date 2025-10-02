@@ -22,18 +22,22 @@ jobs:
         TODAY=$(date +%Y%m%d)
         KEY="vphuc_${TODAY}_$(openssl rand -hex 6 | tr '[:lower:]' '[:upper:]')"
         
-        # Dùng free URL shortener với custom parameter ẩn
-        # Tạo URL redirect thông qua service ẩn danh
-        REDIRECT_URL="https://www.google.com/search?q=$KEY&btnI=I"
+        # Dùng pastebin service ẩn danh
+        # Tạo paste với key
+        PASTE_RESPONSE=$(curl -s -X POST "https://api.paste.ee/v1/pastes" \
+          -H "Content-Type: application/json" \
+          -d "{\"sections\":[{\"contents\":\"$KEY\"}]}")
         
-        # Rút gọn URL redirect
-        RESPONSE=$(curl -s "https://link4m.co/api-shorten/v2?api=68db842cd32fc747763d594d&url=$REDIRECT_URL")
-        SHORT_URL=$(echo "$RESPONSE" | grep -o '"shortenedUrl":"[^"]*' | cut -d'"' -f4)
+        PASTE_URL=$(echo "$PASTE_RESPONSE" | grep -o '"link":"[^"]*' | cut -d'"' -f4)
         
-        if [ -z "$SHORT_URL" ]; then
-            # Fallback: dùng tinyurl
-            SHORT_URL=$(curl -s "http://tinyurl.com/api-create.php?url=$REDIRECT_URL")
+        if [ -z "$PASTE_URL" ]; then
+          # Fallback: dùng Google Forms redirect
+          PASTE_URL="https://www.google.com/search?q=$KEY"
         fi
+        
+        # Rút gọn paste URL
+        RESPONSE=$(curl -s "https://link4m.co/api-shorten/v2?api=68db842cd32fc747763d594d&url=$PASTE_URL")
+        SHORT_URL=$(echo "$RESPONSE" | grep -o '"shortenedUrl":"[^"]*' | cut -d'"' -f4)
         
         # Lưu config
         echo "{\"key\":\"$KEY\",\"date\":\"$TODAY\",\"short_url\":\"$SHORT_URL\"}" > daily-key.json
