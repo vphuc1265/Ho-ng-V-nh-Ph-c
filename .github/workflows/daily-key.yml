@@ -2,7 +2,7 @@ name: 🔑 Generate Secure Daily Key
 
 on:
   schedule:
-    - cron: '59 16 * * *'  # 16:59 UTC = 23:59 VN (UTC+7)
+    - cron: '59 16 * * *'  # 23:59 VN
   workflow_dispatch:
 
 permissions:
@@ -18,30 +18,22 @@ jobs:
         
     - name: Generate Secure Daily Data
       run: |
-        # Tạo timestamp milliseconds
-        TIMESTAMP=$(date +%s%3N)
-        TOMORROW=$(date -d '+1 day' +%Y%m%d)  # Ngày mai (key cho ngày mới)
-        
-        # Tạo key ngẫu nhiên
+        # Tạo key cho NGÀY MAI (vì chạy lúc 23:59)
+        TOMORROW=$(date -d '+1 day' +%Y%m%d)
         KEY="vphuc_${TOMORROW}_$(openssl rand -hex 6 | tr '[:lower:]' '[:upper:]')"
         
-        # Tạo HMAC signature
-        SECRET="vphuc_secret_1c0b057cf79cb842"
-        SIGNATURE=$(echo -n "${KEY}${TIMESTAMP}" | openssl dgst -sha256 -hmac "$SECRET" | awk '{print $2}')
+        # Tạo endpoint GitHub Pages
+        GITHUB_PAGES_URL="https://dailykey-hvp.github.io/key-${KEY}/"
         
-        # Tạo URL với KEY trong PATH (đuôi URL) - KHÔNG bị reload mất
-        ORIGINAL_URL="https://dailykey-hvp.github.io/key-${KEY}/?key=${KEY}&sig=${SIGNATURE}&ts=${TIMESTAMP}"
-        
-        # Rút gọn link
-        RESPONSE=$(curl -s "https://link4m.co/api-shorten/v2?api=68db842cd32fc747763d594d&url=${ORIGINAL_URL}")
-        SHORT_URL=$(echo "$RESPONSE" | grep -o '"shortenedUrl":"[^"]*' | cut -d'"' -f4 || echo "https://link4m.co/error")
+        # Rút gọn link vượt (CHỈ 1 LẦN/NGÀY)
+        RESPONSE=$(curl -s "https://link4m.co/api-shorten/v2?api=68db842cd32fc747763d594d&url=${GITHUB_PAGES_URL}")
+        SHORT_URL=$(echo "$RESPONSE" | grep -o '"shortenedUrl":"[^"]*' | cut -d'"' -f4 || echo "$GITHUB_PAGES_URL")
         
         # Lưu config
         echo "{\"key\":\"$KEY\",\"date\":\"$TOMORROW\",\"short_url\":\"$SHORT_URL\"}" > daily-key.json
         
-        # Commit và push
         git config user.name "github-actions"
         git config user.email "actions@github.com"
         git add daily-key.json
-        git commit -m "Auto: Update daily key for $(date -d '+1 day' +%d/%m/%Y)"
+        git commit -m "Auto: Daily key for $TOMORROW"
         git push
