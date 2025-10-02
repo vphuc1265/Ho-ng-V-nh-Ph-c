@@ -17,53 +17,109 @@ jobs:
     - uses: actions/checkout@v4
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
+        ref: main  # CHỈNH LẠI THÀNH BRANCH MAIN
         
+    - name: Setup Pages
+      uses: actions/configure-pages@v3
+      
     - name: Generate Secure Daily Data
       run: |
-        # Tạo key cho NGÀY HÔM NAY (vì chạy lúc 00:00 VN)
+        # Tạo key cho NGÀY HÔM NAY
         TODAY=$(date +%Y%m%d)
         KEY="vphuc_${TODAY}_$(openssl rand -hex 6 | tr '[:lower:]' '[:upper:]')"
         
-        # Rút gọn link vượt (CHỈ 1 LẦN/NGÀY)
+        # Rút gọn link vượt
         GITHUB_PAGES_URL="https://dailykey-hvp.github.io/"
         RESPONSE=$(curl -s "https://link4m.co/api-shorten/v2?api=68db842cd32fc747763d594d&url=${GITHUB_PAGES_URL}")
         SHORT_URL=$(echo "$RESPONSE" | grep -o '"shortenedUrl":"[^"]*' | cut -d'"' -f4 || echo "$GITHUB_PAGES_URL")
         
-        # Lưu config
+        # Lưu config cho tool Python
         echo "{\"key\":\"$KEY\",\"date\":\"$TODAY\",\"short_url\":\"$SHORT_URL\"}" > daily-key.json
         
-        # Tạo HTML redirect cho GitHub Pages
+        # Tạo file HTML cho GitHub Pages
         mkdir -p docs
         cat > docs/index.html << EOF
         <!DOCTYPE html>
         <html>
         <head>
             <title>SECURITY KEY - $TODAY</title>
+            <meta charset="UTF-8">
             <style>
-                body { background: #0a0a15; color: #00ffea; font-family: Arial; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
-                .container { text-align: center; }
-                .key { font-size: 1.5rem; margin: 20px 0; padding: 15px; border: 2px solid #00ffea; border-radius: 10px; }
+                body { 
+                    background: #0a0a15; 
+                    color: #00ffea; 
+                    font-family: Arial, sans-serif; 
+                    display: flex; 
+                    justify-content: center; 
+                    align-items: center; 
+                    height: 100vh; 
+                    margin: 0; 
+                    padding: 20px;
+                }
+                .container { 
+                    text-align: center; 
+                    background: rgba(0,20,30,0.9);
+                    padding: 40px;
+                    border-radius: 15px;
+                    border: 2px solid #00ffea;
+                    box-shadow: 0 0 30px rgba(0,255,234,0.3);
+                }
+                .key { 
+                    font-size: 1.8rem; 
+                    margin: 25px 0; 
+                    padding: 20px; 
+                    border: 2px solid #00ffea; 
+                    border-radius: 10px; 
+                    background: rgba(0,40,50,0.6);
+                    word-break: break-all;
+                    font-family: 'Courier New', monospace;
+                    font-weight: bold;
+                }
+                h1 {
+                    color: #00ffea;
+                    text-shadow: 0 0 10px #00ffea;
+                    margin-bottom: 10px;
+                }
             </style>
         </head>
         <body>
             <div class="container">
-                <h1>DAILY SECURITY KEY</h1>
+                <h1>🔑 DAILY SECURITY KEY</h1>
                 <div class="key">$KEY</div>
-                <p>Copy key này và dán vào tool</p>
+                <p>📋 Copy key này và dán vào tool</p>
                 <p>⏰ Key hết hạn lúc 23:59 ngày $TODAY</p>
+                <p style="color: #ff4444; margin-top: 20px;">⚠️ Không chia sẻ key này với người khác</p>
             </div>
+            
+            <script>
+                // Auto copy to clipboard
+                function copyKey() {
+                    const key = "$KEY";
+                    navigator.clipboard.writeText(key).then(() => {
+                        alert('Đã copy key vào clipboard!');
+                    });
+                }
+                
+                // Auto copy on page load
+                window.onload = copyKey;
+            </script>
         </body>
         </html>
         EOF
-        
-        git config user.name "github-actions"
-        git config user.email "actions@github.com"
-        git add daily-key.json docs/
-        git commit -m "Auto: Daily key for $TODAY"
-        git push
+
+    - name: Upload artifact
+      uses: actions/upload-pages-artifact@v2
+      with:
+        path: ./docs
 
     - name: Deploy to GitHub Pages
-      uses: peaceiris/actions-gh-pages@v3
-      with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: ./docs
+      id: deployment
+      uses: actions/deploy-pages@v2
+      
+    - name: Commit files
+      run: |
+        git config user.name "github-actions"
+        git config user.email "actions@github.com"
+        git add daily-key.json
+        git commit -m "Auto: Daily key for $TODAY"
+        git push
