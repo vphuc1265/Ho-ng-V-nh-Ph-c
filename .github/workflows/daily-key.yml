@@ -2,7 +2,7 @@ name: 🔑 Generate Secure Daily Key
 
 on:
   schedule:
-  - cron: '*/1 * * * *'
+    - cron: '0 17 * * *'  # 00:00 VN - SANG NGÀY MỚI
   workflow_dispatch:
 
 permissions:
