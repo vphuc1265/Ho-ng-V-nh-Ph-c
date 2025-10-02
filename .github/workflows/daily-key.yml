@@ -2,7 +2,7 @@ name: 🔑 Generate Secure Daily Key
 
 on:
   schedule:
-    - cron: '0 17 * * *'  
+    - cron: '59 16 * * *'  # 16:59 UTC = 23:59 VN (UTC+7)
   workflow_dispatch:
 
 permissions:
@@ -20,30 +20,28 @@ jobs:
       run: |
         # Tạo timestamp milliseconds
         TIMESTAMP=$(date +%s%3N)
-        TODAY=$(date +%Y%m%d)
+        TOMORROW=$(date -d '+1 day' +%Y%m%d)  # Ngày mai (key cho ngày mới)
         
-      
-        KEY="vphuc_${TODAY}_$(openssl rand -hex 6 | tr '[:lower:]' '[:upper:]')"
+        # Tạo key ngẫu nhiên
+        KEY="vphuc_${TOMORROW}_$(openssl rand -hex 6 | tr '[:lower:]' '[:upper:]')"
         
-        
+        # Tạo HMAC signature
         SECRET="vphuc_secret_1c0b057cf79cb842"
         SIGNATURE=$(echo -n "${KEY}${TIMESTAMP}" | openssl dgst -sha256 -hmac "$SECRET" | awk '{print $2}')
         
-      
-        ORIGINAL_URL="https://vphuc1265.github.io/vphuc.luv/?key=${KEY}&sig=${SIGNATURE}&ts=${TIMESTAMP}"
+        # Tạo URL với domain khác (KHÔNG chứa vphuc)
+        ORIGINAL_URL="https://dailykey-hvp.github.io/?key=${KEY}&sig=${SIGNATURE}&ts=${TIMESTAMP}"
         
-      
+        # Rút gọn link
         RESPONSE=$(curl -s "https://link4m.co/api-shorten/v2?api=68db842cd32fc747763d594d&url=${ORIGINAL_URL}")
         SHORT_URL=$(echo "$RESPONSE" | grep -o '"shortenedUrl":"[^"]*' | cut -d'"' -f4 || echo "https://link4m.co/error")
         
-    
-        echo "$KEY" > daily-secret.txt
-        echo "$SHORT_URL" > daily-link.txt
-        echo "{\"key\":\"$KEY\",\"date\":\"$TODAY\"}" > daily-key.json
+        # Lưu config
+        echo "{\"key\":\"$KEY\",\"date\":\"$TOMORROW\",\"short_url\":\"$SHORT_URL\"}" > daily-key.json
         
-      
+        # Commit và push
         git config user.name "github-actions"
         git config user.email "actions@github.com"
-        git add .
-        git commit -m "Update daily key - $(date)" || exit 0
+        git add daily-key.json
+        git commit -m "Auto: Update daily key for $(date -d '+1 day' +%d/%m/%Y)"
         git push
