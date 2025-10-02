@@ -2,11 +2,13 @@ name: 🔑 Generate Secure Daily Key
 
 on:
   schedule:
-    - cron: '59 16 * * *'  # 23:59 VN
+    - cron: '0 17 * * *'  # 00:00 VN - SANG NGÀY MỚI
   workflow_dispatch:
 
 permissions:
   contents: write
+  pages: write
+  id-token: write
 
 jobs:
   generate-key:
@@ -18,11 +20,11 @@ jobs:
         
     - name: Generate Secure Daily Data
       run: |
-        # Tạo key cho NGÀY MAI (vì chạy lúc 23:59)
-        TOMORROW=$(date -d '+1 day' +%Y%m%d)
-        KEY="vphuc_${TOMORROW}_$(openssl rand -hex 6 | tr '[:lower:]' '[:upper:]')"
+        # Tạo key cho NGÀY HÔM NAY (vì chạy lúc 00:00 VN)
+        TODAY=$(date +%Y%m%d)
+        KEY="vphuc_${TODAY}_$(openssl rand -hex 6 | tr '[:lower:]' '[:upper:]')"
         
-        # Tạo endpoint GitHub Pages
+        # Tạo GitHub Pages URL với key
         GITHUB_PAGES_URL="https://dailykey-hvp.github.io/key-${KEY}/"
         
         # Rút gọn link vượt (CHỈ 1 LẦN/NGÀY)
@@ -30,10 +32,25 @@ jobs:
         SHORT_URL=$(echo "$RESPONSE" | grep -o '"shortenedUrl":"[^"]*' | cut -d'"' -f4 || echo "$GITHUB_PAGES_URL")
         
         # Lưu config
-        echo "{\"key\":\"$KEY\",\"date\":\"$TOMORROW\",\"short_url\":\"$SHORT_URL\"}" > daily-key.json
+        echo "{\"key\":\"$KEY\",\"date\":\"$TODAY\",\"short_url\":\"$SHORT_URL\"}" > daily-key.json
+        
+        # Tạo HTML redirect cho GitHub Pages
+        mkdir -p docs
+        cat > docs/index.html << EOF
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta http-equiv="refresh" content="0; url=$SHORT_URL">
+            <title>Redirecting...</title>
+        </head>
+        <body>
+            <p>Redirecting to secure key...</p>
+        </body>
+        </html>
+        EOF
         
         git config user.name "github-actions"
         git config user.email "actions@github.com"
-        git add daily-key.json
-        git commit -m "Auto: Daily key for $TOMORROW"
+        git add daily-key.json docs/
+        git commit -m "Auto: Daily key for $TODAY"
         git push
