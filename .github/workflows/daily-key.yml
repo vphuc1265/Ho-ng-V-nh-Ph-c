@@ -22,18 +22,29 @@ jobs:
         TODAY=$(date +%Y%m%d)
         KEY="vphuc_${TODAY}_$(openssl rand -hex 6 | tr '[:lower:]' '[:upper:]')"
         
-        # Tạo URL trực tiếp hiển thị key (KHÔNG cần GitHub Pages)
-        KEY_URL="https://vphuc1265.github.io/vphuc.luv/key.html?key=$KEY"
+        # Tạo HTML redirect ẩn - dùng chính repo này
+        cat > key.html << EOF
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta http-equiv="refresh" content="0; url=https://www.google.com/search?q=$KEY">
+        </head>
+        <body>
+            Redirecting...
+        </body>
+        </html>
+        EOF
         
-        # Rút gọn link vượt
-        RESPONSE=$(curl -s "https://link4m.co/api-shorten/v2?api=68db842cd32fc747763d594d&url=${KEY_URL}")
-        SHORT_URL=$(echo "$RESPONSE" | grep -o '"shortenedUrl":"[^"]*' | cut -d'"' -f4 || echo "$KEY_URL")
+        # Rút gọn link đến key.html trong CHÍNH repo
+        GITHUB_RAW_URL="https://raw.githubusercontent.com/vphuc1265/vphuc.luv/main/key.html"
+        RESPONSE=$(curl -s "https://link4m.co/api-shorten/v2?api=68db842cd32fc747763d594d&url=${GITHUB_RAW_URL}")
+        SHORT_URL=$(echo "$RESPONSE" | grep -o '"shortenedUrl":"[^"]*' | cut -d'"' -f4)
         
         # Lưu config
         echo "{\"key\":\"$KEY\",\"date\":\"$TODAY\",\"short_url\":\"$SHORT_URL\"}" > daily-key.json
         
         git config user.name "github-actions"
         git config user.email "actions@github.com"
-        git add daily-key.json
+        git add daily-key.json key.html
         git commit -m "Auto: Daily key for $TODAY"
         git push
