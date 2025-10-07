@@ -1,0 +1,48 @@
+name: 🔑 Generate Secure Daily Key Comment
+
+on:
+  schedule:
+    - cron: '0 16 * * *'  # 16:00 UTC = 23:00 VN - TRƯỚC 1H ĐỂ TẠO KEY NGÀY MỚI
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  generate-key:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        
+    - name: Generate Secure Daily Data
+      run: |
+        # Tạo key cho NGÀY MAI (VN time)
+        TOMORROW=$(date -d "+1 day" +%Y%m%d)
+        KEY="comment_${TOMORROW}_$(openssl rand -hex 6 | tr '[:lower:]' '[:upper:]')"
+        
+        # Dùng pastebin service ẩn danh
+        PASTE_RESPONSE=$(curl -s -X POST "https://api.paste.ee/v1/pastes" \
+          -H "Content-Type: application/json" \
+          -d "{\"sections\":[{\"contents\":\"$KEY\"}]}")
+        
+        PASTE_URL=$(echo "$PASTE_RESPONSE" | grep -o '"link":"[^"]*' | cut -d'"' -f4)
+        
+        if [ -z "$PASTE_URL" ]; then
+          # Fallback: dùng Google Forms redirect
+          PASTE_URL="https://www.google.com/search?q=$KEY"
+        fi
+        
+        # Rút gọn paste URL
+        RESPONSE=$(curl -s "https://link4m.co/api-shorten/v2?api=68db842cd32fc747763d594d&url=$PASTE_URL")
+        SHORT_URL=$(echo "$RESPONSE" | grep -o '"shortenedUrl":"[^"]*' | cut -d'"' -f4)
+        
+        # Lưu config với ngày mai
+        echo "{\"key\":\"$KEY\",\"date\":\"$TOMORROW\",\"short_url\":\"$SHORT_URL\"}" > daily-key_comment.json
+        
+        git config user.name "github-actions"
+        git config user.email "actions@github.com"
+        git add daily-key_comment.json
+        git commit -m "Auto: Daily key for $TOMORROW"
+        git push
