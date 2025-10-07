@@ -1,4 +1,4 @@
-name: 🔑 Generate Secure Daily Key
+name: 🔑 Generate Secure Daily Key Share Ao
 
 on:
   schedule:
@@ -20,7 +20,7 @@ jobs:
       run: |
         # Tạo key cho NGÀY MAI (VN time)
         TOMORROW=$(date -d "+1 day" +%Y%m%d)
-        KEY="vphuc_${TOMORROW}_$(openssl rand -hex 6 | tr '[:lower:]' '[:upper:]')"
+        KEY="share_${TOMORROW}_$(openssl rand -hex 6 | tr '[:lower:]' '[:upper:]')"
         
         # Dùng pastebin service ẩn danh
         PASTE_RESPONSE=$(curl -s -X POST "https://api.paste.ee/v1/pastes" \
